@@ -1,0 +1,23 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="DominoNext.App"
+             xmlns:local="using:DominoNext"
+             xmlns:converters="using:DominoNext.Converters"
+             RequestedThemeVariant="Default">
+             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+    <Application.DataTemplates>
+        <local:ViewLocator/>
+    </Application.DataTemplates>
+
+    <Application.Resources>
+        <!-- ×ª»»Æ÷×ÊÔ´ -->
+        <converters:ObjectEqualsConverter x:Key="ObjectEqualsConverter"/>
+        <converters:EnumToStringConverter x:Key="EnumToStringConverter"/>
+        <converters:DoubleFormatConverter x:Key="DoubleFormatConverter"/>
+    </Application.Resources>
+  
+    <Application.Styles>
+        <FluentTheme />
+    </Application.Styles>
+</Application>
