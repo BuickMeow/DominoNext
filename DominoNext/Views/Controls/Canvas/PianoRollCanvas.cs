@@ -21,23 +21,40 @@ namespace DominoNext.Views.Controls.Canvas
 
         private const double PianoKeyWidth = 60;
 
-        // 音符和时间线
-        private readonly Color _noteColor = Color.Parse("#4CAF50");
-        private readonly IPen _noteBorderPen = new Pen(new SolidColorBrush(Color.Parse("#2E7D32")), 1);
-        private readonly IPen _timelinePen = new Pen(Brushes.Red, 2);
+        // 资源画刷获取助手方法
+        private IBrush GetResourceBrush(string key, string fallbackHex)
+        {
+            try
+            {
+                if (Application.Current?.Resources.TryGetResource(key, null, out var obj) == true && obj is IBrush brush)
+                    return brush;
+            }
+            catch { }
 
-        // 网格线颜色
-        private readonly IBrush _whiteKeyRowBrush = new SolidColorBrush(Color.Parse("#FFFFFF"));
-        private readonly IBrush _blackKeyRowBrush = new SolidColorBrush(Color.Parse("#edf3fe"));
-        private readonly IPen _measureLinePen = new Pen(new SolidColorBrush(Color.Parse("#000080")), 1);
-        private readonly IPen _beatLinePen = new Pen(new SolidColorBrush(Color.Parse("#afafaf")), 1);
-        private readonly IPen _eighthNotePen = new Pen(new SolidColorBrush(Color.Parse("#afafaf")), 1) { DashStyle = new DashStyle(new double[] { 2, 2 }, 0) };
-        private readonly IPen _sixteenthNotePen = new Pen(new SolidColorBrush(Color.Parse("#afafaf")), 1) { DashStyle = new DashStyle(new double[] { 1, 3 }, 0) };
+            try
+            {
+                return new SolidColorBrush(Color.Parse(fallbackHex));
+            }
+            catch
+            {
+                return Brushes.Transparent;
+            }
+        }
 
-        // 横向分界线
-        private readonly IPen _horizontalLinePen = new Pen(new SolidColorBrush(Color.Parse("#bad2f2")), 1);
-        // 八度分界线（B和C之间）
-        private readonly IPen _octaveLinePen = new Pen(new SolidColorBrush(Color.Parse("#000000")), 1);
+        private IPen GetResourcePen(string brushKey, string fallbackHex, double thickness = 1, DashStyle? dashStyle = null)
+        {
+            var brush = GetResourceBrush(brushKey, fallbackHex);
+            var pen = new Pen(brush, thickness);
+            if (dashStyle != null)
+                pen.DashStyle = dashStyle;
+            return pen;
+        }
+
+        // 使用动态资源的画刷和画笔
+        private IBrush TimelineBrush => GetResourceBrush("VelocityIndicatorBrush", "#FFFF0000");
+        private IBrush WhiteKeyRowBrush => GetResourceBrush("KeyWhiteBrush", "#FFFFFFFF");
+        private IBrush BlackKeyRowBrush => GetResourceBrush("AppBackgroundBrush", "#FFedf3fe");
+        private IBrush MainBackgroundBrush => GetResourceBrush("MainCanvasBackgroundBrush", "#FFFFFFFF");
 
         static PianoRollCanvas()
         {
@@ -83,7 +100,7 @@ namespace DominoNext.Views.Controls.Canvas
             var bounds = Bounds;
 
             // 绘制背景
-            context.DrawRectangle(Brushes.White, null, bounds);
+            context.DrawRectangle(MainBackgroundBrush, null, bounds);
 
             DrawHorizontalGridLines(context, bounds);
             DrawVerticalGridLines(context, bounds);
@@ -105,19 +122,65 @@ namespace DominoNext.Views.Controls.Canvas
 
                 // 绘制行背景，从左边开始（不再需要 PianoKeyWidth 偏移）
                 var rowRect = new Rect(0, y, bounds.Width, keyHeight);
-                context.DrawRectangle(isBlackKey ? _blackKeyRowBrush : _whiteKeyRowBrush, null, rowRect);
+                
+                // 优化：为深色模式提供更好的黑白键对比
+                var rowBrush = isBlackKey ? GetBlackKeyRowBrush() : WhiteKeyRowBrush;
+                context.DrawRectangle(rowBrush, null, rowRect);
 
                 // 判断是否是八度分界线（B和C之间）
                 // 当前音符是C时（midiNote % 12 == 0），在它的下方画黑线
                 var isOctaveBoundary = midiNote % 12 == 0;
 
-                // 绘制水平分界线
-                var pen = isOctaveBoundary ? _octaveLinePen : _horizontalLinePen;
+                // 绘制水平分界线 - 使用更合适的线条样式
+                var pen = isOctaveBoundary 
+                    ? GetResourcePen("BorderLineBlackBrush", "#FF000000", 1.5) // 八度线稍微粗一些
+                    : GetResourcePen("GridLineBrush", "#FFbad2f2", 0.5); // 普通线更细一些
+                
                 context.DrawLine(pen, new Point(0, y + keyHeight), new Point(bounds.Width, y + keyHeight));
             }
 
             // 绘制第一条横线（G9的上边界）
-            context.DrawLine(_horizontalLinePen, new Point(0, 0), new Point(bounds.Width, 0));
+            var horizontalLinePen = GetResourcePen("GridLineBrush", "#FFbad2f2", 0.5);
+            context.DrawLine(horizontalLinePen, new Point(0, 0), new Point(bounds.Width, 0));
+        }
+
+        /// <summary>
+        /// 获取优化的黑键行背景色
+        /// </summary>
+        private IBrush GetBlackKeyRowBrush()
+        {
+            // 根据主背景色的亮度动态调整黑键行的颜色
+            var mainBg = GetResourceBrush("MainCanvasBackgroundBrush", "#FFFFFFFF");
+            
+            if (mainBg is SolidColorBrush solidBrush)
+            {
+                var color = solidBrush.Color;
+                var brightness = (color.R * 0.299 + color.G * 0.587 + color.B * 0.114) / 255.0;
+                
+                if (brightness < 0.5) // 深色主题
+                {
+                    // 深色主题：使黑键行稍微亮一些
+                    return new SolidColorBrush(Color.FromArgb(
+                        255,
+                        (byte)Math.Min(255, color.R + 15),
+                        (byte)Math.Min(255, color.G + 15),
+                        (byte)Math.Min(255, color.B + 15)
+                    ));
+                }
+                else // 浅色主题
+                {
+                    // 浅色主题：使黑键行稍微暗一些
+                    return new SolidColorBrush(Color.FromArgb(
+                        255,
+                        (byte)Math.Max(0, color.R - 25),
+                        (byte)Math.Max(0, color.G - 25),
+                        (byte)Math.Max(0, color.B - 25)
+                    ));
+                }
+            }
+            
+            // 回退到预设颜色
+            return GetResourceBrush("AppBackgroundBrush", "#FFedf3fe");
         }
 
         private void DrawVerticalGridLines(DrawingContext context, Rect bounds)
@@ -139,6 +202,8 @@ namespace DominoNext.Views.Controls.Canvas
                 var startSixteenth = Math.Max(0, (int)(0 / sixteenthWidth));
                 var endSixteenth = (int)(bounds.Width / sixteenthWidth) + 1;
 
+                var sixteenthNotePen = GetResourcePen("GridLineBrush", "#FFafafaf", 0.5, new DashStyle(new double[] { 1, 3 }, 0));
+
                 for (int i = startSixteenth; i <= endSixteenth; i++)
                 {
                     if (i % 4 == 0) continue; // 跳过拍线位置
@@ -146,7 +211,7 @@ namespace DominoNext.Views.Controls.Canvas
                     var x = i * sixteenthWidth;
                     if (x >= startX && x <= endX)
                     {
-                        context.DrawLine(_sixteenthNotePen, new Point(x, startY), new Point(x, endY));
+                        context.DrawLine(sixteenthNotePen, new Point(x, startY), new Point(x, endY));
                     }
                 }
             }
@@ -157,6 +222,8 @@ namespace DominoNext.Views.Controls.Canvas
                 var startEighth = Math.Max(0, (int)(0 / eighthWidth));
                 var endEighth = (int)(bounds.Width / eighthWidth) + 1;
 
+                var eighthNotePen = GetResourcePen("GridLineBrush", "#FFafafaf", 0.7, new DashStyle(new double[] { 2, 2 }, 0));
+
                 for (int i = startEighth; i <= endEighth; i++)
                 {
                     if (i % 2 == 0) continue; // 跳过拍线位置
@@ -164,7 +231,7 @@ namespace DominoNext.Views.Controls.Canvas
                     var x = i * eighthWidth;
                     if (x >= startX && x <= endX)
                     {
-                        context.DrawLine(_eighthNotePen, new Point(x, startY), new Point(x, endY));
+                        context.DrawLine(eighthNotePen, new Point(x, startY), new Point(x, endY));
                     }
                 }
             }
@@ -173,6 +240,8 @@ namespace DominoNext.Views.Controls.Canvas
             var startBeat = Math.Max(0, (int)(0 / beatWidth));
             var endBeat = (int)(bounds.Width / beatWidth) + 1;
 
+            var beatLinePen = GetResourcePen("GridLineBrush", "#FFafafaf", 0.8);
+
             for (int i = startBeat; i <= endBeat; i++)
             {
                 if (i % ViewModel.BeatsPerMeasure == 0) continue; // 跳过小节线位置
@@ -180,7 +249,7 @@ namespace DominoNext.Views.Controls.Canvas
                 var x = i * beatWidth;
                 if (x >= startX && x <= endX)
                 {
-                    context.DrawLine(_beatLinePen, new Point(x, startY), new Point(x, endY));
+                    context.DrawLine(beatLinePen, new Point(x, startY), new Point(x, endY));
                 }
             }
 
@@ -188,12 +257,14 @@ namespace DominoNext.Views.Controls.Canvas
             var startMeasure = Math.Max(0, (int)(0 / measureWidth));
             var endMeasure = (int)(bounds.Width / measureWidth) + 1;
 
+            var measureLinePen = GetResourcePen("MeasureLineBrush", "#FF000080", 1.2); // 小节线稍微粗一些
+
             for (int i = startMeasure; i <= endMeasure; i++)
             {
                 var x = i * measureWidth;
                 if (x >= startX && x <= endX)
                 {
-                    context.DrawLine(_measureLinePen, new Point(x, startY), new Point(x, endY));
+                    context.DrawLine(measureLinePen, new Point(x, startY), new Point(x, endY));
                 }
             }
         }
@@ -223,7 +294,8 @@ namespace DominoNext.Views.Controls.Canvas
 
             if (x >= 0 && x <= bounds.Width)
             {
-                context.DrawLine(_timelinePen, new Point(x, 0), new Point(x, Math.Min(bounds.Height, totalKeyHeight)));
+                var timelinePen = new Pen(TimelineBrush, 2);
+                context.DrawLine(timelinePen, new Point(x, 0), new Point(x, Math.Min(bounds.Height, totalKeyHeight)));
             }
         }
 

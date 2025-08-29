@@ -14,16 +14,6 @@ namespace DominoNext.Views.Settings
         {
             InitializeComponent();
             Loaded += SettingsWindow_Loaded;
-
-            // 注册按钮事件
-            if (CloseButton != null)
-                CloseButton.Click += CloseButton_Click;
-
-            if (LoadSettingsButton != null)
-                LoadSettingsButton.Click += LoadSettingsFromFile_Click;
-
-            if (SaveSettingsButton != null)
-                SaveSettingsButton.Click += SaveSettingsToFile_Click;
         }
 
         private void SettingsWindow_Loaded(object? sender, RoutedEventArgs e)
@@ -60,33 +50,6 @@ namespace DominoNext.Views.Settings
                 _ => "Default"
             };
             viewModel.ApplyThemeCommand.Execute(themeKey);
-        }
-
-        private void CloseButton_Click(object? sender, RoutedEventArgs e)
-        {
-            // 关闭窗口前检查是否有未保存的更改
-            if (DataContext is SettingsWindowViewModel viewModel && viewModel.HasUnsavedChanges)
-            {
-                var result = ShowSaveChangesDialog();
-                switch (result)
-                {
-                    case SaveChangesResult.Save:
-                        // 保存设置到文件
-                        SaveSettingsToFile(viewModel);
-                        Close();
-                        break;
-                    case SaveChangesResult.DontSave:
-                        Close();
-                        break;
-                    case SaveChangesResult.Cancel:
-                        // 不关闭窗口
-                        break;
-                }
-            }
-            else
-            {
-                Close();
-            }
         }
 
         private SaveChangesResult ShowSaveChangesDialog()

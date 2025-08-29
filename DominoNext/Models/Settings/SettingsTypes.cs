@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 
 namespace DominoNext.Models.Settings
 {
@@ -47,7 +48,7 @@ namespace DominoNext.Models.Settings
     }
 
     /// <summary>
-    /// 快捷键设置项
+    /// 快捷键设置
     /// </summary>
     public partial class ShortcutSetting : ObservableObject
     {
@@ -65,5 +66,36 @@ namespace DominoNext.Models.Settings
 
         [ObservableProperty]
         private string _category = string.Empty;
+    }
+
+    /// <summary>
+    /// 颜色设置项
+    /// </summary>
+    public class ColorSettingItem
+    {
+        public string DisplayName { get; set; } = string.Empty;
+        public string PropertyName { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
+
+        public ColorSettingItem() { }
+
+        public ColorSettingItem(string displayName, string propertyName, string description, string category)
+        {
+            DisplayName = displayName;
+            PropertyName = propertyName;
+            Description = description;
+            Category = category;
+        }
+    }
+
+    /// <summary>
+    /// 预设主题
+    /// </summary>
+    public class PresetTheme
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public Action? ApplyAction { get; set; }
     }
 }
