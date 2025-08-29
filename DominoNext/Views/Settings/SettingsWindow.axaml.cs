@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
@@ -13,87 +12,6 @@ namespace DominoNext.Views.Settings
         public SettingsWindow()
         {
             InitializeComponent();
-            Loaded += SettingsWindow_Loaded;
-        }
-
-        private void SettingsWindow_Loaded(object? sender, RoutedEventArgs e)
-        {
-            // 窗口加载时自动加载设置
-            if (DataContext is SettingsWindowViewModel viewModel)
-            {
-                try
-                {
-                    // 从配置文件加载设置
-                    viewModel.Settings.LoadFromFile();
-
-                    // 应用加载的设置
-                    ApplyLoadedSettings(viewModel);
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine($"加载设置失败: {ex.Message}");
-                }
-            }
-        }
-
-        private void ApplyLoadedSettings(SettingsWindowViewModel viewModel)
-        {
-            // 应用语言设置
-            viewModel.ApplyLanguageCommand.Execute(viewModel.Settings.Language);
-
-            // 应用主题设置
-            var themeKey = viewModel.Settings.Theme.Key switch
-            {
-                "Default" => "Default",
-                "Light" => "Light",
-                "Dark" => "Dark",
-                _ => "Default"
-            };
-            viewModel.ApplyThemeCommand.Execute(themeKey);
-        }
-
-        private SaveChangesResult ShowSaveChangesDialog()
-        {
-            // 简单的保存更改对话框实现
-            // 实际项目中可以使用更完善的对话框服务
-            return SaveChangesResult.Save; // 默认保存
-        }
-
-        private async void SaveSettingsToFile(SettingsWindowViewModel viewModel)
-        {
-            try
-            {
-                // 保存设置到配置文件
-                viewModel.Settings.SaveToFile();
-                viewModel.HasUnsavedChanges = false;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"保存设置到文件失败: {ex.Message}");
-                // 可以显示错误消息给用户
-            }
-        }
-
-        protected override void OnClosing(WindowClosingEventArgs e)
-        {
-            // 窗口关闭时检查是否有未保存的更改
-            if (DataContext is SettingsWindowViewModel viewModel && viewModel.HasUnsavedChanges)
-            {
-                var result = ShowSaveChangesDialog();
-                switch (result)
-                {
-                    case SaveChangesResult.Save:
-                        SaveSettingsToFile(viewModel);
-                        break;
-                    case SaveChangesResult.DontSave:
-                        break;
-                    case SaveChangesResult.Cancel:
-                        e.Cancel = true; // 取消关闭
-                        return;
-                }
-            }
-
-            base.OnClosing(e);
         }
 
         // 添加从文件加载设置的按钮点击事件
@@ -121,18 +39,14 @@ namespace DominoNext.Views.Settings
                             // 使用SettingsModel的自定义路径加载方法
                             viewModel.Settings.LoadFromFile(filePath);
 
-                            // 应用加载的设置
-                            ApplyLoadedSettings(viewModel);
-
-                            // 标记有更改
-                            viewModel.HasUnsavedChanges = true;
+                            // 重新检测当前主题
+                            viewModel.UpdateCurrentSelections();
                         }
                     }
                 }
                 catch (Exception ex)
                 {
                     System.Diagnostics.Debug.WriteLine($"从文件加载设置失败: {ex.Message}");
-                    // 可以显示错误消息给用户
                 }
             }
         }
@@ -167,19 +81,8 @@ namespace DominoNext.Views.Settings
                 catch (Exception ex)
                 {
                     System.Diagnostics.Debug.WriteLine($"保存设置到文件失败: {ex.Message}");
-                    // 可以显示错误消息给用户
                 }
             }
         }
-    }
-
-    /// <summary>
-    /// 保存更改对话框结果枚举
-    /// </summary>
-    public enum SaveChangesResult
-    {
-        Save,
-        DontSave,
-        Cancel
     }
 }

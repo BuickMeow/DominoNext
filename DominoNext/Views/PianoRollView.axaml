@@ -474,8 +474,17 @@
 						  HorizontalScrollBarVisibility="Hidden"
 						  VerticalScrollBarVisibility="Disabled"
 						  Background="{DynamicResource MainCanvasBackgroundBrush}">
-				<canvas:EventViewCanvas ViewModel="{Binding}"
-										  Width="5000"/>
+				
+				<!-- 使用 Grid 来叠加事件视图和力度视图 -->
+				<Grid Width="5000">
+					<!-- 背景层：事件视图网格和时间线 -->
+					<canvas:EventViewCanvas ViewModel="{Binding}"
+											IsHitTestVisible="False"/>
+
+					<!-- 力度视图层：可交互的力度条显示 -->
+					<canvas:VelocityViewCanvas ViewModel="{Binding}"
+											   IsHitTestVisible="True"/>
+				</Grid>
 			</ScrollViewer>
 
 			<Border Grid.Row="1" Grid.Column="2" Background="{DynamicResource MeasureHeaderBackgroundBrush}"/>

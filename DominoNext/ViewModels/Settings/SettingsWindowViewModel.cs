@@ -11,7 +11,7 @@ using DominoNext.Services.Interfaces;
 namespace DominoNext.ViewModels.Settings
 {
     /// <summary>
-    /// è®¾ç½®çª—å£ViewModel
+    /// ÉèÖÃ´°¿ÚViewModel
     /// </summary>
     public partial class SettingsWindowViewModel : ViewModelBase
     {
@@ -23,36 +23,46 @@ namespace DominoNext.ViewModels.Settings
         [ObservableProperty]
         private bool _hasUnsavedChanges = false;
 
+        [ObservableProperty]
+        private string _selectedThemeKey = "Default";
+
+        [ObservableProperty]
+        private string _selectedLanguageCode = "zh-CN";
+
         public SettingsModel Settings => _settingsService.Settings;
 
         public ObservableCollection<SettingsPageInfo> Pages { get; } = new();
 
-        // è¯­è¨€é€‰é¡¹
+        // ÓïÑÔÑ¡Ïî
         public ObservableCollection<LanguageOption> LanguageOptions { get; } = new()
         {
-            new LanguageOption { Code = "zh-CN", Name = "ç®€ä½“ä¸­æ–‡", NativeName = "ç®€ä½“ä¸­æ–‡" },
+            new LanguageOption { Code = "zh-CN", Name = "¼òÌåÖĞÎÄ", NativeName = "¼òÌåÖĞÎÄ" },
             new LanguageOption { Code = "en-US", Name = "English", NativeName = "English" },
-            new LanguageOption { Code = "ja-JP", Name = "Japanese", NativeName = "æ—¥æœ¬èª" }
+            new LanguageOption { Code = "ja-JP", Name = "Japanese", NativeName = "ÈÕ±¾ÕZ" }
         };
 
-        // ä¸»é¢˜é€‰é¡¹ - æ‰©å±•ä»¥æ”¯æŒæ›´å¤šä¸»é¢˜
+        // Ö÷ÌâÑ¡Ïî - °üº¬Ô¤ÉèµÄ¾«ÃÀÖ÷Ìâ
         public ObservableCollection<ThemeOption> ThemeOptions { get; } = new()
         {
-            new ThemeOption { Key = "Default", Name = "è·Ÿéšç³»ç»Ÿ", Description = "è·Ÿéšç³»ç»Ÿä¸»é¢˜è®¾ç½®" },
-            new ThemeOption { Key = "Light", Name = "æµ…è‰²ä¸»é¢˜", Description = "ä½¿ç”¨æµ…è‰²ä¸»é¢˜" },
-            new ThemeOption { Key = "Dark", Name = "æ·±è‰²ä¸»é¢˜", Description = "ä½¿ç”¨æ·±è‰²ä¸»é¢˜" },
-            new ThemeOption { Key = "HighContrast", Name = "é«˜å¯¹æ¯”åº¦", Description = "é«˜å¯¹æ¯”åº¦ä¸»é¢˜ï¼Œæé«˜å¯è®¿é—®æ€§" },
-            new ThemeOption { Key = "Custom", Name = "è‡ªå®šä¹‰", Description = "å®Œå…¨è‡ªå®šä¹‰çš„é¢œè‰²ä¸»é¢˜" }
+            new ThemeOption { Key = "Default", Name = "¸úËæÏµÍ³", Description = "¸úËæÏµÍ³Ö÷ÌâÉèÖÃ" },
+            new ThemeOption { Key = "Light", Name = "Ç³É«Ö÷Ìâ", Description = "¾­µäµÄÇ³É«Ö÷Ìâ£¬ÊÊºÏÈÕ¼äÊ¹ÓÃ" },
+            new ThemeOption { Key = "Dark", Name = "ÉîÉ«Ö÷Ìâ", Description = "ÉîÉ«Ö÷Ìâ£¬¼õÉÙÑÛ²¿Æ£ÀÍ" },
+            new ThemeOption { Key = "Green", Name = "Çà´ºÂÌ", Description = "ÇåĞÂµÄÂÌÉ«Ö÷Ìâ£¬³äÂú»îÁ¦" },
+            new ThemeOption { Key = "Blue", Name = "À¶É«¿Æ¼¼", Description = "¿Æ¼¼¸ĞµÄÀ¶É«Ö÷Ìâ£¬ÏÖ´ú¼òÔ¼" },
+            new ThemeOption { Key = "Purple", Name = "×ÏÉ«ÃÎ»Ã", Description = "ÃÎ»ÃµÄ×ÏÉ«Ö÷Ìâ£¬ÓÅÑÅÉñÃØ" },
+            new ThemeOption { Key = "Custom", Name = "×Ô¶¨Òå", Description = "ÍêÈ«×Ô¶¨ÒåµÄÑÕÉ«Ö÷Ìâ£¬ËæĞÄËùÓû" }
         };
 
-        // é¢œè‰²è®¾ç½®é¡¹é›†åˆ - æ–°å¢
-        public ObservableCollection<ColorSettingItem> ColorSettings { get; } = new();
+        // ÑÕÉ«ÉèÖÃÏî¼¯ºÏ - °´·ÖÀà×éÖ¯
+        public ObservableCollection<ColorSettingGroup> ColorSettingGroups { get; } = new();
 
-        // é¢„è®¾ä¸»é¢˜é›†åˆ - æ–°å¢
-        public ObservableCollection<PresetTheme> PresetThemes { get; } = new();
-
-        // å¿«æ·é”®è®¾ç½®
+        // ¿ì½İ¼üÉèÖÃ
         public ObservableCollection<ShortcutSetting> ShortcutSettings { get; } = new();
+
+        /// <summary>
+        /// ÊÇ·ñÏÔÊ¾×Ô¶¨ÒåÖ÷ÌâÃæ°å
+        /// </summary>
+        public bool IsCustomThemeSelected => SelectedThemeKey == "Custom";
 
         public SettingsWindowViewModel(ISettingsService settingsService)
         {
@@ -60,19 +70,27 @@ namespace DominoNext.ViewModels.Settings
 
             InitializePages();
             InitializeShortcutSettings();
-            InitializeColorSettings();
-            InitializePresetThemes();
+            InitializeColorSettingGroups();
 
-            // åŠ è½½è®¾ç½®
+            // ¼ÓÔØÉèÖÃ
             LoadSettings();
 
-            // ç›‘å¬è®¾ç½®å˜æ›´
-            Settings.PropertyChanged += (sender, e) => HasUnsavedChanges = true;
+            // ¼àÌıÉèÖÃ±ä¸ü£¬ÊµÏÖ×Ô¶¯±£´æ
+            Settings.PropertyChanged += (sender, e) => 
+            {
+                HasUnsavedChanges = true;
+                AutoSave();
+            };
         }
 
-        // è®¾è®¡æ—¶ä½¿ç”¨çš„æ— å‚æ„é€ å‡½æ•°
+        // Éè¼ÆÊ±Ê¹ÓÃµÄÎŞ²Î¹¹Ôìº¯Êı
         public SettingsWindowViewModel() : this(new DominoNext.Services.Implementation.SettingsService())
         {
+        }
+
+        partial void OnSelectedThemeKeyChanged(string value)
+        {
+            OnPropertyChanged(nameof(IsCustomThemeSelected));
         }
 
         private void InitializePages()
@@ -81,115 +99,382 @@ namespace DominoNext.ViewModels.Settings
             Pages.Add(new SettingsPageInfo
             {
                 Type = SettingsPageType.General,
-                Title = "å¸¸è§„",
-                Icon = "âš™ï¸",
-                Description = "åŸºæœ¬åº”ç”¨è®¾ç½®"
+                Title = "³£¹æ",
+                Icon = "??",
+                Description = "»ù±¾Ó¦ÓÃÉèÖÃ"
             });
             Pages.Add(new SettingsPageInfo
             {
                 Type = SettingsPageType.Language,
-                Title = "è¯­è¨€",
-                Icon = "ğŸŒ",
-                Description = "ç•Œé¢è¯­è¨€è®¾ç½®"
+                Title = "ÓïÑÔ",
+                Icon = "??",
+                Description = "½çÃæÓïÑÔÉèÖÃ"
             });
             Pages.Add(new SettingsPageInfo
             {
                 Type = SettingsPageType.Theme,
-                Title = "ä¸»é¢˜",
-                Icon = "ğŸ¨",
-                Description = "ç•Œé¢ä¸»é¢˜å’Œå¤–è§‚"
+                Title = "Ö÷Ìâ",
+                Icon = "??",
+                Description = "½çÃæÖ÷ÌâºÍÍâ¹Û"
             });
             Pages.Add(new SettingsPageInfo
             {
                 Type = SettingsPageType.Editor,
-                Title = "ç¼–è¾‘å™¨",
-                Icon = "âœï¸",
-                Description = "ç¼–è¾‘å™¨è¡Œä¸ºè®¾ç½®"
+                Title = "±à¼­Æ÷",
+                Icon = "??",
+                Description = "±à¼­Æ÷ĞĞÎªÉèÖÃ"
             });
             Pages.Add(new SettingsPageInfo
             {
                 Type = SettingsPageType.Shortcuts,
-                Title = "å¿«æ·é”®",
-                Icon = "âŒ¨ï¸",
-                Description = "é”®ç›˜å¿«æ·é”®è®¾ç½®"
+                Title = "¿ì½İ¼ü",
+                Icon = "??",
+                Description = "¼üÅÌ¿ì½İ¼üÉèÖÃ"
             });
             Pages.Add(new SettingsPageInfo
             {
                 Type = SettingsPageType.Advanced,
-                Title = "é«˜çº§",
-                Icon = "ğŸ› ï¸",
-                Description = "é«˜çº§é€‰é¡¹å’Œè°ƒè¯•"
+                Title = "¸ß¼¶",
+                Icon = "???",
+                Description = "¸ß¼¶Ñ¡ÏîºÍµ÷ÊÔ"
             });
         }
 
-        private void InitializeColorSettings()
+        private void InitializeColorSettingGroups()
         {
-            ColorSettings.Clear();
+            ColorSettingGroups.Clear();
 
-            // åŸºç¡€ç•Œé¢é¢œè‰²
-            ColorSettings.Add(new ColorSettingItem("ç•Œé¢èƒŒæ™¯", "BackgroundColor", "ä¸»ç•Œé¢çš„èƒŒæ™¯é¢œè‰²", "Interface"));
-            ColorSettings.Add(new ColorSettingItem("ç½‘æ ¼çº¿", "GridLineColor", "ç¼–è¾‘å™¨ç½‘æ ¼çº¿é¢œè‰²", "Interface"));
-            ColorSettings.Add(new ColorSettingItem("é€‰æ‹©æ¡†", "SelectionColor", "é€‰æ‹©æ¡†çš„é¢œè‰²", "Interface"));
+            // »ù´¡½çÃæÑÕÉ«×é
+            var interfaceGroup = new ColorSettingGroup("½çÃæ", "Ö÷½çÃæÏà¹ØµÄÑÕÉ«ÉèÖÃ");
+            interfaceGroup.Items.Add(new ColorSettingItem("½çÃæ±³¾°", "BackgroundColor", "Ö÷½çÃæµÄ±³¾°ÑÕÉ«", "Interface"));
+            interfaceGroup.Items.Add(new ColorSettingItem("Íø¸ñÏß", "GridLineColor", "±à¼­Æ÷Íø¸ñÏßÑÕÉ«", "Interface"));
+            interfaceGroup.Items.Add(new ColorSettingItem("Ñ¡Ôñ¿ò", "SelectionColor", "Ñ¡Ôñ¿òµÄÑÕÉ«", "Interface"));
+            interfaceGroup.Items.Add(new ColorSettingItem("·Ö¸ôÏß", "SeparatorLineColor", "¸÷ÖÖ·Ö¸ôÏßµÄÑÕÉ«", "Interface"));
+            ColorSettingGroups.Add(interfaceGroup);
 
-            // é’¢ç´é”®é¢œè‰²
-            ColorSettings.Add(new ColorSettingItem("ç™½é”®", "KeyWhiteColor", "é’¢ç´ç™½é”®é¢œè‰²", "Piano"));
-            ColorSettings.Add(new ColorSettingItem("é»‘é”®", "KeyBlackColor", "é’¢ç´é»‘é”®é¢œè‰²", "Piano"));
-            ColorSettings.Add(new ColorSettingItem("é”®ç›˜è¾¹æ¡†", "KeyBorderColor", "é’¢ç´é”®è¾¹æ¡†é¢œè‰²", "Piano"));
-            ColorSettings.Add(new ColorSettingItem("ç™½é”®æ–‡å­—", "KeyTextWhiteColor", "ç™½é”®ä¸Šçš„æ–‡å­—é¢œè‰²", "Piano"));
-            ColorSettings.Add(new ColorSettingItem("é»‘é”®æ–‡å­—", "KeyTextBlackColor", "é»‘é”®ä¸Šçš„æ–‡å­—é¢œè‰²", "Piano"));
+            // ¸ÖÇÙ¼üÑÕÉ«×é
+            var pianoGroup = new ColorSettingGroup("¸ÖÇÙ¼ü", "¸ÖÇÙ¼üÅÌÏà¹ØµÄÑÕÉ«ÉèÖÃ");
+            pianoGroup.Items.Add(new ColorSettingItem("°×¼ü", "KeyWhiteColor", "¸ÖÇÙ°×¼üÑÕÉ«", "Piano"));
+            pianoGroup.Items.Add(new ColorSettingItem("ºÚ¼ü", "KeyBlackColor", "¸ÖÇÙºÚ¼üÑÕÉ«", "Piano"));
+            pianoGroup.Items.Add(new ColorSettingItem("¼üÅÌ±ß¿ò", "KeyBorderColor", "¸ÖÇÙ¼ü±ß¿òÑÕÉ«", "Piano"));
+            pianoGroup.Items.Add(new ColorSettingItem("°×¼üÎÄ×Ö", "KeyTextWhiteColor", "°×¼üÉÏµÄÎÄ×ÖÑÕÉ«", "Piano"));
+            pianoGroup.Items.Add(new ColorSettingItem("ºÚ¼üÎÄ×Ö", "KeyTextBlackColor", "ºÚ¼üÉÏµÄÎÄ×ÖÑÕÉ«", "Piano"));
+            ColorSettingGroups.Add(pianoGroup);
 
-            // éŸ³ç¬¦é¢œè‰²
-            ColorSettings.Add(new ColorSettingItem("æ™®é€šéŸ³ç¬¦", "NoteColor", "æ™®é€šéŸ³ç¬¦çš„å¡«å……é¢œè‰²", "Note"));
-            ColorSettings.Add(new ColorSettingItem("é€‰ä¸­éŸ³ç¬¦", "NoteSelectedColor", "é€‰ä¸­éŸ³ç¬¦çš„é¢œè‰²", "Note"));
-            ColorSettings.Add(new ColorSettingItem("æ‹–æ‹½éŸ³ç¬¦", "NoteDraggingColor", "æ‹–æ‹½ä¸­éŸ³ç¬¦çš„é¢œè‰²", "Note"));
-            ColorSettings.Add(new ColorSettingItem("é¢„è§ˆéŸ³ç¬¦", "NotePreviewColor", "é¢„è§ˆéŸ³ç¬¦çš„é¢œè‰²", "Note"));
-            ColorSettings.Add(new ColorSettingItem("åŠ›åº¦æŒ‡ç¤ºå™¨", "VelocityIndicatorColor", "éŸ³ç¬¦åŠ›åº¦æŒ‡ç¤ºå™¨é¢œè‰²", "Note"));
+            // Òô·ûÑÕÉ«×é
+            var noteGroup = new ColorSettingGroup("Òô·û", "Òô·ûÏà¹ØµÄÑÕÉ«ÉèÖÃ");
+            noteGroup.Items.Add(new ColorSettingItem("ÆÕÍ¨Òô·û", "NoteColor", "ÆÕÍ¨Òô·ûµÄÌî³äÑÕÉ«", "Note"));
+            noteGroup.Items.Add(new ColorSettingItem("Ñ¡ÖĞÒô·û", "NoteSelectedColor", "Ñ¡ÖĞÒô·ûµÄÑÕÉ«", "Note"));
+            noteGroup.Items.Add(new ColorSettingItem("ÍÏ×§Òô·û", "NoteDraggingColor", "ÍÏ×§ÖĞÒô·ûµÄÑÕÉ«", "Note"));
+            noteGroup.Items.Add(new ColorSettingItem("Ô¤ÀÀÒô·û", "NotePreviewColor", "Ô¤ÀÀÒô·ûµÄÑÕÉ«", "Note"));
+            noteGroup.Items.Add(new ColorSettingItem("Á¦¶ÈÖ¸Ê¾Æ÷", "VelocityIndicatorColor", "Òô·ûÁ¦¶ÈÖ¸Ê¾Æ÷ÑÕÉ«", "Note"));
+            ColorSettingGroups.Add(noteGroup);
 
-            // å°èŠ‚å’Œæ–‡å­—
-            ColorSettings.Add(new ColorSettingItem("å°èŠ‚å¤´èƒŒæ™¯", "MeasureHeaderBackgroundColor", "å°èŠ‚å¤´çš„èƒŒæ™¯é¢œè‰²", "Measure"));
-            ColorSettings.Add(new ColorSettingItem("å°èŠ‚çº¿", "MeasureLineColor", "å°èŠ‚åˆ†éš”çº¿é¢œè‰²", "Measure"));
-            ColorSettings.Add(new ColorSettingItem("å°èŠ‚æ–‡å­—", "MeasureTextColor", "å°èŠ‚æ•°å­—çš„é¢œè‰²", "Measure"));
-            ColorSettings.Add(new ColorSettingItem("åˆ†éš”çº¿", "SeparatorLineColor", "å„ç§åˆ†éš”çº¿çš„é¢œè‰²", "Measure"));
+            // Ğ¡½ÚºÍÎÄ×Ö×é
+            var measureGroup = new ColorSettingGroup("Ğ¡½Ú", "Ğ¡½ÚºÍÎÄ×ÖÏà¹ØµÄÑÕÉ«ÉèÖÃ");
+            measureGroup.Items.Add(new ColorSettingItem("Ğ¡½ÚÍ·±³¾°", "MeasureHeaderBackgroundColor", "Ğ¡½ÚÍ·µÄ±³¾°ÑÕÉ«", "Measure"));
+            measureGroup.Items.Add(new ColorSettingItem("Ğ¡½ÚÏß", "MeasureLineColor", "Ğ¡½Ú·Ö¸ôÏßÑÕÉ«", "Measure"));
+            measureGroup.Items.Add(new ColorSettingItem("Ğ¡½ÚÎÄ×Ö", "MeasureTextColor", "Ğ¡½ÚÊı×ÖµÄÑÕÉ«", "Measure"));
+            ColorSettingGroups.Add(measureGroup);
         }
 
-        private void InitializePresetThemes()
+        private void InitializeShortcutSettings()
         {
-            PresetThemes.Clear();
+            ShortcutSettings.Clear();
 
-            PresetThemes.Add(new PresetTheme 
-            { 
-                Name = "ç»å…¸æµ…è‰²", 
-                Description = "ç»å…¸çš„æµ…è‰²ä¸»é¢˜ï¼Œé€‚åˆæ—¥é—´ä½¿ç”¨",
-                ApplyAction = () => Settings.ApplyLightThemeDefaults()
+            // ÎÄ¼ş²Ù×÷
+            ShortcutSettings.Add(new ShortcutSetting
+            {
+                Command = "NewFile",
+                Description = "ĞÂ½¨ÎÄ¼ş",
+                DefaultShortcut = "Ctrl+N",
+                CurrentShortcut = "Ctrl+N",
+                Category = "ÎÄ¼ş"
+            });
+            ShortcutSettings.Add(new ShortcutSetting
+            {
+                Command = "OpenFile",
+                Description = "´ò¿ªÎÄ¼ş",
+                DefaultShortcut = "Ctrl+O",
+                CurrentShortcut = "Ctrl+O",
+                Category = "ÎÄ¼ş"
+            });
+            ShortcutSettings.Add(new ShortcutSetting
+            {
+                Command = "SaveFile",
+                Description = "±£´æÎÄ¼ş",
+                DefaultShortcut = "Ctrl+S",
+                CurrentShortcut = "Ctrl+S",
+                Category = "ÎÄ¼ş"
             });
 
-            PresetThemes.Add(new PresetTheme 
-            { 
-                Name = "æ·±è‰²æŠ¤çœ¼", 
-                Description = "æ·±è‰²ä¸»é¢˜ï¼Œå‡å°‘çœ¼éƒ¨ç–²åŠ³",
-                ApplyAction = () => Settings.ApplyDarkThemeDefaults()
+            // ±à¼­²Ù×÷
+            ShortcutSettings.Add(new ShortcutSetting
+            {
+                Command = "Undo",
+                Description = "³·Ïú",
+                DefaultShortcut = "Ctrl+Z",
+                CurrentShortcut = "Ctrl+Z",
+                Category = "±à¼­"
+            });
+            ShortcutSettings.Add(new ShortcutSetting
+            {
+                Command = "Redo",
+                Description = "ÖØ×ö",
+                DefaultShortcut = "Ctrl+Y",
+                CurrentShortcut = "Ctrl+Y",
+                Category = "±à¼­"
             });
 
-            PresetThemes.Add(new PresetTheme 
-            { 
-                Name = "é’æ˜¥ç»¿", 
-                Description = "æ¸…æ–°çš„ç»¿è‰²ä¸»é¢˜",
-                ApplyAction = () => ApplyGreenTheme()
+            // ¹¤¾ß
+            ShortcutSettings.Add(new ShortcutSetting
+            {
+                Command = "PencilTool",
+                Description = "Ç¦±Ê¹¤¾ß",
+                DefaultShortcut = "P",
+                CurrentShortcut = "P",
+                Category = "¹¤¾ß"
             });
+        }
 
-            PresetThemes.Add(new PresetTheme 
-            { 
-                Name = "è“è‰²ç§‘æŠ€", 
-                Description = "ç§‘æŠ€æ„Ÿçš„è“è‰²ä¸»é¢˜",
-                ApplyAction = () => ApplyBlueTheme()
-            });
+        /// <summary>
+        /// ´ÓÅäÖÃÎÄ¼ş¼ÓÔØÉèÖÃ
+        /// </summary>
+        private void LoadSettings()
+        {
+            try
+            {
+                // ´ÓÎÄ¼ş¼ÓÔØÉèÖÃ£¨µ«²»ÖØĞÂÓ¦ÓÃ£¬±ÜÃâ¸²¸Çµ±Ç°ÔËĞĞ×´Ì¬£©
+                Settings.LoadFromFile();
 
-            PresetThemes.Add(new PresetTheme 
-            { 
-                Name = "ç´«è‰²æ¢¦å¹»", 
-                Description = "æ¢¦å¹»çš„ç´«è‰²ä¸»é¢˜",
-                ApplyAction = () => ApplyPurpleTheme()
-            });
+                // ¸üĞÂµ±Ç°Ñ¡Ôñ×´Ì¬
+                UpdateCurrentSelections();
+
+                // ²»ÒªÖØĞÂÓ¦ÓÃÉèÖÃ£¬ÒòÎªÕâ»á¸²¸Çµ±Ç°ÔËĞĞµÄÖ÷Ìâ
+                // ApplyLoadedSettings();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"¼ÓÔØÉèÖÃÊ§°Ü: {ex.Message}");
+                // Ê¹ÓÃÄ¬ÈÏÉèÖÃ
+                UpdateCurrentSelections();
+            }
+        }
+
+        /// <summary>
+        /// ¸üĞÂµ±Ç°Ñ¡Ôñ×´Ì¬
+        /// </summary>
+        public void UpdateCurrentSelections()
+        {
+            // ¸üĞÂÑ¡ÖĞµÄÓïÑÔ
+            SelectedLanguageCode = Settings.Language;
+
+            // ¸üĞÂÑ¡ÖĞµÄÖ÷Ìâ - »ùÓÚµ±Ç°ÉèÖÃÅĞ¶ÏÖ÷ÌâÀàĞÍ
+            SelectedThemeKey = DetermineCurrentThemeKey();
+
+            // Í¨ÖªÊôĞÔ±ä¸ü
+            OnPropertyChanged(nameof(IsCustomThemeSelected));
+        }
+
+        /// <summary>
+        /// ¸ù¾İµ±Ç°ÑÕÉ«ÉèÖÃÅĞ¶ÏÖ÷ÌâÀàĞÍ
+        /// </summary>
+        private string DetermineCurrentThemeKey()
+        {
+            // ¼ì²éÊÇ·ñÆ¥ÅäÔ¤ÉèÖ÷Ìâ
+            if (IsMatchingLightTheme()) return "Light";
+            if (IsMatchingDarkTheme()) return "Dark";
+            if (IsMatchingGreenTheme()) return "Green";
+            if (IsMatchingBlueTheme()) return "Blue";
+            if (IsMatchingPurpleTheme()) return "Purple";
+            
+            // Èç¹û²»Æ¥ÅäÈÎºÎÔ¤ÉèÖ÷Ìâ£¬ÔòÎª×Ô¶¨Òå
+            return "Custom";
+        }
+
+        private bool IsMatchingLightTheme()
+        {
+            return Settings.BackgroundColor == "#FFFAFAFA" &&
+                   Settings.NoteColor == "#FF4CAF50" &&
+                   Settings.KeyWhiteColor == "#FFFFFFFF" &&
+                   Settings.KeyBlackColor == "#FF1F1F1F";
+        }
+
+        private bool IsMatchingDarkTheme()
+        {
+            return Settings.BackgroundColor == "#FF1E1E1E" &&
+                   Settings.NoteColor == "#FF66BB6A" &&
+                   Settings.KeyWhiteColor == "#FF2D2D30" &&
+                   Settings.KeyBlackColor == "#FF0F0F0F";
+        }
+
+        private bool IsMatchingGreenTheme()
+        {
+            return Settings.BackgroundColor == "#FFF1F8E9" &&
+                   Settings.NoteColor == "#FF66BB6A" &&
+                   Settings.KeyWhiteColor == "#FFFAFAFA" &&
+                   Settings.KeyBlackColor == "#FF2E7D32";
+        }
+
+        private bool IsMatchingBlueTheme()
+        {
+            return Settings.BackgroundColor == "#FFE3F2FD" &&
+                   Settings.NoteColor == "#FF42A5F5" &&
+                   Settings.KeyWhiteColor == "#FFFAFAFA" &&
+                   Settings.KeyBlackColor == "#FF0D47A1";
+        }
+
+        private bool IsMatchingPurpleTheme()
+        {
+            return Settings.BackgroundColor == "#FFF3E5F5" &&
+                   Settings.NoteColor == "#FFAB47BC" &&
+                   Settings.KeyWhiteColor == "#FFFAFAFA" &&
+                   Settings.KeyBlackColor == "#FF4A148C";
+        }
+
+        /// <summary>
+        /// Ó¦ÓÃ¼ÓÔØµÄÉèÖÃ
+        /// </summary>
+        private void ApplyLoadedSettings()
+        {
+            // Ó¦ÓÃÓïÑÔÉèÖÃ
+            _settingsService.ApplyLanguageSettings();
+
+            // Ó¦ÓÃÖ÷ÌâÉèÖÃ
+            _settingsService.ApplyThemeSettings();
+        }
+
+        [RelayCommand]
+        private async Task SaveSettingsAsync()
+        {
+            try
+            {
+                // ±£´æµ½·şÎñ
+                await _settingsService.SaveSettingsAsync();
+                HasUnsavedChanges = false;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"±£´æÉèÖÃÊ§°Ü: {ex.Message}");
+            }
+        }
+
+        [RelayCommand]
+        private async Task ResetToDefaultsAsync()
+        {
+            try
+            {
+                // ÖØÖÃ·şÎñÖĞµÄÉèÖÃ
+                await _settingsService.ResetToDefaultsAsync();
+
+                // ÖØÖÃ¿ì½İ¼üÉèÖÃ
+                foreach (var shortcut in ShortcutSettings)
+                {
+                    shortcut.CurrentShortcut = shortcut.DefaultShortcut;
+                }
+
+                // ¸üĞÂµ±Ç°Ñ¡Ôñ×´Ì¬
+                UpdateCurrentSelections();
+
+                // ×Ô¶¯±£´æ»áÓÉSettingsÊôĞÔ±ä¸ü´¥·¢£¬²»ĞèÒªÊÖ¶¯µ÷ÓÃ
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ÖØÖÃÉèÖÃÊ§°Ü: {ex.Message}");
+            }
+        }
+
+        [RelayCommand]
+        private void SelectPage(SettingsPageType pageType)
+        {
+            SelectedPageType = pageType;
+        }
+
+        [RelayCommand]
+        private void ApplyLanguage(string languageCode)
+        {
+            Settings.Language = languageCode;
+            SelectedLanguageCode = languageCode;
+            _settingsService.ApplyLanguageSettings();
+            
+            // ×Ô¶¯±£´æ
+            AutoSave();
+        }
+
+        [RelayCommand]
+        private void ApplyTheme(string themeKey)
+        {
+            SelectedThemeKey = themeKey;
+
+            Settings.Theme = themeKey switch
+            {
+                "Light" => ThemeVariant.Light,
+                "Dark" => ThemeVariant.Dark,
+                "Green" => ThemeVariant.Default,
+                "Blue" => ThemeVariant.Default,
+                "Purple" => ThemeVariant.Default,
+                "Custom" => ThemeVariant.Default,
+                _ => ThemeVariant.Default
+            };
+
+            // ¸ù¾İÖ÷ÌâÓ¦ÓÃ¶ÔÓ¦µÄÑÕÉ«ÉèÖÃ
+            switch (themeKey)
+            {
+                case "Light":
+                    Settings.ApplyLightThemeDefaults();
+                    break;
+                case "Dark":
+                    Settings.ApplyDarkThemeDefaults();
+                    break;
+                case "Green":
+                    ApplyGreenTheme();
+                    break;
+                case "Blue":
+                    ApplyBlueTheme();
+                    break;
+                case "Purple":
+                    ApplyPurpleTheme();
+                    break;
+                case "Custom":
+                    // ×Ô¶¨ÒåÖ÷Ìâ²»×Ô¶¯Ó¦ÓÃÈÎºÎÑÕÉ«£¬±£³ÖÓÃ»§ÉèÖÃ
+                    break;
+            }
+
+            _settingsService.ApplyThemeSettings();
+            
+            // ×Ô¶¯±£´æ
+            AutoSave();
+        }
+
+        /// <summary>
+        /// ×Ô¶¯±£´æÉèÖÃ
+        /// </summary>
+        private async void AutoSave()
+        {
+            try
+            {
+                await _settingsService.SaveSettingsAsync();
+                HasUnsavedChanges = false;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"×Ô¶¯±£´æÉèÖÃÊ§°Ü: {ex.Message}");
+                HasUnsavedChanges = true;
+            }
+        }
+
+        private void AutoSwitchToCustomTheme()
+        {
+            if (SelectedThemeKey != "Custom")
+            {
+                SelectedThemeKey = "Custom";
+                OnPropertyChanged(nameof(IsCustomThemeSelected));
+            }
+            
+            _settingsService.ApplyThemeSettings();
+            
+            // ×Ô¶¯±£´æ
+            AutoSave();
         }
 
         private void ApplyGreenTheme()
@@ -206,6 +491,11 @@ namespace DominoNext.ViewModels.Settings
             Settings.MeasureHeaderBackgroundColor = "#FFE8F5E8";
             Settings.MeasureLineColor = "#FF4CAF50";
             Settings.MeasureTextColor = "#FF1B5E20";
+            Settings.SeparatorLineColor = "#FF81C784";
+            Settings.KeyBorderColor = "#FF1B5E20";
+            Settings.KeyTextWhiteColor = "#FF1B5E20";
+            Settings.KeyTextBlackColor = "#FFFFFFFF";
+            Settings.VelocityIndicatorColor = "#FF8BC34A";
         }
 
         private void ApplyBlueTheme()
@@ -222,6 +512,11 @@ namespace DominoNext.ViewModels.Settings
             Settings.MeasureHeaderBackgroundColor = "#FFE1F5FE";
             Settings.MeasureLineColor = "#FF2196F3";
             Settings.MeasureTextColor = "#FF0D47A1";
+            Settings.SeparatorLineColor = "#FF64B5F6";
+            Settings.KeyBorderColor = "#FF0D47A1";
+            Settings.KeyTextWhiteColor = "#FF0D47A1";
+            Settings.KeyTextBlackColor = "#FFFFFFFF";
+            Settings.VelocityIndicatorColor = "#FF03A9F4";
         }
 
         private void ApplyPurpleTheme()
@@ -238,298 +533,18 @@ namespace DominoNext.ViewModels.Settings
             Settings.MeasureHeaderBackgroundColor = "#FFEDE7F6";
             Settings.MeasureLineColor = "#FF9C27B0";
             Settings.MeasureTextColor = "#FF4A148C";
-        }
-
-        private void InitializeShortcutSettings()
-        {
-            ShortcutSettings.Clear();
-
-            // æ–‡ä»¶æ“ä½œ
-            ShortcutSettings.Add(new ShortcutSetting
-            {
-                Command = "NewFile",
-                Description = "æ–°å»ºæ–‡ä»¶",
-                DefaultShortcut = "Ctrl+N",
-                CurrentShortcut = "Ctrl+N",
-                Category = "æ–‡ä»¶"
-            });
-            ShortcutSettings.Add(new ShortcutSetting
-            {
-                Command = "OpenFile",
-                Description = "æ‰“å¼€æ–‡ä»¶",
-                DefaultShortcut = "Ctrl+O",
-                CurrentShortcut = "Ctrl+O",
-                Category = "æ–‡ä»¶"
-            });
-            ShortcutSettings.Add(new ShortcutSetting
-            {
-                Command = "SaveFile",
-                Description = "ä¿å­˜æ–‡ä»¶",
-                DefaultShortcut = "Ctrl+S",
-                CurrentShortcut = "Ctrl+S",
-                Category = "æ–‡ä»¶"
-            });
-
-            // ç¼–è¾‘æ“ä½œ
-            ShortcutSettings.Add(new ShortcutSetting
-            {
-                Command = "Undo",
-                Description = "æ’¤é”€",
-                DefaultShortcut = "Ctrl+Z",
-                CurrentShortcut = "Ctrl+Z",
-                Category = "ç¼–è¾‘"
-            });
-            ShortcutSettings.Add(new ShortcutSetting
-            {
-                Command = "Redo",
-                Description = "é‡åš",
-                DefaultShortcut = "Ctrl+Y",
-                CurrentShortcut = "Ctrl+Y",
-                Category = "ç¼–è¾‘"
-            });
-            ShortcutSettings.Add(new ShortcutSetting
-            {
-                Command = "Copy",
-                Description = "å¤åˆ¶",
-                DefaultShortcut = "Ctrl+C",
-                CurrentShortcut = "Ctrl+C",
-                Category = "ç¼–è¾‘"
-            });
-            ShortcutSettings.Add(new ShortcutSetting
-            {
-                Command = "Paste",
-                Description = "ç²˜è´´",
-                DefaultShortcut = "Ctrl+V",
-                CurrentShortcut = "Ctrl+V",
-                Category = "ç¼–è¾‘"
-            });
-
-            // å·¥å…·
-            ShortcutSettings.Add(new ShortcutSetting
-            {
-                Command = "PencilTool",
-                Description = "é“…ç¬”å·¥å…·",
-                DefaultShortcut = "P",
-                CurrentShortcut = "P",
-                Category = "å·¥å…·"
-            });
-            ShortcutSettings.Add(new ShortcutSetting
-            {
-                Command = "SelectTool",
-                Description = "é€‰æ‹©å·¥å…·",
-                DefaultShortcut = "S",
-                CurrentShortcut = "S",
-                Category = "å·¥å…·"
-            });
-            ShortcutSettings.Add(new ShortcutSetting
-            {
-                Command = "EraserTool",
-                Description = "æ©¡çš®æ“¦å·¥å…·",
-                DefaultShortcut = "E",
-                CurrentShortcut = "E",
-                Category = "å·¥å…·"
-            });
-        }
-
-        /// <summary>
-        /// ä»é…ç½®æ–‡ä»¶åŠ è½½è®¾ç½®
-        /// </summary>
-        private void LoadSettings()
-        {
-            try
-            {
-                // ä»æ–‡ä»¶åŠ è½½è®¾ç½®
-                Settings.LoadFromFile();
-
-                // æ›´æ–°å¿«æ·é”®è®¾ç½®ï¼ˆå¦‚æœå­˜å‚¨åœ¨è®¾ç½®ä¸­ï¼‰
-                LoadShortcutSettings();
-
-                // åº”ç”¨åŠ è½½çš„è®¾ç½®
-                ApplyLoadedSettings();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"åŠ è½½è®¾ç½®å¤±è´¥: {ex.Message}");
-                // ä½¿ç”¨é»˜è®¤è®¾ç½®
-            }
-        }
-
-        /// <summary>
-        /// ä¿å­˜è®¾ç½®åˆ°é…ç½®æ–‡ä»¶ï¼ˆåŒæ­¥ç‰ˆæœ¬ï¼‰
-        /// </summary>
-        private void SaveSettingsToFile()
-        {
-            try
-            {
-                // ä¿å­˜å¿«æ·é”®è®¾ç½®åˆ°è®¾ç½®æ¨¡å‹ï¼ˆå¦‚æœéœ€è¦ï¼‰
-                SaveShortcutSettings();
-
-                // ä¿å­˜åˆ°æ–‡ä»¶
-                Settings.SaveToFile();
-
-                HasUnsavedChanges = false;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"ä¿å­˜è®¾ç½®åˆ°æ–‡ä»¶å¤±è´¥: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// åŠ è½½å¿«æ·é”®è®¾ç½®
-        /// </summary>
-        private void LoadShortcutSettings()
-        {
-            try
-            {
-                // å¦‚æœå¿«æ·é”®è®¾ç½®å­˜å‚¨åœ¨ JSON ä¸­ï¼Œå¯ä»¥ä» Settings.CustomShortcutsJson è§£æ
-                // è¿™é‡Œå¯ä»¥æ ¹æ®å®é™…éœ€æ±‚å®ç°
-                /*
-                if (!string.IsNullOrEmpty(Settings.CustomShortcutsJson) && Settings.CustomShortcutsJson != "{}")
-                {
-                    var customShortcuts = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(Settings.CustomShortcutsJson);
-                    foreach (var shortcut in ShortcutSettings)
-                    {
-                        if (customShortcuts.ContainsKey(shortcut.Command))
-                        {
-                            shortcut.CurrentShortcut = customShortcuts[shortcut.Command];
-                        }
-                    }
-                }
-                */
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"åŠ è½½å¿«æ·é”®è®¾ç½®å¤±è´¥: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// ä¿å­˜å¿«æ·é”®è®¾ç½®
-        /// </summary>
-        private void SaveShortcutSettings()
-        {
-            try
-            {
-                // å¦‚æœéœ€è¦å°†å¿«æ·é”®è®¾ç½®ä¿å­˜åˆ° JSON ä¸­
-                /*
-                var customShortcuts = ShortcutSettings.ToDictionary(s => s.Command, s => s.CurrentShortcut);
-                Settings.CustomShortcutsJson = System.Text.Json.JsonSerializer.Serialize(customShortcuts);
-                */
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"ä¿å­˜å¿«æ·é”®è®¾ç½®å¤±è´¥: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// åº”ç”¨åŠ è½½çš„è®¾ç½®
-        /// </summary>
-        private void ApplyLoadedSettings()
-        {
-            // åº”ç”¨è¯­è¨€è®¾ç½®
-            _settingsService.ApplyLanguageSettings();
-
-            // åº”ç”¨ä¸»é¢˜è®¾ç½®
-            _settingsService.ApplyThemeSettings();
-
-            // å¯ä»¥åœ¨è¿™é‡Œåº”ç”¨å…¶ä»–è®¾ç½®
-        }
-
-        [RelayCommand]
-        private async Task SaveSettingsAsync()
-        {
-            try
-            {
-                // ä¿å­˜åˆ°æœåŠ¡
-                await _settingsService.SaveSettingsAsync();
-
-                // åŒæ—¶ä¿å­˜åˆ°æ–‡ä»¶ï¼ˆåœ¨åå°çº¿ç¨‹æ‰§è¡Œï¼‰
-                await Task.Run(() => SaveSettingsToFile());
-
-                HasUnsavedChanges = false;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"ä¿å­˜è®¾ç½®å¤±è´¥: {ex.Message}");
-                // å¯ä»¥åœ¨è¿™é‡Œæ˜¾ç¤ºé”™è¯¯æ¶ˆæ¯ç»™ç”¨æˆ·
-            }
-        }
-
-        [RelayCommand]
-        private async Task ResetToDefaultsAsync()
-        {
-            try
-            {
-                // é‡ç½®æœåŠ¡ä¸­çš„è®¾ç½®
-                await _settingsService.ResetToDefaultsAsync();
-
-                // é‡ç½®å¿«æ·é”®è®¾ç½®
-                foreach (var shortcut in ShortcutSettings)
-                {
-                    shortcut.CurrentShortcut = shortcut.DefaultShortcut;
-                }
-
-                HasUnsavedChanges = false;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"é‡ç½®è®¾ç½®å¤±è´¥: {ex.Message}");
-            }
-        }
-
-        [RelayCommand]
-        private void SelectPage(SettingsPageType pageType)
-        {
-            SelectedPageType = pageType;
-        }
-
-        [RelayCommand]
-        private void ApplyLanguage(string languageCode)
-        {
-            Settings.Language = languageCode;
-            _settingsService.ApplyLanguageSettings();
-            HasUnsavedChanges = true;
-        }
-
-        [RelayCommand]
-        private void ApplyTheme(string themeKey)
-        {
-            Settings.Theme = themeKey switch
-            {
-                "Light" => ThemeVariant.Light,
-                "Dark" => ThemeVariant.Dark,
-                _ => ThemeVariant.Default
-            };
-
-            // æ ¹æ®ä¸»é¢˜è‡ªåŠ¨åº”ç”¨å¯¹åº”çš„é»˜è®¤é¢œè‰²
-            if (themeKey == "Light")
-            {
-                Settings.ApplyLightThemeDefaults();
-            }
-            else if (themeKey == "Dark")
-            {
-                Settings.ApplyDarkThemeDefaults();
-            }
-
-            _settingsService.ApplyThemeSettings();
-            HasUnsavedChanges = true;
-        }
-
-        [RelayCommand]
-        private void ApplyPresetTheme(PresetTheme presetTheme)
-        {
-            presetTheme.ApplyAction?.Invoke();
-            _settingsService.ApplyThemeSettings();
-            HasUnsavedChanges = true;
+            Settings.SeparatorLineColor = "#FFCE93D8";
+            Settings.KeyBorderColor = "#FF4A148C";
+            Settings.KeyTextWhiteColor = "#FF4A148C";
+            Settings.KeyTextBlackColor = "#FFFFFFFF";
+            Settings.VelocityIndicatorColor = "#FFBA68C8";
         }
 
         [RelayCommand]
         private void ResetShortcut(ShortcutSetting shortcut)
         {
             shortcut.CurrentShortcut = shortcut.DefaultShortcut;
-            HasUnsavedChanges = true;
+            AutoSave();
         }
 
         [RelayCommand]
@@ -539,37 +554,11 @@ namespace DominoNext.ViewModels.Settings
             {
                 shortcut.CurrentShortcut = shortcut.DefaultShortcut;
             }
-            HasUnsavedChanges = true;
+            AutoSave();
         }
 
         /// <summary>
-        /// è·å–å½“å‰é€‰ä¸­çš„è¯­è¨€é€‰é¡¹
-        /// </summary>
-        public LanguageOption? SelectedLanguage =>
-            LanguageOptions.FirstOrDefault(x => x.Code == Settings.Language);
-
-        /// <summary>
-        /// è·å–å½“å‰é€‰ä¸­çš„ä¸»é¢˜é€‰é¡¹
-        /// </summary>
-        public ThemeOption? SelectedTheme =>
-            ThemeOptions.FirstOrDefault(x => x.Key == GetThemeKey(Settings.Theme));
-
-        /// <summary>
-        /// è·å–ä¸»é¢˜é”®å€¼
-        /// </summary>
-        private string GetThemeKey(ThemeVariant theme)
-        {
-            return theme.Key switch
-            {
-                "Default" => "Default",
-                "Light" => "Light",
-                "Dark" => "Dark",
-                _ => "Default"
-            };
-        }
-
-        /// <summary>
-        /// è·å–æŒ‡å®šé¢œè‰²è®¾ç½®é¡¹å¯¹åº”çš„é¢œè‰²å€¼
+        /// »ñÈ¡Ö¸¶¨ÑÕÉ«ÉèÖÃÏî¶ÔÓ¦µÄÑÕÉ«Öµ
         /// </summary>
         public string GetColorValue(string propertyName)
         {
@@ -578,7 +567,7 @@ namespace DominoNext.ViewModels.Settings
         }
 
         /// <summary>
-        /// è®¾ç½®æŒ‡å®šé¢œè‰²è®¾ç½®é¡¹çš„é¢œè‰²å€¼
+        /// ÉèÖÃÖ¸¶¨ÑÕÉ«ÉèÖÃÏîµÄÑÕÉ«Öµ
         /// </summary>
         public void SetColorValue(string propertyName, string colorValue)
         {
@@ -586,8 +575,141 @@ namespace DominoNext.ViewModels.Settings
             if (property != null && property.CanWrite)
             {
                 property.SetValue(Settings, colorValue);
+                
+                // Èç¹ûÓÃ»§ĞŞ¸ÄÁËÑÕÉ«£¬×Ô¶¯ÇĞ»»µ½×Ô¶¨ÒåÖ÷Ìâ
+                if (SelectedThemeKey != "Custom")
+                {
+                    SelectedThemeKey = "Custom";
+                    OnPropertyChanged(nameof(IsCustomThemeSelected));
+                }
+                
+                _settingsService.ApplyThemeSettings();
                 HasUnsavedChanges = true;
             }
+        }
+
+        /// <summary>
+        /// ÖØÖÃËùÓĞÑÕÉ«Îªµ±Ç°Ö÷ÌâµÄÄ¬ÈÏÖµ
+        /// </summary>
+        [RelayCommand]
+        private void ResetAllColors()
+        {
+            ApplyTheme(SelectedThemeKey);
+        }
+
+        /// <summary>
+        /// ÎªÌØ¶¨ÑÕÉ«ÊôĞÔ´´½¨°ó¶¨ÓÃµÄCommand
+        /// </summary>
+        [RelayCommand]
+        private void UpdateColor(object parameter)
+        {
+            if (parameter is (string propertyName, string colorValue))
+            {
+                SetColorValue(propertyName, colorValue);
+            }
+        }
+
+        // ÎªÃ¿¸öÑÕÉ«ÊôĞÔ´´½¨ÌØ¶¨µÄÊôĞÔ
+        public string BackgroundColorValue 
+        { 
+            get => Settings.BackgroundColor; 
+            set { Settings.BackgroundColor = value; OnPropertyChanged(); }
+        }
+
+        public string NoteColorValue 
+        { 
+            get => Settings.NoteColor; 
+            set { Settings.NoteColor = value; OnPropertyChanged(); }
+        }
+
+        public string GridLineColorValue 
+        { 
+            get => Settings.GridLineColor; 
+            set { Settings.GridLineColor = value; OnPropertyChanged(); }
+        }
+
+        public string KeyWhiteColorValue 
+        { 
+            get => Settings.KeyWhiteColor; 
+            set { Settings.KeyWhiteColor = value; OnPropertyChanged(); }
+        }
+
+        public string KeyBlackColorValue 
+        { 
+            get => Settings.KeyBlackColor; 
+            set { Settings.KeyBlackColor = value; OnPropertyChanged(); }
+        }
+
+        public string SelectionColorValue 
+        { 
+            get => Settings.SelectionColor; 
+            set { Settings.SelectionColor = value; OnPropertyChanged(); }
+        }
+
+        public string NoteSelectedColorValue 
+        { 
+            get => Settings.NoteSelectedColor; 
+            set { Settings.NoteSelectedColor = value; OnPropertyChanged(); }
+        }
+
+        public string NoteDraggingColorValue 
+        { 
+            get => Settings.NoteDraggingColor; 
+            set { Settings.NoteDraggingColor = value; OnPropertyChanged(); }
+        }
+
+        public string NotePreviewColorValue 
+        { 
+            get => Settings.NotePreviewColor; 
+            set { Settings.NotePreviewColor = value; OnPropertyChanged(); }
+        }
+
+        public string VelocityIndicatorColorValue 
+        { 
+            get => Settings.VelocityIndicatorColor; 
+            set { Settings.VelocityIndicatorColor = value; OnPropertyChanged(); }
+        }
+
+        public string MeasureHeaderBackgroundColorValue 
+        { 
+            get => Settings.MeasureHeaderBackgroundColor; 
+            set { Settings.MeasureHeaderBackgroundColor = value; OnPropertyChanged(); }
+        }
+
+        public string MeasureLineColorValue 
+        { 
+            get => Settings.MeasureLineColor; 
+            set { Settings.MeasureLineColor = value; OnPropertyChanged(); }
+        }
+
+        public string MeasureTextColorValue 
+        { 
+            get => Settings.MeasureTextColor; 
+            set { Settings.MeasureTextColor = value; OnPropertyChanged(); }
+        }
+
+        public string SeparatorLineColorValue 
+        { 
+            get => Settings.SeparatorLineColor; 
+            set { Settings.SeparatorLineColor = value; OnPropertyChanged(); }
+        }
+
+        public string KeyBorderColorValue 
+        { 
+            get => Settings.KeyBorderColor; 
+            set { Settings.KeyBorderColor = value; OnPropertyChanged(); }
+        }
+
+        public string KeyTextWhiteColorValue 
+        { 
+            get => Settings.KeyTextWhiteColor; 
+            set { Settings.KeyTextWhiteColor = value; OnPropertyChanged(); }
+        }
+
+        public string KeyTextBlackColorValue 
+        { 
+            get => Settings.KeyTextBlackColor; 
+            set { Settings.KeyTextBlackColor = value; OnPropertyChanged(); }
         }
     }
 }

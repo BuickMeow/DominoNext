@@ -30,6 +30,7 @@ namespace DominoNext.ViewModels.Editor
         public NoteCreationModule CreationModule { get; }
         public NoteSelectionModule SelectionModule { get; }
         public NotePreviewModule PreviewModule { get; }
+        public VelocityEditingModule VelocityEditingModule { get; }
         #endregion
 
         #region 状态管理
@@ -124,6 +125,7 @@ namespace DominoNext.ViewModels.Editor
             CreationModule = new NoteCreationModule(_coordinateService);
             SelectionModule = new NoteSelectionModule(SelectionState, _coordinateService);
             PreviewModule = new NotePreviewModule(_coordinateService);
+            VelocityEditingModule = new VelocityEditingModule(_coordinateService);
 
             // 设置模块引用
             DragModule.SetPianoRollViewModel(this);
@@ -131,6 +133,7 @@ namespace DominoNext.ViewModels.Editor
             CreationModule.SetPianoRollViewModel(this);
             SelectionModule.SetPianoRollViewModel(this);
             PreviewModule.SetPianoRollViewModel(this);
+            VelocityEditingModule.SetPianoRollViewModel(this);
 
             // 简化初始化命令
             _editorCommands = new EditorCommandsViewModel(_coordinateService);
@@ -159,6 +162,9 @@ namespace DominoNext.ViewModels.Editor
 
             // 选择模块事件
             SelectionModule.OnSelectionUpdated += InvalidateVisual;
+
+            // 力度编辑模块事件
+            VelocityEditingModule.OnVelocityUpdated += InvalidateVisual;
 
             // 订阅选择状态变更事件
             SelectionState.PropertyChanged += (sender, e) =>
@@ -344,6 +350,7 @@ namespace DominoNext.ViewModels.Editor
             CreationModule.CancelCreating();
             SelectionModule.ClearSelection(Notes);
             PreviewModule.ClearPreview();
+            VelocityEditingModule.EndEditing();
             Notes.Clear();
         }
         #endregion

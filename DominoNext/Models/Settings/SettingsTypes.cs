@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using System;
+using System.Collections.ObjectModel;
 
 namespace DominoNext.Models.Settings
 {
@@ -86,6 +87,24 @@ namespace DominoNext.Models.Settings
             PropertyName = propertyName;
             Description = description;
             Category = category;
+        }
+    }
+
+    /// <summary>
+    /// ÑÕÉ«ÉèÖÃ×é
+    /// </summary>
+    public class ColorSettingGroup
+    {
+        public string GroupName { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public ObservableCollection<ColorSettingItem> Items { get; } = new();
+
+        public ColorSettingGroup() { }
+
+        public ColorSettingGroup(string groupName, string description)
+        {
+            GroupName = groupName;
+            Description = description;
         }
     }
 

@@ -191,6 +191,12 @@ namespace DominoNext.Views
                     eventViewCanvas.InvalidateVisual();
                 }
 
+                // 刷新力度视图Canvas
+                if (this.FindControl<DominoNext.Views.Controls.Canvas.VelocityViewCanvas>("VelocityViewCanvas") is var velocityViewCanvas && velocityViewCanvas != null)
+                {
+                    velocityViewCanvas.InvalidateVisual();
+                }
+
                 // 刷新钢琴键控件
                 if (this.FindControl<DominoNext.Views.Controls.PianoKeysControl>("PianoKeysControl") is var pianoKeysControl && pianoKeysControl != null)
                 {

@@ -4,6 +4,7 @@
         xmlns:models="using:DominoNext.Models.Settings"
         xmlns:converters="using:DominoNext.Converters"
         xmlns:controls="using:Avalonia.Controls"
+        xmlns:localControls="using:DominoNext.Views.Controls"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="700"
@@ -28,7 +29,6 @@
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*"/>
-			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 
 		<!-- 主内容区域 -->
@@ -105,7 +105,6 @@
 								<TextBlock Text="自动保存" FontWeight="Medium" Margin="0,0,0,8"/>
 								<CheckBox Content="启用自动保存" IsChecked="{Binding Settings.AutoSave}"/>
 
-								<!-- 优化横向排列控件的对齐方式 -->
 								<StackPanel Orientation="Horizontal"
                                             Margin="0,8,0,0"
                                             IsVisible="{Binding Settings.AutoSave}">
@@ -118,7 +117,6 @@
 								</StackPanel>
 							</StackPanel>
 
-							<!-- 其他常规设置 -->
 							<CheckBox Content="使用原生菜单栏" IsChecked="{Binding Settings.UseNativeMenuBar}"/>
 
 							<StackPanel>
@@ -144,8 +142,8 @@
 									<DataTemplate DataType="models:LanguageOption">
 										<RadioButton GroupName="Language"
                                                      Content="{Binding NativeName}"
-                                                     IsChecked="{Binding Code, Converter={StaticResource ObjectEqualsConverter}, ConverterParameter={Binding $parent[ItemsControl].DataContext.Settings.Language}}"
-                                                     Command="{Binding $parent[ItemsControl].DataContext.ApplyLanguageCommand}"
+                                                     IsChecked="{Binding Code, Converter={StaticResource ObjectEqualsConverter}, ConverterParameter={Binding $parent[Window].DataContext.SelectedLanguageCode}}"
+                                                     Command="{Binding $parent[Window].DataContext.ApplyLanguageCommand}"
                                                      CommandParameter="{Binding Code}"
                                                      Margin="0,4"/>
 									</DataTemplate>
@@ -170,8 +168,8 @@
 								<ItemsControl.ItemTemplate>
 									<DataTemplate DataType="models:ThemeOption">
 										<RadioButton GroupName="Theme"
-                                                     IsChecked="{Binding Key, Converter={StaticResource ObjectEqualsConverter}, ConverterParameter={Binding $parent[ItemsControl].DataContext.Settings.Theme.Key}}"
-                                                     Command="{Binding $parent[ItemsControl].DataContext.ApplyThemeCommand}"
+                                                     IsChecked="{Binding Key, Converter={StaticResource ObjectEqualsConverter}, ConverterParameter={Binding $parent[Window].DataContext.SelectedThemeKey}}"
+                                                     Command="{Binding $parent[Window].DataContext.ApplyThemeCommand}"
                                                      CommandParameter="{Binding Key}"
                                                      Margin="0,8" VerticalAlignment="Center">
 											<StackPanel>
@@ -185,6 +183,128 @@
 									</DataTemplate>
 								</ItemsControl.ItemTemplate>
 							</ItemsControl>
+
+							<!-- 自定义主题设置面板 -->
+							<Border IsVisible="{Binding IsCustomThemeSelected}"
+                                    Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                                    BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="8"
+                                    Padding="20"
+                                    Margin="0,20,0,0">
+								<StackPanel Spacing="20">
+									<StackPanel Orientation="Horizontal" Spacing="15">
+										<TextBlock Text="🎨 自定义颜色设置" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
+										<Button Content="重置为当前主题默认值"
+                                                Command="{Binding ResetAllColorsCommand}"
+                                                FontSize="12"
+                                                Padding="8,4"
+                                                VerticalAlignment="Center"
+                                                ToolTip.Tip="将所有颜色重置为当前选择主题的默认值"/>
+									</StackPanel>
+
+									<!-- 颜色设置分组显示 -->
+									<ItemsControl ItemsSource="{Binding ColorSettingGroups}">
+										<ItemsControl.ItemTemplate>
+											<DataTemplate DataType="models:ColorSettingGroup">
+												<Expander Header="{Binding GroupName}" 
+                                                          IsExpanded="True"
+                                                          Margin="0,10,0,0">
+													<Expander.HeaderTemplate>
+														<DataTemplate>
+															<StackPanel Orientation="Horizontal" Spacing="8">
+																<TextBlock Text="{Binding}" FontWeight="Medium" FontSize="14"/>
+															</StackPanel>
+														</DataTemplate>
+													</Expander.HeaderTemplate>
+												
+													<StackPanel Margin="15,10,0,0" Spacing="12">
+														<!-- 分组描述 -->
+														<TextBlock Text="{Binding Description}" 
+                                                                   FontSize="12" 
+                                                                   Opacity="0.7"
+                                                                   Margin="0,0,0,5"/>
+												
+														<!-- 该分组的颜色设置项 -->
+														<ItemsControl ItemsSource="{Binding Items}">
+															<ItemsControl.ItemTemplate>
+																<DataTemplate DataType="models:ColorSettingItem">
+																	<Grid Margin="0,8">
+																		<Grid.ColumnDefinitions>
+																			<ColumnDefinition Width="140"/>
+																			<ColumnDefinition Width="200"/>
+																			<ColumnDefinition Width="*"/>
+																		</Grid.ColumnDefinitions>
+																		
+																		<TextBlock Grid.Column="0" 
+																				   Text="{Binding DisplayName}" 
+																				   FontWeight="Medium"
+																				   VerticalAlignment="Center"/>
+																		
+																		<StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+																			<!-- 颜色预览 -->
+																			<Border Width="30" Height="20"
+																					BorderThickness="1"
+																					BorderBrush="Gray"
+																					CornerRadius="4"
+																					VerticalAlignment="Center"
+																					Background="LightGray"
+																					ToolTip.Tip="颜色预览"/>
+																			
+																			<!-- 十六进制输入框 -->
+																			<TextBox Width="90"
+																					 Height="24"
+																					 VerticalAlignment="Center"
+																					 FontFamily="Consolas"
+																					 FontSize="11"
+																					 Padding="4,0"
+																					 VerticalContentAlignment="Center"
+																					 ToolTip.Tip="十六进制颜色值"
+																					 Watermark="#FFFFFFFF"/>
+																			
+																			<TextBlock Text="（当前为静态预览）" 
+																					   FontSize="10" 
+																					   Opacity="0.6"
+																					   VerticalAlignment="Center"/>
+																		</StackPanel>
+																		
+																		<!-- 描述 -->
+																		<TextBlock Grid.Column="2"
+																				   Text="{Binding Description}"
+																				   FontSize="11"
+																				   Opacity="0.7"
+																				   VerticalAlignment="Center"
+																				   TextWrapping="Wrap"
+																				   Margin="10,0,0,0"/>
+																	</Grid>
+																</DataTemplate>
+															</ItemsControl.ItemTemplate>
+														</ItemsControl>
+													</StackPanel>
+												</Expander>
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+									</ItemsControl>
+
+									<Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                                            CornerRadius="6"
+                                            Padding="15"
+                                            Margin="0,10,0,0">
+										<StackPanel Spacing="8">
+											<TextBlock Text="💡 提示" FontWeight="Medium" FontSize="14"/>
+											<TextBlock TextWrapping="Wrap" FontSize="12" Opacity="0.8">
+												<Run Text="• 每个颜色都可以独立调整，点击颜色块可以打开颜色选择器"/>
+												<LineBreak/>
+												<Run Text="• 也可以直接在文本框中输入十六进制颜色值 (如: #FF4CAF50)"/>
+												<LineBreak/>
+												<Run Text="• 修改任何颜色后会自动切换到'自定义'主题"/>
+												<LineBreak/>
+												<Run Text="• 可以点击'重置'按钮恢复当前主题的默认颜色"/>
+											</TextBlock>
+										</StackPanel>
+									</Border>
+								</StackPanel>
+							</Border>
 						</StackPanel>
 					</StackPanel>
 
@@ -193,20 +313,17 @@
 						<TextBlock Text="编辑器设置" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
 
 						<StackPanel Spacing="20">
-							<!-- 网格设置 -->
 							<StackPanel>
 								<TextBlock Text="网格和对齐" FontWeight="Medium" Margin="0,0,0,8"/>
 								<CheckBox Content="显示网格线" IsChecked="{Binding Settings.ShowGridLines}"/>
 								<CheckBox Content="启用网格对齐" IsChecked="{Binding Settings.SnapToGrid}" Margin="0,8,0,0"/>
 							</StackPanel>
 
-							<!-- 显示设置 -->
 							<StackPanel>
 								<TextBlock Text="显示选项" FontWeight="Medium" Margin="0,0,0,8"/>
 								<CheckBox Content="显示力度条" IsChecked="{Binding Settings.ShowVelocityBars}"/>
 							</StackPanel>
 
-							<!-- 缩放设置 -->
 							<StackPanel>
 								<TextBlock Text="默认缩放" FontWeight="Medium" Margin="0,0,0,8"/>
 								<Slider Value="{Binding Settings.DefaultZoom}"
@@ -218,7 +335,6 @@
                                            Margin="0,4,0,0"/>
 							</StackPanel>
 
-							<!-- 钢琴键宽度 -->
 							<StackPanel>
 								<TextBlock Text="钢琴键宽度" FontWeight="Medium" Margin="0,0,0,8"/>
 								<NumericUpDown Value="{Binding Settings.PianoKeyWidth}"
@@ -239,7 +355,6 @@
 								<Button Content="重置所有快捷键" Command="{Binding ResetAllShortcutsCommand}"/>
 							</StackPanel>
 
-							<!-- 高度适应内容 -->
 							<controls:DataGrid ItemsSource="{Binding ShortcutSettings}"
                                       AutoGenerateColumns="False"
                                       CanUserReorderColumns="False"
@@ -257,7 +372,6 @@
 									<controls:DataGridTemplateColumn Header="操作" Width="80">
 										<controls:DataGridTemplateColumn.CellTemplate>
 											<DataTemplate>
-												<!-- 快捷键设置DataGrid操作列按钮 -->
 												<Button Content="重置"
                                                         Command="{Binding $parent[controls:DataGrid].DataContext.ResetShortcutCommand}"
                                                         CommandParameter="{Binding}"
@@ -288,13 +402,12 @@
                                        FontStyle="Italic"
                                        Opacity="0.7"/>
 
-							<!-- 添加配置文件操作按钮 -->
 							<StackPanel Orientation="Horizontal" Spacing="10" Margin="0,20,0,0">
 								<Button Content="从文件加载设置"
-                                        Name="LoadSettingsButton"
+                                        Click="LoadSettingsFromFile_Click"
                                         ToolTip.Tip="从配置文件重新加载设置"/>
 								<Button Content="保存设置到文件"
-                                        Name="SaveSettingsButton"
+                                        Click="SaveSettingsToFile_Click"
                                         ToolTip.Tip="将当前设置保存到配置文件"/>
 							</StackPanel>
 						</StackPanel>
@@ -302,31 +415,5 @@
 				</StackPanel>
 			</ScrollViewer>
 		</Grid>
-
-		<!-- 底部按钮区域 -->
-		<Border Grid.Row="1"
-                Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
-                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-                BorderThickness="0,1,0,0"
-                Padding="20,15">
-			<StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Right"
-                        Spacing="10">
-				<!-- 底部按钮区域优化 -->
-				<TextBlock Text="有未保存的更改"
-                           VerticalAlignment="Center"
-                           FontStyle="Italic"
-                           Foreground="Orange"
-                           IsVisible="{Binding HasUnsavedChanges}"/>
-				<Button Content="保存"
-                        Command="{Binding SaveSettingsCommand}"
-                        IsEnabled="{Binding HasUnsavedChanges}"
-                        VerticalAlignment="Center"/>
-				<Button Content="关闭"
-                        IsDefault="True"
-                        Name="CloseButton"
-                        VerticalAlignment="Center"/>
-			</StackPanel>
-		</Border>
 	</Grid>
 </Window>
