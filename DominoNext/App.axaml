@@ -15,6 +15,7 @@
         <converters:ObjectEqualsConverter x:Key="ObjectEqualsConverter"/>
         <converters:EnumToStringConverter x:Key="EnumToStringConverter"/>
         <converters:DoubleFormatConverter x:Key="DoubleFormatConverter"/>
+        <converters:StringToColorConverter x:Key="StringToColorConverter"/>
     </Application.Resources>
   
     <Application.Styles>

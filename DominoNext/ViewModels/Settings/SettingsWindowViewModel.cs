@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DominoNext.Models.Settings;
 using DominoNext.Services.Interfaces;
+using DominoNext.Services.Implementation;
 
 namespace DominoNext.ViewModels.Settings
 {
@@ -85,6 +86,13 @@ namespace DominoNext.ViewModels.Settings
                 Title = "主题", 
                 Icon = "🎨", 
                 Description = "界面主题和外观" 
+            });
+            Pages.Add(new SettingsPageInfo 
+            { 
+                Type = SettingsPageType.Colors, 
+                Title = "颜色", 
+                Icon = "🌈", 
+                Description = "自定义界面颜色" 
             });
             Pages.Add(new SettingsPageInfo 
             { 
@@ -253,6 +261,22 @@ namespace DominoNext.ViewModels.Settings
             {
                 shortcut.CurrentShortcut = shortcut.DefaultShortcut;
             }
+            HasUnsavedChanges = true;
+        }
+
+        [RelayCommand]
+        private void ResetColorsToLight()
+        {
+            Settings.ThemeColors.ResetToLightTheme();
+            ThemeService.Instance.NotifyThemeChanged();
+            HasUnsavedChanges = true;
+        }
+
+        [RelayCommand]
+        private void ResetColorsToDark()
+        {
+            Settings.ThemeColors.ResetToDarkTheme();
+            ThemeService.Instance.NotifyThemeChanged();
             HasUnsavedChanges = true;
         }
 

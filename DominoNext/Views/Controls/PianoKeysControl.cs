@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Media;
 using DominoNext.ViewModels.Editor;
+using DominoNext.Services.Implementation;
 using System;
 using System.Globalization;
 
@@ -19,14 +20,19 @@ namespace DominoNext.Views.Controls
         }
 
         private const double PianoKeyWidth = 60;
-
-        // 钢琴键相关画刷
-        private readonly IBrush _blackKeyBrush = new SolidColorBrush(Color.Parse("#1F1F1F"));
-        private readonly IBrush _whiteKeyBrush = new SolidColorBrush(Color.Parse("#FFFFFF"));
-        private readonly IBrush _keyAreaBrush = new SolidColorBrush(Color.Parse("#FFFFFF"));
-
-        // 使用默认字体系列
+        private readonly ThemeService _themeService;
         private readonly Typeface _typeface = new Typeface(FontFamily.Default);
+
+        public PianoKeysControl()
+        {
+            _themeService = ThemeService.Instance;
+            _themeService.ThemeChanged += OnThemeChanged;
+        }
+
+        private void OnThemeChanged(object? sender, EventArgs e)
+        {
+            InvalidateVisual();
+        }
 
         static PianoKeysControl()
         {
@@ -66,7 +72,7 @@ namespace DominoNext.Views.Controls
 
             // 绘制钢琴键区域背景
             var keyAreaRect = new Rect(0, 0, PianoKeyWidth, Math.Min(bounds.Height, totalKeyHeight));
-            context.DrawRectangle(_keyAreaBrush, null, keyAreaRect);
+            context.DrawRectangle(_themeService.WhiteKeyBrush, null, keyAreaRect);
 
             // 绘制所有128个键
             for (int i = 0; i < 128; i++)
@@ -78,29 +84,47 @@ namespace DominoNext.Views.Controls
                 // 只绘制可见的键
                 if (y + keyHeight >= 0 && y <= bounds.Height)
                 {
-                    var keyRect = new Rect(0, y, PianoKeyWidth, keyHeight);
-
-                    // 绘制键盘
-                    context.DrawRectangle(isBlackKey ? _blackKeyBrush : _whiteKeyBrush,
-                                        new Pen(new SolidColorBrush(Color.Parse("#1F1F1F")), 1), keyRect);
-
-                    // 绘制音符名称
-                    var noteName = ViewModel.GetNoteName(midiNote);
-                    var formattedText = new FormattedText(
-                        noteName,
-                        CultureInfo.CurrentCulture,
-                        FlowDirection.LeftToRight,
-                        _typeface,
-                        8,
-                        isBlackKey ? Brushes.White : Brushes.Black);
-
-                    var textPoint = new Point(
-                        PianoKeyWidth / 2 - formattedText.Width / 2,
-                        y + keyHeight / 2 - formattedText.Height / 2);
-
-                    context.DrawText(formattedText, textPoint);
+                    DrawPianoKey(context, midiNote, y, keyHeight, isBlackKey);
                 }
             }
+
+            // 绘制右边界线
+            context.DrawLine(_themeService.KeyBorderPen,
+                new Point(PianoKeyWidth - 1, 0),
+                new Point(PianoKeyWidth - 1, Math.Min(bounds.Height, totalKeyHeight)));
+        }
+
+        private void DrawPianoKey(DrawingContext context, int midiNote, double y, double keyHeight, bool isBlackKey)
+        {
+            var keyRect = new Rect(0, y, PianoKeyWidth, keyHeight);
+
+            // 绘制键的背景
+            var keyBrush = isBlackKey ? _themeService.BlackKeyBrush : _themeService.WhiteKeyBrush;
+            context.DrawRectangle(keyBrush, _themeService.KeyBorderPen, keyRect);
+
+            // 绘制音符名称（仅对C音符）
+            if (midiNote % 12 == 0 && keyHeight > 12)
+            {
+                var octave = midiNote / 12 - 1;
+                var noteText = $"C{octave}";
+
+                var formattedText = new FormattedText(
+                    noteText,
+                    CultureInfo.CurrentCulture,
+                    FlowDirection.LeftToRight,
+                    _typeface,
+                    Math.Min(10, keyHeight * 0.6),
+                    isBlackKey ? Brushes.White : Brushes.Black);
+
+                var textX = keyRect.X + 3;
+                var textY = keyRect.Y + (keyRect.Height - formattedText.Height) / 2;
+                context.DrawText(formattedText, new Point(textX, textY));
+            }
+
+            // 绘制水平分界线
+            context.DrawLine(_themeService.KeyBorderPen,
+                new Point(0, y + keyHeight),
+                new Point(PianoKeyWidth, y + keyHeight));
         }
     }
 }

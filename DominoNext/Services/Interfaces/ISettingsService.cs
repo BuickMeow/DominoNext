@@ -5,6 +5,16 @@ using System.Threading.Tasks;
 namespace DominoNext.Services.Interfaces
 {
     /// <summary>
+    /// 设置变更事件参数
+    /// </summary>
+    public class SettingsChangedEventArgs : EventArgs
+    {
+        public string PropertyName { get; set; } = string.Empty;
+        public object? OldValue { get; set; }
+        public object? NewValue { get; set; }
+    }
+
+    /// <summary>
     /// 设置服务接口
     /// </summary>
     public interface ISettingsService
@@ -43,15 +53,5 @@ namespace DominoNext.Services.Interfaces
         /// 应用主题设置
         /// </summary>
         void ApplyThemeSettings();
-    }
-
-    /// <summary>
-    /// 设置变更事件参数
-    /// </summary>
-    public class SettingsChangedEventArgs : EventArgs
-    {
-        public string PropertyName { get; set; } = string.Empty;
-        public object? OldValue { get; set; }
-        public object? NewValue { get; set; }
     }
 }

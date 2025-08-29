@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Media;
 using DominoNext.ViewModels.Editor;
+using DominoNext.Services.Implementation;
 using System;
 using System.Collections.Specialized;
 
@@ -18,20 +19,18 @@ namespace DominoNext.Views.Controls.Canvas
             set => SetValue(ViewModelProperty, value);
         }
 
-        // 网格线颜色
-        private readonly IPen _measureLinePen = new Pen(new SolidColorBrush(Color.Parse("#000080")), 1);
-        private readonly IPen _beatLinePen = new Pen(new SolidColorBrush(Color.Parse("#afafaf")), 1);
-        private readonly IPen _eighthNotePen = new Pen(new SolidColorBrush(Color.Parse("#afafaf")), 1) { DashStyle = new DashStyle(new double[] { 2, 2 }, 0) };
-        private readonly IPen _sixteenthNotePen = new Pen(new SolidColorBrush(Color.Parse("#afafaf")), 1) { DashStyle = new DashStyle(new double[] { 1, 3 }, 0) };
+        private readonly ThemeService _themeService;
 
-        // 水平分界线颜色
-        private readonly IPen _horizontalLinePen = new Pen(new SolidColorBrush(Color.Parse("#BAD2F2")), 1);
+        public EventViewCanvas()
+        {
+            _themeService = ThemeService.Instance;
+            _themeService.ThemeChanged += OnThemeChanged;
+        }
 
-        // 边界线颜色
-        private readonly IPen _borderLinePen = new Pen(new SolidColorBrush(Color.Parse("#000000")), 1);
-
-        // 时间线
-        private readonly IPen _timelinePen = new Pen(Brushes.Red, 2);
+        private void OnThemeChanged(object? sender, EventArgs e)
+        {
+            InvalidateVisual();
+        }
 
         static EventViewCanvas()
         {
@@ -68,7 +67,7 @@ namespace DominoNext.Views.Controls.Canvas
             var bounds = Bounds;
 
             // 绘制背景
-            context.DrawRectangle(Brushes.White, null, bounds);
+            context.DrawRectangle(_themeService.CanvasBackgroundBrush, null, bounds);
 
             DrawHorizontalGridLines(context, bounds);
             DrawVerticalGridLines(context, bounds);
@@ -84,7 +83,7 @@ namespace DominoNext.Views.Controls.Canvas
             for (int i = 1; i <= 3; i++)
             {
                 var y = i * quarterHeight;
-                context.DrawLine(_horizontalLinePen,
+                context.DrawLine(_themeService.HorizontalLinePen,
                     new Point(0, y), new Point(bounds.Width, y));
             }
         }
@@ -114,7 +113,7 @@ namespace DominoNext.Views.Controls.Canvas
                     var x = i * sixteenthWidth;
                     if (x >= startX && x <= endX)
                     {
-                        context.DrawLine(_sixteenthNotePen, new Point(x, startY), new Point(x, endY));
+                        context.DrawLine(_themeService.SixteenthNotePen, new Point(x, startY), new Point(x, endY));
                     }
                 }
             }
@@ -132,7 +131,7 @@ namespace DominoNext.Views.Controls.Canvas
                     var x = i * eighthWidth;
                     if (x >= startX && x <= endX)
                     {
-                        context.DrawLine(_eighthNotePen, new Point(x, startY), new Point(x, endY));
+                        context.DrawLine(_themeService.EighthNotePen, new Point(x, startY), new Point(x, endY));
                     }
                 }
             }
@@ -148,7 +147,7 @@ namespace DominoNext.Views.Controls.Canvas
                 var x = i * beatWidth;
                 if (x >= startX && x <= endX)
                 {
-                    context.DrawLine(_beatLinePen, new Point(x, startY), new Point(x, endY));
+                    context.DrawLine(_themeService.BeatLinePen, new Point(x, startY), new Point(x, endY));
                 }
             }
 
@@ -161,7 +160,7 @@ namespace DominoNext.Views.Controls.Canvas
                 var x = i * measureWidth;
                 if (x >= startX && x <= endX)
                 {
-                    context.DrawLine(_measureLinePen, new Point(x, startY), new Point(x, endY));
+                    context.DrawLine(_themeService.MeasureLinePen, new Point(x, startY), new Point(x, endY));
                 }
             }
         }
@@ -172,7 +171,7 @@ namespace DominoNext.Views.Controls.Canvas
 
             if (x >= 0 && x <= bounds.Width)
             {
-                context.DrawLine(_timelinePen, new Point(x, 0), new Point(x, bounds.Height));
+                context.DrawLine(_themeService.TimelinePen, new Point(x, 0), new Point(x, bounds.Height));
             }
         }
     }

@@ -184,6 +184,171 @@
                         </StackPanel>
                     </StackPanel>
 
+                    <!-- 颜色设置 -->
+                    <StackPanel IsVisible="{Binding SelectedPageType, Converter={StaticResource ObjectEqualsConverter}, ConverterParameter={x:Static models:SettingsPageType.Colors}}">
+                        <TextBlock Text="颜色设置" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+                        
+                        <StackPanel Spacing="20">
+                            <!-- 快速重置按钮 -->
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <Button Content="重置为浅色主题" Command="{Binding ResetColorsToLightCommand}"/>
+                                <Button Content="重置为深色主题" Command="{Binding ResetColorsToDarkCommand}"/>
+                            </StackPanel>
+                            
+                            <!-- 音符颜色 -->
+                            <StackPanel>
+                                <TextBlock Text="音符颜色" FontWeight="Medium" FontSize="16" Margin="0,0,0,10"/>
+                                
+                                <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto" Margin="10,0">
+                                    <Grid.Styles>
+                                        <Style Selector="TextBlock.ColorLabel">
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="Margin" Value="0,0,10,0"/>
+                                            <Setter Property="Width" Value="120"/>
+                                        </Style>
+                                        <Style Selector="TextBox.ColorInput">
+                                            <Setter Property="Width" Value="100"/>
+                                            <Setter Property="Margin" Value="0,4"/>
+                                        </Style>
+                                        <Style Selector="Border.ColorPreview">
+                                            <Setter Property="Width" Value="30"/>
+                                            <Setter Property="Height" Value="20"/>
+                                            <Setter Property="BorderThickness" Value="1"/>
+                                            <Setter Property="BorderBrush" Value="Black"/>
+                                            <Setter Property="Margin" Value="10,4,0,4"/>
+                                        </Style>
+                                    </Grid.Styles>
+                                    
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="普通音符:" Classes="ColorLabel"/>
+                                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Settings.ThemeColors.NormalNoteColor}" Classes="ColorInput"/>
+                                    <Border Grid.Row="0" Grid.Column="2" Classes="ColorPreview">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{Binding Settings.ThemeColors.NormalNoteColor, Converter={StaticResource StringToColorConverter}}"/>
+                                        </Border.Background>
+                                    </Border>
+                                    
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="选中音符:" Classes="ColorLabel"/>
+                                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Settings.ThemeColors.SelectedNoteColor}" Classes="ColorInput"/>
+                                    <Border Grid.Row="1" Grid.Column="2" Classes="ColorPreview">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{Binding Settings.ThemeColors.SelectedNoteColor, Converter={StaticResource StringToColorConverter}}"/>
+                                        </Border.Background>
+                                    </Border>
+                                    
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="拖拽音符:" Classes="ColorLabel"/>
+                                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Settings.ThemeColors.DraggingNoteColor}" Classes="ColorInput"/>
+                                    <Border Grid.Row="2" Grid.Column="2" Classes="ColorPreview">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{Binding Settings.ThemeColors.DraggingNoteColor, Converter={StaticResource StringToColorConverter}}"/>
+                                        </Border.Background>
+                                    </Border>
+                                    
+                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="预览音符:" Classes="ColorLabel"/>
+                                    <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Settings.ThemeColors.PreviewNoteColor}" Classes="ColorInput"/>
+                                    <Border Grid.Row="3" Grid.Column="2" Classes="ColorPreview">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{Binding Settings.ThemeColors.PreviewNoteColor, Converter={StaticResource StringToColorConverter}}"/>
+                                        </Border.Background>
+                                    </Border>
+                                    
+                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="力度指示器:" Classes="ColorLabel"/>
+                                    <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Settings.ThemeColors.VelocityIndicatorColor}" Classes="ColorInput"/>
+                                    <Border Grid.Row="4" Grid.Column="2" Classes="ColorPreview">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{Binding Settings.ThemeColors.VelocityIndicatorColor, Converter={StaticResource StringToColorConverter}}"/>
+                                        </Border.Background>
+                                    </Border>
+                                </Grid>
+                            </StackPanel>
+                            
+                            <!-- 网格线颜色 -->
+                            <StackPanel>
+                                <TextBlock Text="网格线颜色" FontWeight="Medium" FontSize="16" Margin="0,0,0,10"/>
+                                
+                                <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto" Margin="10,0">
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="小节线:" Classes="ColorLabel"/>
+                                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Settings.ThemeColors.MeasureLineColor}" Classes="ColorInput"/>
+                                    <Border Grid.Row="0" Grid.Column="2" Classes="ColorPreview">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{Binding Settings.ThemeColors.MeasureLineColor, Converter={StaticResource StringToColorConverter}}"/>
+                                        </Border.Background>
+                                    </Border>
+                                    
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="拍线:" Classes="ColorLabel"/>
+                                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Settings.ThemeColors.BeatLineColor}" Classes="ColorInput"/>
+                                    <Border Grid.Row="1" Grid.Column="2" Classes="ColorPreview">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{Binding Settings.ThemeColors.BeatLineColor, Converter={StaticResource StringToColorConverter}}"/>
+                                        </Border.Background>
+                                    </Border>
+                                    
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="水平分界线:" Classes="ColorLabel"/>
+                                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Settings.ThemeColors.HorizontalLineColor}" Classes="ColorInput"/>
+                                    <Border Grid.Row="2" Grid.Column="2" Classes="ColorPreview">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{Binding Settings.ThemeColors.HorizontalLineColor, Converter={StaticResource StringToColorConverter}}"/>
+                                        </Border.Background>
+                                    </Border>
+                                    
+                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="八度分界线:" Classes="ColorLabel"/>
+                                    <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Settings.ThemeColors.OctaveLineColor}" Classes="ColorInput"/>
+                                    <Border Grid.Row="3" Grid.Column="2" Classes="ColorPreview">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{Binding Settings.ThemeColors.OctaveLineColor, Converter={StaticResource StringToColorConverter}}"/>
+                                        </Border.Background>
+                                    </Border>
+                                    
+                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="时间线:" Classes="ColorLabel"/>
+                                    <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Settings.ThemeColors.TimelineColor}" Classes="ColorInput"/>
+                                    <Border Grid.Row="4" Grid.Column="2" Classes="ColorPreview">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{Binding Settings.ThemeColors.TimelineColor, Converter={StaticResource StringToColorConverter}}"/>
+                                        </Border.Background>
+                                    </Border>
+                                </Grid>
+                            </StackPanel>
+                            
+                            <!-- 背景颜色 -->
+                            <StackPanel>
+                                <TextBlock Text="背景颜色" FontWeight="Medium" FontSize="16" Margin="0,0,0,10"/>
+                                
+                                <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto,Auto" Margin="10,0">
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="白键行:" Classes="ColorLabel"/>
+                                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Settings.ThemeColors.WhiteKeyRowColor}" Classes="ColorInput"/>
+                                    <Border Grid.Row="0" Grid.Column="2" Classes="ColorPreview">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{Binding Settings.ThemeColors.WhiteKeyRowColor, Converter={StaticResource StringToColorConverter}}"/>
+                                        </Border.Background>
+                                    </Border>
+                                    
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="黑键行:" Classes="ColorLabel"/>
+                                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Settings.ThemeColors.BlackKeyRowColor}" Classes="ColorInput"/>
+                                    <Border Grid.Row="1" Grid.Column="2" Classes="ColorPreview">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{Binding Settings.ThemeColors.BlackKeyRowColor, Converter={StaticResource StringToColorConverter}}"/>
+                                        </Border.Background>
+                                    </Border>
+                                    
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="画布背景:" Classes="ColorLabel"/>
+                                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Settings.ThemeColors.CanvasBackgroundColor}" Classes="ColorInput"/>
+                                    <Border Grid.Row="2" Grid.Column="2" Classes="ColorPreview">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{Binding Settings.ThemeColors.CanvasBackgroundColor, Converter={StaticResource StringToColorConverter}}"/>
+                                        </Border.Background>
+                                    </Border>
+                                    
+                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="钢琴卷帘背景:" Classes="ColorLabel"/>
+                                    <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Settings.ThemeColors.PianoRollBackgroundColor}" Classes="ColorInput"/>
+                                    <Border Grid.Row="3" Grid.Column="2" Classes="ColorPreview">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{Binding Settings.ThemeColors.PianoRollBackgroundColor, Converter={StaticResource StringToColorConverter}}"/>
+                                        </Border.Background>
+                                    </Border>
+                                </Grid>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+
                     <!-- 编辑器设置 -->
                     <StackPanel IsVisible="{Binding SelectedPageType, Converter={StaticResource ObjectEqualsConverter}, ConverterParameter={x:Static models:SettingsPageType.Editor}}">
                         <TextBlock Text="编辑器设置" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>

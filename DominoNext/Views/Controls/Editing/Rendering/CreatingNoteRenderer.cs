@@ -2,6 +2,7 @@ using System;
 using Avalonia;
 using Avalonia.Media;
 using DominoNext.ViewModels.Editor;
+using DominoNext.Services.Implementation;
 
 namespace DominoNext.Views.Controls.Editing.Rendering
 {
@@ -10,8 +11,12 @@ namespace DominoNext.Views.Controls.Editing.Rendering
     /// </summary>
     public class CreatingNoteRenderer
     {
-        private readonly Color _creatingNoteColor = Color.Parse("#8BC34A");
-        private readonly IPen _creatingNoteBorderPen = new Pen(new SolidColorBrush(Color.Parse("#689F38")), 2);
+        private readonly ThemeService _themeService;
+
+        public CreatingNoteRenderer()
+        {
+            _themeService = ThemeService.Instance;
+        }
 
         /// <summary>
         /// 渲染正在创建的音符
@@ -23,11 +28,10 @@ namespace DominoNext.Views.Controls.Editing.Rendering
             var creatingRect = calculateNoteRect(viewModel.CreatingNote);
             if (creatingRect.Width > 0 && creatingRect.Height > 0)
             {
-                // 使用专门的创建音符样式
-                var brush = new SolidColorBrush(_creatingNoteColor, 0.85);
-                context.DrawRectangle(brush, _creatingNoteBorderPen, creatingRect);
+                // 使用专用的创建音符样式
+                context.DrawRectangle(_themeService.CreatingNoteBrush, _themeService.CreatingNotePen, creatingRect);
 
-                // 显示当前长度信息
+                // 显示当前时长信息
                 if (creatingRect.Width > 30 && creatingRect.Height > 10)
                 {
                     var durationText = viewModel.CreatingNote.Duration.ToString();
@@ -54,7 +58,7 @@ namespace DominoNext.Views.Controls.Editing.Rendering
                 noteRect.X + (noteRect.Width - formattedText.Width) / 2,
                 noteRect.Y + (noteRect.Height - formattedText.Height) / 2);
 
-            // 绘制文本背景以提高可读性
+            // 绘制文本背景，提高可读性
             var textBounds = new Rect(
                 textPosition.X - 2,
                 textPosition.Y - 1,

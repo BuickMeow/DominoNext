@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Media;
 using DominoNext.ViewModels.Editor;
+using DominoNext.Services.Implementation;
 
 namespace DominoNext.Views.Controls.Editing.Rendering
 {
@@ -11,15 +12,15 @@ namespace DominoNext.Views.Controls.Editing.Rendering
     /// </summary>
     public class NoteRenderer
     {
-        private readonly Color _noteColor = Color.Parse("#4CAF50");
-        private readonly IPen _noteBorderPen = new Pen(new SolidColorBrush(Color.Parse("#2E7D32")), 2);
-        private readonly Color _selectedNoteColor = Color.Parse("#FF9800");
-        private readonly IPen _selectedNoteBorderPen = new Pen(new SolidColorBrush(Color.Parse("#F57C00")), 2);
-        private readonly Color _previewNoteColor = Color.Parse("#81C784");
-        private readonly IPen _previewNoteBorderPen = new Pen(new SolidColorBrush(Color.Parse("#66BB6A")), 2);
+        private readonly ThemeService _themeService;
+
+        public NoteRenderer()
+        {
+            _themeService = ThemeService.Instance;
+        }
 
         /// <summary>
-        /// 渲染所有音符
+        /// 渲染可见音符
         /// </summary>
         public void RenderNotes(DrawingContext context, PianoRollViewModel viewModel, Dictionary<NoteViewModel, Rect> visibleNoteCache)
         {
@@ -31,7 +32,7 @@ namespace DominoNext.Views.Controls.Editing.Rendering
 
                 if (rect.Width > 0 && rect.Height > 0)
                 {
-                    // 如果音符正在被拖拽或调整大小，使用较淡的颜色渲染原始位置
+                    // 检查音符是否正在被拖拽或调整大小，使用较低的透明度渲染原始位置
                     bool isBeingDragged = (viewModel.DragState.IsDragging && viewModel.DragState.DraggingNotes.Contains(note));
                     bool isBeingResized = (viewModel.ResizeState.IsResizing && viewModel.ResizeState.ResizingNotes.Contains(note));
                     bool isBeingManipulated = isBeingDragged || isBeingResized;
@@ -54,8 +55,7 @@ namespace DominoNext.Views.Controls.Editing.Rendering
             var previewRect = calculateNoteRect(viewModel.PreviewNote);
             if (previewRect.Width > 0 && previewRect.Height > 0)
             {
-                var brush = new SolidColorBrush(_previewNoteColor, 0.6);
-                context.DrawRectangle(brush, _previewNoteBorderPen, previewRect);
+                context.DrawRectangle(_themeService.PreviewNoteBrush, _themeService.PreviewNotePen, previewRect);
 
                 var durationText = viewModel.PreviewNote.Duration.ToString();
                 if (previewRect.Width > 30 && previewRect.Height > 10)
@@ -72,10 +72,10 @@ namespace DominoNext.Views.Controls.Editing.Rendering
         {
             var opacity = Math.Max(0.7, note.Velocity / 127.0);
             
-            // 正在操作的音符使用更高的透明度，保持清晰可见
+            // 操作中物体使用更高的透明度，让它们更加可见
             if (isBeingManipulated)
             {
-                opacity = Math.Min(1.0, opacity * 1.1); // 提高到接近不透明，保持视觉连续性
+                opacity = Math.Min(1.0, opacity * 1.1); // 提高操作中透明度，增强交互性
             }
 
             IBrush brush;
@@ -83,17 +83,17 @@ namespace DominoNext.Views.Controls.Editing.Rendering
 
             if (note.IsSelected)
             {
-                // 选中音符使用更鲜明的颜色
-                brush = new SolidColorBrush(_selectedNoteColor, opacity);
-                pen = _selectedNoteBorderPen;
+                // 选中音符使用高亮的橙色
+                brush = CreateBrushWithOpacity(_themeService.SelectedNoteBrush, opacity);
+                pen = _themeService.SelectedNotePen;
             }
             else
             {
-                brush = new SolidColorBrush(_noteColor, opacity);
-                pen = _noteBorderPen;
+                brush = CreateBrushWithOpacity(_themeService.NormalNoteBrush, opacity);
+                pen = _themeService.NormalNotePen;
             }
 
-            // 为拖拽中的音符添加轻微的阴影效果，增强视觉反馈
+            // 为拖拽中的音符添加微妙的阴影效果，增强视觉反馈
             if (isBeingManipulated)
             {
                 var shadowOffset = new Vector(1, 1);
@@ -103,6 +103,16 @@ namespace DominoNext.Views.Controls.Editing.Rendering
             }
 
             context.DrawRectangle(brush, pen, rect);
+        }
+
+        private IBrush CreateBrushWithOpacity(IBrush originalBrush, double opacity)
+        {
+            if (originalBrush is SolidColorBrush solidBrush)
+            {
+                var color = solidBrush.Color;
+                return new SolidColorBrush(color, opacity);
+            }
+            return originalBrush;
         }
 
         /// <summary>

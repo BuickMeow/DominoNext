@@ -1,5 +1,6 @@
 using DominoNext.Models.Settings;
 using DominoNext.Services.Interfaces;
+using DominoNext.Services.Implementation;
 using System;
 using System.ComponentModel;
 using System.Globalization;
@@ -32,6 +33,10 @@ namespace DominoNext.Services.Implementation
 
             Settings = new SettingsModel();
             Settings.PropertyChanged += OnSettingsPropertyChanged;
+            Settings.ThemeColors.PropertyChanged += OnThemeColorsPropertyChanged;
+            
+            // 初始化ThemeService
+            _ = new ThemeService(this);
         }
 
         private void OnSettingsPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -43,9 +48,31 @@ namespace DominoNext.Services.Implementation
                     PropertyName = e.PropertyName
                 });
 
+                // 如果是主题相关的变更，通知ThemeService
+                if (e.PropertyName == nameof(SettingsModel.Theme))
+                {
+                    ApplyThemeSettings();
+                    ThemeService.Instance.NotifyThemeChanged();
+                }
+
                 // 自动保存设置
                 _ = Task.Run(SaveSettingsAsync);
             }
+        }
+
+        private void OnThemeColorsPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            // 颜色设置变更时通知ThemeService
+            ThemeService.Instance.NotifyThemeChanged();
+            
+            // 触发设置变更事件
+            SettingsChanged?.Invoke(this, new SettingsChangedEventArgs
+            {
+                PropertyName = $"ThemeColors.{e.PropertyName}"
+            });
+            
+            // 自动保存设置
+            _ = Task.Run(SaveSettingsAsync);
         }
 
         public async Task LoadSettingsAsync()
@@ -142,6 +169,9 @@ namespace DominoNext.Services.Implementation
                 {
                     Application.Current.RequestedThemeVariant = Settings.Theme;
                 }
+                
+                // 应用主题颜色
+                Settings.ApplyThemeColors();
             }
             catch (Exception ex)
             {

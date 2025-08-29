@@ -10,6 +10,7 @@ namespace DominoNext.Models.Settings
         General,      // 常规设置
         Language,     // 语言设置
         Theme,        // 主题设置
+        Colors,       // 颜色设置
         Editor,       // 编辑器设置
         Shortcuts,    // 快捷键设置
         Advanced      // 高级设置

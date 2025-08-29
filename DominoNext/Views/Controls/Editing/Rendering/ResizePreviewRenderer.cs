@@ -2,6 +2,7 @@ using System;
 using Avalonia;
 using Avalonia.Media;
 using DominoNext.ViewModels.Editor;
+using DominoNext.Services.Implementation;
 
 namespace DominoNext.Views.Controls.Editing.Rendering
 {
@@ -10,8 +11,12 @@ namespace DominoNext.Views.Controls.Editing.Rendering
     /// </summary>
     public class ResizePreviewRenderer
     {
-        private readonly Color _resizePreviewColor = Color.Parse("#E91E63");
-        private readonly IPen _resizePreviewPen = new Pen(new SolidColorBrush(Color.Parse("#C2185B")), 2);
+        private readonly ThemeService _themeService;
+
+        public ResizePreviewRenderer()
+        {
+            _themeService = ThemeService.Instance;
+        }
 
         /// <summary>
         /// 渲染调整大小预览效果
@@ -26,11 +31,10 @@ namespace DominoNext.Views.Controls.Editing.Rendering
                 var noteRect = calculateNoteRect(note);
                 if (noteRect.Width > 0 && noteRect.Height > 0)
                 {
-                    // 使用粉色调整大小预览颜色，增加透明度以突出显示
-                    var brush = new SolidColorBrush(_resizePreviewColor, 0.8);
-                    context.DrawRectangle(brush, _resizePreviewPen, noteRect);
+                    // 使用拖拽音符的颜色来表示调整大小状态
+                    context.DrawRectangle(_themeService.DraggingNoteBrush, _themeService.DraggingNotePen, noteRect);
 
-                    // 显示当前长度信息，增大字体以便查看
+                    // 显示当前时长信息，方便用户查看
                     if (noteRect.Width > 25 && noteRect.Height > 8)
                     {
                         var durationText = note.Duration.ToString();
@@ -58,7 +62,7 @@ namespace DominoNext.Views.Controls.Editing.Rendering
                 noteRect.X + (noteRect.Width - formattedText.Width) / 2,
                 noteRect.Y + (noteRect.Height - formattedText.Height) / 2);
 
-            // 绘制文本背景以提高可读性
+            // 绘制文本背景，提高可读性
             var textBounds = new Rect(
                 textPosition.X - 2,
                 textPosition.Y - 1,

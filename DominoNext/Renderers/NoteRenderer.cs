@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Media;
 using DominoNext.ViewModels.Editor;
+using DominoNext.Services.Implementation;
 using System;
 using System.Collections.Generic;
 
@@ -8,42 +9,19 @@ namespace DominoNext.Renderers
 {
     public class NoteRenderer
     {
-        // 预创建样式缓存
-        private readonly Dictionary<NoteRenderType, (IBrush brush, IPen pen)> _styleCache = new();
+        private readonly ThemeService _themeService;
 
         public NoteRenderer()
         {
-            InitializeStyles();
+            _themeService = ThemeService.Instance;
+            
+            // 监听主题变更
+            _themeService.ThemeChanged += OnThemeChanged;
         }
 
-        private void InitializeStyles()
+        private void OnThemeChanged(object? sender, EventArgs e)
         {
-            // 普通音符
-            _styleCache[NoteRenderType.Normal] = (
-                new SolidColorBrush(Color.Parse("#4CAF50")),
-                new Pen(new SolidColorBrush(Color.Parse("#2E7D32")), 1)
-            );
-
-            // 选中音符
-            _styleCache[NoteRenderType.Selected] = (
-                new SolidColorBrush(Color.Parse("#FF9800")),
-                new Pen(new SolidColorBrush(Color.Parse("#F57C00")), 2)
-            );
-
-            // 拖拽中音符
-            _styleCache[NoteRenderType.Dragging] = (
-                new SolidColorBrush(Color.Parse("#2196F3")),
-                new Pen(new SolidColorBrush(Color.Parse("#1976D2")), 2)
-            );
-
-            // 预览音符
-            _styleCache[NoteRenderType.Preview] = (
-                new SolidColorBrush(Color.Parse("#4CAF50"), 0.5),
-                new Pen(new SolidColorBrush(Color.Parse("#2E7D32")), 1)
-                {
-                    DashStyle = new DashStyle(new double[] { 3, 3 }, 0)
-                }
-            );
+            // 主题变更时可以执行一些清理或重新初始化操作
         }
 
         public void DrawNote(DrawingContext context, NoteViewModel note, double zoom, double pixelsPerTick, double keyHeight, NoteRenderType renderType = NoteRenderType.Normal)
@@ -55,19 +33,40 @@ namespace DominoNext.Renderers
 
             var rect = new Rect(x, y, width, height);
 
-            if (_styleCache.TryGetValue(renderType, out var style))
+            var (brush, pen) = GetNoteStyle(renderType, note.Velocity);
+
+            context.DrawRectangle(brush, pen, rect);
+
+            // 选中音符显示力度指示器
+            if (renderType == NoteRenderType.Selected && width > 20)
             {
-                var opacity = CalculateOpacity(note.Velocity, renderType);
-                var brush = CreateBrushWithOpacity(style.brush, opacity);
-
-                context.DrawRectangle(brush, style.pen, rect);
-
-                // 选中音符显示力度指示器
-                if (renderType == NoteRenderType.Selected && width > 20)
-                {
-                    DrawVelocityIndicator(context, rect, note.Velocity);
-                }
+                DrawVelocityIndicator(context, rect, note.Velocity);
             }
+        }
+
+        private (IBrush brush, IPen pen) GetNoteStyle(NoteRenderType renderType, int velocity)
+        {
+            var opacity = CalculateOpacity(velocity, renderType);
+
+            return renderType switch
+            {
+                NoteRenderType.Selected => (
+                    CreateBrushWithOpacity(_themeService.SelectedNoteBrush, opacity),
+                    _themeService.SelectedNotePen
+                ),
+                NoteRenderType.Dragging => (
+                    CreateBrushWithOpacity(_themeService.DraggingNoteBrush, opacity),
+                    _themeService.DraggingNotePen
+                ),
+                NoteRenderType.Preview => (
+                    CreateBrushWithOpacity(_themeService.PreviewNoteBrush, opacity * 0.6),
+                    _themeService.PreviewNotePen
+                ),
+                _ => (
+                    CreateBrushWithOpacity(_themeService.NormalNoteBrush, opacity),
+                    _themeService.NormalNotePen
+                )
+            };
         }
 
         private double CalculateOpacity(int velocity, NoteRenderType renderType)
@@ -103,8 +102,7 @@ namespace DominoNext.Renderers
                 indicatorHeight
             );
 
-            var velocityBrush = new SolidColorBrush(Color.Parse("#FFC107"));
-            context.DrawRectangle(velocityBrush, null, indicatorRect);
+            context.DrawRectangle(_themeService.VelocityIndicatorBrush, null, indicatorRect);
         }
     }
 

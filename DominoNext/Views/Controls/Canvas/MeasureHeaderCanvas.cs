@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Media;
 using DominoNext.ViewModels.Editor;
+using DominoNext.Services.Implementation;
 using System;
 using System.Globalization;
 
@@ -18,8 +19,19 @@ namespace DominoNext.Views.Controls.Canvas
             set => SetValue(ViewModelProperty, value);
         }
 
-        // 使用默认字体系列
+        private readonly ThemeService _themeService;
         private readonly Typeface _typeface = new Typeface(FontFamily.Default);
+
+        public MeasureHeaderCanvas()
+        {
+            _themeService = ThemeService.Instance;
+            _themeService.ThemeChanged += OnThemeChanged;
+        }
+
+        private void OnThemeChanged(object? sender, EventArgs e)
+        {
+            InvalidateVisual();
+        }
 
         static MeasureHeaderCanvas()
         {
@@ -54,7 +66,7 @@ namespace DominoNext.Views.Controls.Canvas
             var bounds = Bounds;
 
             // 绘制背景
-            context.DrawRectangle(new SolidColorBrush(Color.Parse("#F5F5F5")), null, bounds);
+            context.DrawRectangle(_themeService.HeaderBackgroundBrush, null, bounds);
 
             var measureWidth = ViewModel.MeasureWidth;
             var startMeasure = Math.Max(1, (int)(0 / measureWidth) + 1);
@@ -80,14 +92,13 @@ namespace DominoNext.Views.Controls.Canvas
                     // 绘制小节线
                     if (measure > 1)
                     {
-                        var measureLinePen = new Pen(new SolidColorBrush(Color.Parse("#000080")), 1);
-                        context.DrawLine(measureLinePen, new Point(x, 0), new Point(x, bounds.Height));
+                        context.DrawLine(_themeService.MeasureLinePen, new Point(x, 0), new Point(x, bounds.Height));
                     }
                 }
             }
 
             // 绘制底部分隔线
-            context.DrawLine(new Pen(new SolidColorBrush(Color.Parse("#CCCCCC")), 1),
+            context.DrawLine(_themeService.BorderLinePen,
                 new Point(0, bounds.Height - 1),
                 new Point(bounds.Width, bounds.Height - 1));
         }
