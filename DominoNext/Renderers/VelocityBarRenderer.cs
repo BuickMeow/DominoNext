@@ -81,14 +81,39 @@ namespace DominoNext.Renderers
             var previewBrush = GetResourceBrush("VelocityEditingPreviewBrush", "#80FF5722");
             var previewPen = new Pen(previewBrush, 2, new DashStyle(new double[] { 3, 3 }, 0));
 
-            // 绘制编辑路径
+            // 绘制连续的编辑路径
             var points = editingModule.EditingPath.Select(p => new Point(p.X, p.Y)).ToArray();
             if (points.Length > 1)
             {
-                for (int i = 0; i < points.Length - 1; i++)
+                // 使用几何路径来绘制更平滑的线条
+                var geometry = new StreamGeometry();
+                using (var ctx = geometry.Open())
                 {
-                    context.DrawLine(previewPen, points[i], points[i + 1]);
+                    ctx.BeginFigure(points[0], false);
+                    
+                    // 如果点很多，使用贝塞尔曲线平滑
+                    if (points.Length > 3)
+                    {
+                        for (int i = 1; i < points.Length - 2; i += 2)
+                        {
+                            var controlPoint1 = points[i];
+                            var controlPoint2 = i + 1 < points.Length ? points[i + 1] : points[i];
+                            var endPoint = i + 2 < points.Length ? points[i + 2] : points[^1];
+                            
+                            ctx.CubicBezierTo(controlPoint1, controlPoint2, endPoint);
+                        }
+                    }
+                    else
+                    {
+                        // 点较少时直接连线
+                        for (int i = 1; i < points.Length; i++)
+                        {
+                            ctx.LineTo(points[i]);
+                        }
+                    }
                 }
+                
+                context.DrawGeometry(null, previewPen, geometry);
             }
 
             // 绘制当前编辑位置的力度条预览
@@ -98,12 +123,30 @@ namespace DominoNext.Renderers
                 var velocity = CalculateVelocityFromY(pos.Y, canvasBounds.Height);
                 
                 var previewHeight = CalculateBarHeight(velocity, canvasBounds.Height);
-                var previewRect = new Rect(pos.X - 5, canvasBounds.Height - previewHeight, 10, previewHeight);
+                var previewRect = new Rect(pos.X - 8, canvasBounds.Height - previewHeight, 16, previewHeight);
                 
-                context.DrawRectangle(previewBrush, previewPen, previewRect);
+                // 使用稍微透明的背景
+                var previewBarBrush = CreateBrushWithOpacity(previewBrush, 0.7);
+                context.DrawRectangle(previewBarBrush, previewPen, previewRect);
                 
                 // 显示当前力度值
                 DrawVelocityValue(context, previewRect, velocity, true);
+            }
+
+            // 在路径的关键点绘制小圆点，显示实际的采样点
+            if (points.Length > 0)
+            {
+                var dotBrush = CreateBrushWithOpacity(previewBrush, 0.8);
+                var dotSize = 3.0;
+                
+                // 只绘制部分点以避免过于密集
+                var step = Math.Max(1, points.Length / 20); // 最多显示20个点
+                for (int i = 0; i < points.Length; i += step)
+                {
+                    var point = points[i];
+                    var dotRect = new Rect(point.X - dotSize/2, point.Y - dotSize/2, dotSize, dotSize);
+                    context.DrawEllipse(dotBrush, null, dotRect);
+                }
             }
         }
 
@@ -150,8 +193,6 @@ namespace DominoNext.Renderers
             // 从Y坐标反推力度值 - 公开此方法供其他类使用
             var normalizedY = Math.Max(0, Math.Min(1, (maxHeight - y) / maxHeight));
             var velocity = Math.Max(1, Math.Min(127, (int)Math.Round(normalizedY * 127)));
-            
-            System.Diagnostics.Debug.WriteLine($"CalculateVelocityFromY: y={y}, maxHeight={maxHeight}, normalizedY={normalizedY}, velocity={velocity}");
             
             return velocity;
         }

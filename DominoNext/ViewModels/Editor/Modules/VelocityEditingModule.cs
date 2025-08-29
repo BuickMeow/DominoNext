@@ -40,7 +40,6 @@ namespace DominoNext.ViewModels.Editor.Modules
         public void SetCanvasHeight(double height)
         {
             _canvasHeight = height;
-            System.Diagnostics.Debug.WriteLine($"Canvas height set to: {height}");
         }
 
         #region 公开属性
@@ -61,8 +60,6 @@ namespace DominoNext.ViewModels.Editor.Modules
         {
             if (_pianoRollViewModel == null) return;
 
-            System.Diagnostics.Debug.WriteLine($"StartEditing called with position: {position}, tool: {_pianoRollViewModel.CurrentTool}");
-
             _state.StartEditing(position);
             _processedNotes.Clear(); // 清空已处理音符记录
 
@@ -70,19 +67,13 @@ namespace DominoNext.ViewModels.Editor.Modules
             switch (_pianoRollViewModel.CurrentTool)
             {
                 case EditorTool.Select:
-                    System.Diagnostics.Debug.WriteLine("Using Select tool mode");
                     // 选择工具：编辑选中的音符
                     StartSelectModeEditing(position);
                     break;
                     
                 case EditorTool.Pencil:
-                    System.Diagnostics.Debug.WriteLine("Using Pencil tool mode");
                     // 铅笔工具：手绘模式编辑
                     StartPencilModeEditing(position);
-                    break;
-                    
-                default:
-                    System.Diagnostics.Debug.WriteLine($"Unsupported tool: {_pianoRollViewModel.CurrentTool}");
                     break;
             }
 
@@ -192,13 +183,11 @@ namespace DominoNext.ViewModels.Editor.Modules
 
         #endregion
 
-        #region 铅笔工具模式 - 绝对值模式（简化版）
+        #region 铅笔工具模式 - 绝对值模式（优化版）
 
         private void StartPencilModeEditing(Point position)
         {
             if (_pianoRollViewModel == null) return;
-
-            System.Diagnostics.Debug.WriteLine($"Starting pencil mode editing at {position}");
             
             // 清空已处理音符记录
             _processedNotes.Clear();
@@ -212,10 +201,58 @@ namespace DominoNext.ViewModels.Editor.Modules
         {
             if (_pianoRollViewModel == null) return;
 
+            // 获取上一个位置
+            Point? lastPosition = null;
+            if (_state.EditingPath.Count > 0)
+            {
+                lastPosition = _state.EditingPath[^1];
+            }
+
             _state.AddToPath(position);
 
-            // 铅笔模式：处理当前位置的音符
-            ProcessNotesAtPositionSimple(position);
+            // 如果有上一个位置，进行插值处理
+            if (lastPosition.HasValue)
+            {
+                ProcessPathBetweenPoints(lastPosition.Value, position);
+            }
+            else
+            {
+                // 如果没有上一个位置，直接处理当前位置
+                ProcessNotesAtPositionSimple(position);
+            }
+        }
+
+        /// <summary>
+        /// 在两个点之间进行插值处理，确保轨迹连续
+        /// </summary>
+        private void ProcessPathBetweenPoints(Point startPoint, Point endPoint)
+        {
+            // 计算两点之间的距离
+            var deltaX = endPoint.X - startPoint.X;
+            var deltaY = endPoint.Y - startPoint.Y;
+            var distance = Math.Sqrt(deltaX * deltaX + deltaY * deltaY);
+
+            // 如果距离很小，直接处理终点
+            if (distance < 2.0)
+            {
+                ProcessNotesAtPositionSimple(endPoint);
+                return;
+            }
+
+            // 根据距离确定插值步数（每2像素一个点）
+            var steps = Math.Max(1, (int)Math.Ceiling(distance / 2.0));
+            
+            // 进行插值
+            for (int i = 0; i <= steps; i++)
+            {
+                var t = (double)i / steps;
+                var interpolatedPoint = new Point(
+                    startPoint.X + deltaX * t,
+                    startPoint.Y + deltaY * t
+                );
+
+                ProcessNotesAtPositionSimple(interpolatedPoint);
+            }
         }
 
         /// <summary>
@@ -229,8 +266,6 @@ namespace DominoNext.ViewModels.Editor.Modules
             var velocity = CalculateVelocityFromY(position.Y);
             var timeInTicks = _pianoRollViewModel.GetTimeFromX(position.X);
             
-            System.Diagnostics.Debug.WriteLine($"Processing position {position}, velocity: {velocity}, time: {timeInTicks}");
-
             // 查找在当前时间位置附近的所有音符
             foreach (var note in _pianoRollViewModel.Notes)
             {
@@ -246,11 +281,12 @@ namespace DominoNext.ViewModels.Editor.Modules
                     
                     if (timeInTicks <= noteStartTime + startThreshold)
                     {
-                        // 检查是否已经处理过这个音符
-                        if (!_processedNotes.Contains(note))
+                        // 创建音符的唯一标识符（基于时间和音高）
+                        var noteId = $"{noteStartTime}_{note.Pitch}";
+                        
+                        // 检查是否已经处理过这个音符（使用更精确的标识）
+                        if (!_processedNotes.Any(n => $"{n.StartPosition.ToTicks(_pianoRollViewModel.TicksPerBeat)}_{n.Pitch}" == noteId))
                         {
-                            System.Diagnostics.Debug.WriteLine($"Updating note velocity from {note.Velocity} to {velocity}");
-                            
                             // 保存原始力度（如果还没保存的话）
                             if (_state.EditingNotes?.Contains(note) != true)
                             {

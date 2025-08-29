@@ -238,13 +238,10 @@ namespace DominoNext.Views.Controls.Canvas
             var position = e.GetPosition(this);
             var properties = e.GetCurrentPoint(this).Properties;
 
-            System.Diagnostics.Debug.WriteLine($"VelocityView PointerPressed at: {position}, Tool: {ViewModel.CurrentTool}");
-
             if (properties.IsLeftButtonPressed)
             {
                 ViewModel.VelocityEditingModule.StartEditing(position);
                 e.Handled = true;
-                System.Diagnostics.Debug.WriteLine($"Started velocity editing");
             }
 
             base.OnPointerPressed(e);
@@ -256,11 +253,16 @@ namespace DominoNext.Views.Controls.Canvas
 
             var position = e.GetPosition(this);
             
-            // 只在正在编辑时输出
+            // 只在正在编辑时处理移动事件
             if (ViewModel.VelocityEditingModule.IsEditingVelocity)
             {
-                System.Diagnostics.Debug.WriteLine($"VelocityView PointerMoved at: {position}");
-                ViewModel.VelocityEditingModule.UpdateEditing(position);
+                // 限制位置在画布范围内
+                var clampedPosition = new Point(
+                    Math.Max(0, Math.Min(Bounds.Width, position.X)),
+                    Math.Max(0, Math.Min(Bounds.Height, position.Y))
+                );
+                
+                ViewModel.VelocityEditingModule.UpdateEditing(clampedPosition);
             }
 
             base.OnPointerMoved(e);
@@ -269,8 +271,7 @@ namespace DominoNext.Views.Controls.Canvas
         protected override void OnPointerReleased(PointerReleasedEventArgs e)
         {
             if (ViewModel?.VelocityEditingModule == null) return;
-
-            System.Diagnostics.Debug.WriteLine($"VelocityView PointerReleased");
+            
             ViewModel.VelocityEditingModule.EndEditing();
             e.Handled = true;
 
