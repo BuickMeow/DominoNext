@@ -18,8 +18,8 @@ namespace DominoNext.Views.Controls.Canvas
             set => SetValue(ViewModelProperty, value);
         }
 
-        // 使用默认字体系列
-        private readonly Typeface _typeface = new Typeface(FontFamily.Default);
+        // 使用微软雅黑字体系列（更适合中文界面）
+        private readonly Typeface _typeface = new Typeface(new FontFamily("Microsoft YaHei"));
 
         static MeasureHeaderCanvas()
         {

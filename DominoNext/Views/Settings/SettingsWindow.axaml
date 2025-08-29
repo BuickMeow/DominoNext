@@ -14,7 +14,8 @@
         MinWidth="800" MinHeight="600"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False"
-        Icon="/Assets/avalonia-logo.ico">
+        Icon="/Assets/avalonia-logo.ico"
+        FontFamily="Microsoft YaHei">
 
 	<Window.Resources>
 		<converters:ObjectEqualsConverter x:Key="ObjectEqualsConverter"/>
@@ -104,13 +105,15 @@
 								<TextBlock Text="自动保存" FontWeight="Medium" Margin="0,0,0,8"/>
 								<CheckBox Content="启用自动保存" IsChecked="{Binding Settings.AutoSave}"/>
 
+								<!-- 优化横向排列控件的对齐方式 -->
 								<StackPanel Orientation="Horizontal"
                                             Margin="0,8,0,0"
                                             IsVisible="{Binding Settings.AutoSave}">
 									<TextBlock Text="保存间隔:" VerticalAlignment="Center" Margin="0,0,8,0"/>
 									<NumericUpDown Value="{Binding Settings.AutoSaveInterval}"
                                                    Minimum="1" Maximum="60"
-                                                   Width="80"/>
+                                                   Width="80"
+                                                   VerticalAlignment="Center"/>
 									<TextBlock Text="分钟" VerticalAlignment="Center" Margin="8,0,0,0"/>
 								</StackPanel>
 							</StackPanel>
@@ -170,12 +173,13 @@
                                                      IsChecked="{Binding Key, Converter={StaticResource ObjectEqualsConverter}, ConverterParameter={Binding $parent[ItemsControl].DataContext.Settings.Theme.Key}}"
                                                      Command="{Binding $parent[ItemsControl].DataContext.ApplyThemeCommand}"
                                                      CommandParameter="{Binding Key}"
-                                                     Margin="0,8">
+                                                     Margin="0,8" VerticalAlignment="Center">
 											<StackPanel>
-												<TextBlock Text="{Binding Name}" FontWeight="Medium"/>
+												<TextBlock Text="{Binding Name}" FontWeight="Medium" VerticalAlignment="Center"/>
 												<TextBlock Text="{Binding Description}"
                                                            FontSize="12"
-                                                           Opacity="0.7"/>
+                                                           Opacity="0.7"
+                                                           VerticalAlignment="Center"/>
 											</StackPanel>
 										</RadioButton>
 									</DataTemplate>
@@ -235,6 +239,7 @@
 								<Button Content="重置所有快捷键" Command="{Binding ResetAllShortcutsCommand}"/>
 							</StackPanel>
 
+							<!-- 高度适应内容 -->
 							<controls:DataGrid ItemsSource="{Binding ShortcutSettings}"
                                       AutoGenerateColumns="False"
                                       CanUserReorderColumns="False"
@@ -242,7 +247,8 @@
                                       CanUserSortColumns="True"
                                       GridLinesVisibility="Horizontal"
                                       HeadersVisibility="Column"
-                                      Height="300">
+                                      MinHeight="300"
+                                      VerticalAlignment="Stretch">
 								<controls:DataGrid.Columns>
 									<controls:DataGridTextColumn Header="类别" Binding="{Binding Category}" Width="80" IsReadOnly="True"/>
 									<controls:DataGridTextColumn Header="命令" Binding="{Binding Description}" Width="150" IsReadOnly="True"/>
@@ -251,10 +257,12 @@
 									<controls:DataGridTemplateColumn Header="操作" Width="80">
 										<controls:DataGridTemplateColumn.CellTemplate>
 											<DataTemplate>
+												<!-- 快捷键设置DataGrid操作列按钮 -->
 												<Button Content="重置"
                                                         Command="{Binding $parent[controls:DataGrid].DataContext.ResetShortcutCommand}"
                                                         CommandParameter="{Binding}"
-                                                        HorizontalAlignment="Center"/>
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"/>
 											</DataTemplate>
 										</controls:DataGridTemplateColumn.CellTemplate>
 									</controls:DataGridTemplateColumn>
@@ -304,19 +312,20 @@
 			<StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right"
                         Spacing="10">
+				<!-- 底部按钮区域优化 -->
 				<TextBlock Text="有未保存的更改"
                            VerticalAlignment="Center"
                            FontStyle="Italic"
                            Foreground="Orange"
                            IsVisible="{Binding HasUnsavedChanges}"/>
-
 				<Button Content="保存"
                         Command="{Binding SaveSettingsCommand}"
-                        IsEnabled="{Binding HasUnsavedChanges}"/>
-
+                        IsEnabled="{Binding HasUnsavedChanges}"
+                        VerticalAlignment="Center"/>
 				<Button Content="关闭"
                         IsDefault="True"
-                        Name="CloseButton"/>
+                        Name="CloseButton"
+                        VerticalAlignment="Center"/>
 			</StackPanel>
 		</Border>
 	</Grid>

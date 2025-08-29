@@ -45,7 +45,8 @@ namespace DominoNext.Views.Controls.Editing.Rendering
         /// </summary>
         private void DrawNoteText(DrawingContext context, string text, Rect noteRect, double fontSize)
         {
-            var typeface = new Typeface(FontFamily.Default);
+            // 使用微软雅黑字体系列（更适合中文界面）
+            var typeface = new Typeface(new FontFamily("Microsoft YaHei"));
             var formattedText = new FormattedText(
                 text,
                 System.Globalization.CultureInfo.CurrentCulture,
