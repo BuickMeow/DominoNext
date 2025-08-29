@@ -1,6 +1,8 @@
 using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
+using System.Text.Json;
 using Avalonia.Styling;
 using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -11,6 +13,8 @@ namespace DominoNext.Models.Settings
     /// </summary>
     public partial class SettingsModel : ObservableObject
     {
+        private static readonly string ConfigFileName = "appsettings.json";
+
         [ObservableProperty]
         private string _language = "zh-CN";
 
@@ -89,7 +93,86 @@ namespace DominoNext.Models.Settings
         /// </summary>
         public void LoadFromFile()
         {
-            // TODO: 实现从文件加载设置
+            try
+            {
+                string configPath = GetConfigFilePath();
+                if (File.Exists(configPath))
+                {
+                    string json = File.ReadAllText(configPath);
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    var loadedSettings = JsonSerializer.Deserialize<SettingsModel>(json, options);
+                    if (loadedSettings != null)
+                    {
+                        // 手动赋值避免触发属性变更通知
+                        _language = loadedSettings.Language;
+                        _theme = loadedSettings.Theme;
+                        _autoSave = loadedSettings.AutoSave;
+                        _autoSaveInterval = loadedSettings.AutoSaveInterval;
+                        _showGridLines = loadedSettings.ShowGridLines;
+                        _snapToGrid = loadedSettings.SnapToGrid;
+                        _defaultZoom = loadedSettings.DefaultZoom;
+                        _useNativeMenuBar = loadedSettings.UseNativeMenuBar;
+                        _maxUndoSteps = loadedSettings.MaxUndoSteps;
+                        _confirmBeforeDelete = loadedSettings.ConfirmBeforeDelete;
+                        _showVelocityBars = loadedSettings.ShowVelocityBars;
+                        _pianoKeyWidth = loadedSettings.PianoKeyWidth;
+                        _enableKeyboardShortcuts = loadedSettings.EnableKeyboardShortcuts;
+                        _customShortcutsJson = loadedSettings.CustomShortcutsJson;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // 如果加载失败，使用默认设置
+                System.Diagnostics.Debug.WriteLine($"加载配置文件失败: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// 从指定路径加载设置
+        /// </summary>
+        public void LoadFromFile(string filePath)
+        {
+            try
+            {
+                if (File.Exists(filePath))
+                {
+                    string json = File.ReadAllText(filePath);
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    var loadedSettings = JsonSerializer.Deserialize<SettingsModel>(json, options);
+                    if (loadedSettings != null)
+                    {
+                        // 手动赋值避免触发属性变更通知
+                        _language = loadedSettings.Language;
+                        _theme = loadedSettings.Theme;
+                        _autoSave = loadedSettings.AutoSave;
+                        _autoSaveInterval = loadedSettings.AutoSaveInterval;
+                        _showGridLines = loadedSettings.ShowGridLines;
+                        _snapToGrid = loadedSettings.SnapToGrid;
+                        _defaultZoom = loadedSettings.DefaultZoom;
+                        _useNativeMenuBar = loadedSettings.UseNativeMenuBar;
+                        _maxUndoSteps = loadedSettings.MaxUndoSteps;
+                        _confirmBeforeDelete = loadedSettings.ConfirmBeforeDelete;
+                        _showVelocityBars = loadedSettings.ShowVelocityBars;
+                        _pianoKeyWidth = loadedSettings.PianoKeyWidth;
+                        _enableKeyboardShortcuts = loadedSettings.EnableKeyboardShortcuts;
+                        _customShortcutsJson = loadedSettings.CustomShortcutsJson;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // 如果加载失败，使用默认设置
+                System.Diagnostics.Debug.WriteLine($"加载配置文件失败: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -97,7 +180,60 @@ namespace DominoNext.Models.Settings
         /// </summary>
         public void SaveToFile()
         {
-            // TODO: 实现保存设置到文件
+            try
+            {
+                string configPath = GetConfigFilePath();
+                var options = new JsonSerializerOptions
+                {
+                    WriteIndented = true
+                };
+
+                string json = JsonSerializer.Serialize(this, options);
+                File.WriteAllText(configPath, json);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"保存配置文件失败: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// 保存设置到指定路径
+        /// </summary>
+        public void SaveToFile(string filePath)
+        {
+            try
+            {
+                var options = new JsonSerializerOptions
+                {
+                    WriteIndented = true
+                };
+
+                string json = JsonSerializer.Serialize(this, options);
+                File.WriteAllText(filePath, json);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"保存配置文件失败: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// 获取配置文件路径
+        /// </summary>
+        /// <returns>配置文件完整路径</returns>
+        private string GetConfigFilePath()
+        {
+            string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string appFolder = Path.Combine(appDataPath, "DominoNext");
+
+            // 确保目录存在
+            if (!Directory.Exists(appFolder))
+            {
+                Directory.CreateDirectory(appFolder);
+            }
+
+            return Path.Combine(appFolder, ConfigFileName);
         }
 
         /// <summary>
