@@ -39,6 +39,7 @@ namespace DominoNext.ViewModels.Editor
         public NoteCreationModule CreationModule { get; }
         public NoteSelectionModule SelectionModule { get; }
         public NotePreviewModule PreviewModule { get; }
+        public VelocityEditingModule VelocityEditingModule { get; }
         #endregion
 
         #region 状态管理
@@ -297,15 +298,31 @@ namespace DominoNext.ViewModels.Editor
             ResizeModule = new NoteResizeModule(ResizeState, _coordinateService);
             CreationModule = new NoteCreationModule(_coordinateService);
             SelectionModule = new NoteSelectionModule(SelectionState, _coordinateService);
+<<<<<<< HEAD
             PreviewModule = new NotePreviewModule(_coordinateService); // 修复：传递_coordinateService参数
             
             // 设置模块间引用
+=======
+            PreviewModule = new NotePreviewModule(_coordinateService);
+            VelocityEditingModule = new VelocityEditingModule(_coordinateService);
+
+            // 设置模块引用
+>>>>>>> 3e4bb8e91d0e58cf2349304d29317c7768f77c68
             DragModule.SetPianoRollViewModel(this);
             ResizeModule.SetPianoRollViewModel(this);
             CreationModule.SetPianoRollViewModel(this);
             SelectionModule.SetPianoRollViewModel(this);
             PreviewModule.SetPianoRollViewModel(this);
+<<<<<<< HEAD
             
+=======
+            VelocityEditingModule.SetPianoRollViewModel(this);
+
+            // 简化初始化命令
+            _editorCommands = new EditorCommandsViewModel(_coordinateService);
+            _editorCommands.SetPianoRollViewModel(this);
+
+>>>>>>> 3e4bb8e91d0e58cf2349304d29317c7768f77c68
             // 订阅模块事件
             DragModule.OnDragStarted += () => { OnPropertyChanged(nameof(IsDragging)); };
             DragModule.OnDragEnded += () => { OnPropertyChanged(nameof(IsDragging)); };
@@ -327,6 +344,58 @@ namespace DominoNext.ViewModels.Editor
             
             // 初始化选项
             InitializeNoteDurationOptions();
+<<<<<<< HEAD
+=======
+        }
+        #endregion
+
+        #region 模块事件订阅
+        private void SubscribeToModuleEvents()
+        {
+            // 拖拽模块事件（避免nameof冲突）
+            DragModule.OnDragUpdated += InvalidateVisual;
+            DragModule.OnDragEnded += InvalidateVisual;
+
+            ResizeModule.OnResizeUpdated += InvalidateVisual;
+            ResizeModule.OnResizeEnded += InvalidateVisual;
+
+            CreationModule.OnCreationUpdated += InvalidateVisual;
+            CreationModule.OnCreationCompleted += OnNoteCreated; // 订阅音符创建完成事件
+
+            // 选择模块事件
+            SelectionModule.OnSelectionUpdated += InvalidateVisual;
+
+            // 力度编辑模块事件
+            VelocityEditingModule.OnVelocityUpdated += InvalidateVisual;
+
+            // 订阅选择状态变更事件
+            SelectionState.PropertyChanged += (sender, e) =>
+            {
+                if (e.PropertyName == nameof(SelectionState.SelectionStart) ||
+                    e.PropertyName == nameof(SelectionState.SelectionEnd) ||
+                    e.PropertyName == nameof(SelectionState.IsSelecting))
+                {
+                    // 当选择框状态变化时，通知UI更新
+                    OnPropertyChanged(nameof(SelectionStart));
+                    OnPropertyChanged(nameof(SelectionEnd));
+                    OnPropertyChanged(nameof(IsSelecting));
+                    InvalidateVisual();
+                }
+            };
+        }
+
+        private void InvalidateVisual()
+        {
+            // 触发UI更新的方法，由View层实现
+        }
+
+        /// <summary>
+        /// 音符创建完成后，同步更新用户定义的音符时值
+        /// </summary>
+        private void OnNoteCreated()
+        {
+            InvalidateVisual();
+>>>>>>> 3e4bb8e91d0e58cf2349304d29317c7768f77c68
             
             // 初始化命令
             InitializeCommands();
@@ -415,6 +484,7 @@ namespace DominoNext.ViewModels.Editor
             CreationModule.CancelCreating();
             SelectionModule.ClearSelection(Notes);
             PreviewModule.ClearPreview();
+            VelocityEditingModule.EndEditing();
             Notes.Clear();
         }
         #endregion

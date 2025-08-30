@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
@@ -13,6 +12,7 @@ namespace DominoNext.Views.Settings
         public SettingsWindow()
         {
             InitializeComponent();
+<<<<<<< HEAD
             Loaded += SettingsWindow_Loaded;
 
             // ×¢ï¿½á°´Å¥ï¿½Â¼ï¿½
@@ -131,6 +131,8 @@ namespace DominoNext.Views.Settings
             }
 
             base.OnClosing(e);
+=======
+>>>>>>> 3e4bb8e91d0e58cf2349304d29317c7768f77c68
         }
 
         // ï¿½ï¿½ï¿½Ó´ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÃµÄ°ï¿½Å¥ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
@@ -158,18 +160,27 @@ namespace DominoNext.Views.Settings
                             // Ê¹ï¿½ï¿½SettingsModelï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½Ø·ï¿½ï¿½ï¿½
                             viewModel.Settings.LoadFromFile(filePath);
 
+<<<<<<< HEAD
                             // Ó¦ï¿½Ã¼ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½
                             ApplyLoadedSettings(viewModel);
 
                             // ï¿½ï¿½ï¿½ï¿½ï¿½Ð¸ï¿½ï¿½ï¿½
                             viewModel.HasUnsavedChanges = true;
+=======
+                            // ÖØÐÂ¼ì²âµ±Ç°Ö÷Ìâ
+                            viewModel.UpdateCurrentSelections();
+>>>>>>> 3e4bb8e91d0e58cf2349304d29317c7768f77c68
                         }
                     }
                 }
                 catch (Exception ex)
                 {
+<<<<<<< HEAD
                     System.Diagnostics.Debug.WriteLine($"ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½: {ex.Message}");
                     // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½Ã»ï¿½
+=======
+                    System.Diagnostics.Debug.WriteLine($"´ÓÎÄ¼þ¼ÓÔØÉèÖÃÊ§°Ü: {ex.Message}");
+>>>>>>> 3e4bb8e91d0e58cf2349304d29317c7768f77c68
                 }
             }
         }
@@ -203,12 +214,17 @@ namespace DominoNext.Views.Settings
                 }
                 catch (Exception ex)
                 {
+<<<<<<< HEAD
                     System.Diagnostics.Debug.WriteLine($"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½ï¿½Ä¼ï¿½Ê§ï¿½ï¿½: {ex.Message}");
                     // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½Ã»ï¿½
+=======
+                    System.Diagnostics.Debug.WriteLine($"±£´æÉèÖÃµ½ÎÄ¼þÊ§°Ü: {ex.Message}");
+>>>>>>> 3e4bb8e91d0e58cf2349304d29317c7768f77c68
                 }
             }
         }
     }
+<<<<<<< HEAD
 
     /// <summary>
     /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¶Ô»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¶ï¿½ï¿½
@@ -219,4 +235,6 @@ namespace DominoNext.Views.Settings
         DontSave,
         Cancel
     }
+=======
+>>>>>>> 3e4bb8e91d0e58cf2349304d29317c7768f77c68
 }

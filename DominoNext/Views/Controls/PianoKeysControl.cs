@@ -20,10 +20,35 @@ namespace DominoNext.Views.Controls
 
         private const double PianoKeyWidth = 60;
 
-        // 钢琴键相关画刷
-        private readonly IBrush _blackKeyBrush = new SolidColorBrush(Color.Parse("#1F1F1F"));
-        private readonly IBrush _whiteKeyBrush = new SolidColorBrush(Color.Parse("#FFFFFF"));
-        private readonly IBrush _keyAreaBrush = new SolidColorBrush(Color.Parse("#FFFFFF"));
+        // 画刷将从应用资源获取，若不存在则使用默认颜色
+        private IBrush GetResourceBrush(string key, string fallbackHex)
+        {
+            try
+            {
+                if (Application.Current?.Resources.TryGetResource(key, null, out var obj) == true && obj is IBrush b)
+                    return b;
+            }
+            catch { }
+
+            try
+            {
+                return new SolidColorBrush(Color.Parse(fallbackHex));
+            }
+            catch
+            {
+                return Brushes.Transparent;
+            }
+        }
+
+        private IPen GetResourcePen(string brushKey, string fallbackHex, double thickness = 1)
+        {
+            var brush = GetResourceBrush(brushKey, fallbackHex);
+            return new Pen(brush, thickness);
+        }
+
+        private IBrush BlackKeyBrush => GetResourceBrush("KeyBlackBrush", "#FF1F1F1F");
+        private IBrush WhiteKeyBrush => GetResourceBrush("KeyWhiteBrush", "#FFFFFFFF");
+        private IBrush KeyAreaBrush => GetResourceBrush("AppBackgroundBrush", "#FFFFFFFF");
 
         // 使用默认字体系列
         private readonly Typeface _typeface = new Typeface(FontFamily.Default);
@@ -66,7 +91,7 @@ namespace DominoNext.Views.Controls
 
             // 绘制钢琴键区域背景
             var keyAreaRect = new Rect(0, 0, PianoKeyWidth, Math.Min(bounds.Height, totalKeyHeight));
-            context.DrawRectangle(_keyAreaBrush, null, keyAreaRect);
+            context.DrawRectangle(KeyAreaBrush, null, keyAreaRect);
 
             // 绘制所有128个键
             for (int i = 0; i < 128; i++)
@@ -80,19 +105,23 @@ namespace DominoNext.Views.Controls
                 {
                     var keyRect = new Rect(0, y, PianoKeyWidth, keyHeight);
 
-                    // 绘制键盘
-                    context.DrawRectangle(isBlackKey ? _blackKeyBrush : _whiteKeyBrush,
-                                        new Pen(new SolidColorBrush(Color.Parse("#1F1F1F")), 1), keyRect);
+                    // 绘制键盘 - 使用资源中的边框颜色
+                    var keyBorderPen = GetResourcePen("KeyBorderBrush", "#FF1F1F1F", 1);
+                    context.DrawRectangle(isBlackKey ? BlackKeyBrush : WhiteKeyBrush, keyBorderPen, keyRect);
 
-                    // 绘制音符名称
+                    // 绘制音符名称 - 使用资源中的文字颜色
                     var noteName = ViewModel.GetNoteName(midiNote);
+                    var textBrush = isBlackKey 
+                        ? GetResourceBrush("KeyTextBlackBrush", "#FFFFFFFF")
+                        : GetResourceBrush("KeyTextWhiteBrush", "#FF000000");
+
                     var formattedText = new FormattedText(
                         noteName,
                         CultureInfo.CurrentCulture,
                         FlowDirection.LeftToRight,
                         _typeface,
                         8,
-                        isBlackKey ? Brushes.White : Brushes.Black);
+                        textBrush);
 
                     var textPoint = new Point(
                         PianoKeyWidth / 2 - formattedText.Width / 2,

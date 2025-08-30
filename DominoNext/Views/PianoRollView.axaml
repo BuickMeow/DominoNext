@@ -27,9 +27,10 @@
 			<Setter Property="Padding" Value="0"/>
 			<Setter Property="Background" Value="Transparent"/>
 			<Setter Property="BorderThickness" Value="1"/>
-			<Setter Property="BorderBrush" Value="#D0D0D0"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}"/>
 			<Setter Property="CornerRadius" Value="4"/>
 		</Style>
+<<<<<<< HEAD
 		
 		<!-- 洋葱皮开关按钮样式 -->
 		<Style Selector="ToggleButton.OnionSkinToggle">
@@ -37,6 +38,142 @@
 				<Setter Property="Background" Value="#4CAF50"/>
 				<Setter Property="BorderBrush" Value="#45a049"/>
 			</Style>
+=======
+
+		<Style Selector="Button.ToolButton:pointerover">
+			<Setter Property="Background" Value="{DynamicResource ButtonHoverBrush}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource ButtonActiveBrush}"/>
+		</Style>
+
+		<Style Selector="Button.ToolButton:pressed">
+			<Setter Property="Background" Value="{DynamicResource ButtonPressedBrush}"/>
+		</Style>
+
+		<Style Selector="Button.ToolButton.active">
+			<Setter Property="Background" Value="{DynamicResource ButtonActiveBrush}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource SliderThumbPressedBrush}"/>
+		</Style>
+
+		<!-- 音符时值按钮样式 -->
+		<Style Selector="Button.NoteDurationButton">
+			<Setter Property="MinWidth" Value="50"/>
+			<Setter Property="Height" Value="32"/>
+			<Setter Property="Margin" Value="2"/>
+			<Setter Property="Padding" Value="4,0"/>
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}"/>
+			<Setter Property="CornerRadius" Value="4"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+		</Style>
+
+		<Style Selector="Button.NoteDurationButton:pointerover">
+			<Setter Property="Background" Value="{DynamicResource ButtonHoverBrush}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource ButtonActiveBrush}"/>
+		</Style>
+
+		<Style Selector="Button.NoteDurationButton:pressed">
+			<Setter Property="Background" Value="{DynamicResource ButtonPressedBrush}"/>
+		</Style>
+
+		<!-- 确保 TextBlock 在按钮中居中 -->
+		<Style Selector="Button TextBlock">
+			<Setter Property="HorizontalAlignment" Value="Center"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="TextAlignment" Value="Center"/>
+		</Style>
+
+		<!-- 保持原有滑块样式 - 使用动态资源 -->
+		<Style Selector="Slider.CustomZoomSlider">
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="BorderThickness" Value="0"/>
+		</Style>
+
+		<Style Selector="Slider.CustomZoomSlider /template/ Track#PART_Track">
+			<Setter Property="Minimum" Value="{Binding $parent[Slider].Minimum}"/>
+			<Setter Property="Maximum" Value="{Binding $parent[Slider].Maximum}"/>
+			<Setter Property="Value" Value="{Binding $parent[Slider].Value, Mode=TwoWay}"/>
+		</Style>
+
+		<Style Selector="Slider.CustomZoomSlider /template/ Border#PART_DecreaseButton">
+			<Setter Property="Background" Value="{DynamicResource SliderTrackBrush}"/>
+			<Setter Property="Height" Value="4"/>
+			<Setter Property="CornerRadius" Value="2"/>
+		</Style>
+
+		<Style Selector="Slider.CustomZoomSlider /template/ Border#PART_IncreaseButton">
+			<Setter Property="Background" Value="{DynamicResource SliderThumbBrush}"/>
+			<Setter Property="Height" Value="4"/>
+			<Setter Property="CornerRadius" Value="2"/>
+		</Style>
+
+		<Style Selector="Slider.CustomZoomSlider /template/ Thumb">
+			<Setter Property="Background" Value="{DynamicResource SliderThumbBrush}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource MainCanvasBackgroundBrush}"/>
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="CornerRadius" Value="6"/>
+			<Setter Property="Width" Value="12"/>
+			<Setter Property="Height" Value="12"/>
+		</Style>
+
+		<Style Selector="Slider.CustomZoomSlider /template/ Thumb:pointerover">
+			<Setter Property="Background" Value="{DynamicResource SliderThumbHoverBrush}"/>
+		</Style>
+
+		<Style Selector="Slider.CustomZoomSlider /template/ Thumb:pressed">
+			<Setter Property="Background" Value="{DynamicResource SliderThumbPressedBrush}"/>
+		</Style>
+
+		<!-- 垂直滑块样式 - 使用动态资源 -->
+		<Style Selector="Slider.CustomVerticalZoomSlider">
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="Orientation" Value="Vertical"/>
+		</Style>
+
+		<Style Selector="Slider.CustomVerticalZoomSlider /template/ Track#PART_Track">
+			<Setter Property="Minimum" Value="{Binding $parent[Slider].Minimum}"/>
+			<Setter Property="Maximum" Value="{Binding $parent[Slider].Maximum}"/>
+			<Setter Property="Value" Value="{Binding $parent[Slider].Value, Mode=TwoWay}"/>
+		</Style>
+
+		<Style Selector="Slider.CustomVerticalZoomSlider /template/ Border#PART_DecreaseButton">
+			<Setter Property="Background" Value="{DynamicResource SliderTrackBrush}"/>
+			<Setter Property="Width" Value="4"/>
+			<Setter Property="CornerRadius" Value="2"/>
+		</Style>
+
+		<Style Selector="Slider.CustomVerticalZoomSlider /template/ Border#PART_IncreaseButton">
+			<Setter Property="Background" Value="{DynamicResource SliderThumbBrush}"/>
+			<Setter Property="Width" Value="4"/>
+			<Setter Property="CornerRadius" Value="2"/>
+		</Style>
+
+		<Style Selector="Slider.CustomVerticalZoomSlider /template/ Thumb">
+			<Setter Property="Background" Value="{DynamicResource SliderThumbBrush}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource MainCanvasBackgroundBrush}"/>
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="CornerRadius" Value="6"/>
+			<Setter Property="Width" Value="12"/>
+			<Setter Property="Height" Value="12"/>
+		</Style>
+
+		<Style Selector="Slider.CustomVerticalZoomSlider /template/ Thumb:pointerover">
+			<Setter Property="Background" Value="{DynamicResource SliderThumbHoverBrush}"/>
+		</Style>
+
+		<Style Selector="Slider.CustomVerticalZoomSlider /template/ Thumb:pressed">
+			<Setter Property="Background" Value="{DynamicResource SliderThumbPressedBrush}"/>
+		</Style>
+
+		<Style Selector="GridSplitter">
+			<Setter Property="Background" Value="{DynamicResource SeparatorLineBrush}"/>
+		</Style>
+
+		<Style Selector="GridSplitter:pointerover">
+			<Setter Property="Background" Value="{DynamicResource ButtonBorderBrush}"/>
+>>>>>>> 3e4bb8e91d0e58cf2349304d29317c7768f77c68
 		</Style>
 	</UserControl.Styles>
 	
@@ -58,7 +195,7 @@
 		</Grid.RowDefinitions>
 
 		<!-- 工具栏 -->
-		<Border Grid.Row="0" Background="#F0F0F0" Height="44" BorderBrush="#D0D0D0" BorderThickness="0,0,0,1">
+		<Border Grid.Row="0" Background="{DynamicResource ToolbarBackgroundBrush}" Height="44" BorderBrush="{DynamicResource ToolbarBorderBrush}" BorderThickness="0,0,0,1">
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto"/>
@@ -101,7 +238,7 @@
 					</Button>
 
 					<!-- 分隔线 -->
-					<Rectangle Width="1" Height="24" Fill="#D0D0D0" Margin="8,0"/>
+					<Rectangle Width="1" Height="24" Fill="{DynamicResource ButtonBorderBrush}" Margin="8,0"/>
 
 					<!-- 播放控制 -->
 					<Button ToolTip.Tip="播放"
@@ -153,8 +290,8 @@
 							   Placement="Bottom"
 							   PlacementTarget="{Binding $parent[Button]}"
 							   WindowManagerAddShadowHint="False">
-							<Border Background="White"
-									BorderBrush="#D0D0D0"
+							<Border Background="{DynamicResource PopupBackgroundBrush}"
+									BorderBrush="{DynamicResource ButtonBorderBrush}"
 									BorderThickness="1"
 									CornerRadius="4"
 									Padding="4"
@@ -186,7 +323,7 @@
 										</ItemsControl>
 
 										<!-- 分隔线 -->
-										<Rectangle Height="1" Fill="#E0E0E0" Margin="4,8"/>
+										<Rectangle Height="1" Fill="{DynamicResource SeparatorLineBrush}" Margin="4,8"/>
 
 										<!-- 自定义输入 -->
 										<StackPanel Margin="8,4">
@@ -208,7 +345,7 @@
 					</Grid>
 
 					<!-- 分隔线 -->
-					<Rectangle Width="1" Height="24" Fill="#D0D0D0" Margin="8,0"/>
+					<Rectangle Width="1" Height="24" Fill="{DynamicResource ButtonBorderBrush}" Margin="8,0"/>
 
 					<!-- 操作按钮 -->
 					<Button Classes="ToolButton" Command="{Binding SelectAllCommand}" ToolTip.Tip="全选 (Ctrl+A)">
@@ -271,17 +408,17 @@
 				<StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0">
 					<TextBlock Text="{Binding CurrentTool, StringFormat='工具: {0}'}"
 							   FontSize="11"
-							   Foreground="#666666"
+							   Foreground="{DynamicResource StatusTextBrush}"
 							   VerticalAlignment="Center"
 							   Margin="0,0,16,0"/>
 					<TextBlock Text="{Binding CurrentNoteDurationText, StringFormat='网格: {0}'}"
 							   FontSize="11"
-							   Foreground="#666666"
+							   Foreground="{DynamicResource StatusTextBrush}"
 							   VerticalAlignment="Center"
 							   Margin="0,0,8,0"/>
 					<TextBlock Text="{Binding CurrentNoteTimeValueText, StringFormat='当前时值: {0}'}"
 							   FontSize="11"
-							   Foreground="#666666"
+							   Foreground="{DynamicResource StatusTextBrush}"
 							   VerticalAlignment="Center"/>
 				</StackPanel>
 
@@ -311,19 +448,19 @@
 				<ColumnDefinition Width="20"/>
 			</Grid.ColumnDefinitions>
 
-			<Border Grid.Column="0" Background="#F5F5F5"/>
+			<Border Grid.Column="0" Background="{DynamicResource MeasureHeaderBackgroundBrush}"/>
 
 			<ScrollViewer Grid.Column="1"
 						  x:Name="MeasureHeaderScrollViewer"
 						  HorizontalScrollBarVisibility="Hidden"
 						  VerticalScrollBarVisibility="Disabled"
-						  Background="#F5F5F5">
+						  Background="{DynamicResource MeasureHeaderBackgroundBrush}">
 				<canvas:MeasureHeaderCanvas ViewModel="{Binding}"
 											  Width="{Binding ContentWidth}"
                                                Height="30"/>
 			</ScrollViewer>
 
-			<Border Grid.Column="2" Background="#F5F5F5"/>
+			<Border Grid.Column="2" Background="{DynamicResource MeasureHeaderBackgroundBrush}"/>
 		</Grid>
 
 		<!-- 主内容区域：钢琴键 + 音符区域 + 垂直控制条 -->
@@ -339,7 +476,7 @@
 						  x:Name="PianoKeysScrollViewer"
 						  HorizontalScrollBarVisibility="Disabled"
 						  VerticalScrollBarVisibility="Hidden"
-						  Background="#2F2F2F">
+						  Background="{DynamicResource PianoKeysBackgroundBrush}">
 				<controls:PianoKeysControl ViewModel="{Binding}"
 										   Width="60"
 										   Height="{Binding TotalHeight}"/>
@@ -350,7 +487,7 @@
                           x:Name="MainScrollViewer"
                           HorizontalScrollBarVisibility="Hidden"
                           VerticalScrollBarVisibility="Hidden"
-                          Background="White">
+                          Background="{DynamicResource MainCanvasBackgroundBrush}">
 
 				<!-- 使用 Grid 来叠加多个层 -->
 				<Grid Width="{Binding ContentWidth}" Height="{Binding TotalHeight}">
@@ -388,9 +525,9 @@
 						   ViewportSize="{Binding #MainScrollViewer.Viewport.Height}"
 						   Margin="2,0"/>
 
-				<Border Grid.Row="1" Height="1" Background="#D0D0D0" Margin="2,2"/>
+				<Border Grid.Row="1" Height="1" Background="{DynamicResource ButtonBorderBrush}" Margin="2,2"/>
 
-				<Border Grid.Row="2" Background="#FFFFFF">
+				<Border Grid.Row="2" Background="{DynamicResource MainCanvasBackgroundBrush}">
 					<Slider Classes="CustomVerticalZoomSlider"
 							Minimum="0"
 							Maximum="100"
@@ -407,7 +544,7 @@
 		<GridSplitter Grid.Row="3"
 					  Height="4"
 					  HorizontalAlignment="Stretch"
-					  Background="#E0E0E0"
+					  Background="{DynamicResource SeparatorLineBrush}"
 					  Cursor="SizeNorthSouth"/>
 
 		<!-- 事件视图区域（包含边界线） -->
@@ -424,22 +561,37 @@
 				<ColumnDefinition Width="20"/>
 			</Grid.ColumnDefinitions>
 
-			<Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Background="#000000"/>
+			<Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Background="{DynamicResource BorderLineBlackBrush}"/>
 
-			<Border Grid.Row="1" Grid.Column="0" Background="#F5F5F5"/>
+			<Border Grid.Row="1" Grid.Column="0" Background="{DynamicResource MeasureHeaderBackgroundBrush}"/>
 
 			<ScrollViewer Grid.Row="1" Grid.Column="1"
 						  x:Name="EventViewScrollViewer"
 						  HorizontalScrollBarVisibility="Hidden"
 						  VerticalScrollBarVisibility="Disabled"
+<<<<<<< HEAD
 						  Background="White">
 				<canvas:EventViewCanvas ViewModel="{Binding}"
 										  Width="{Binding ContentWidth}"/>
+=======
+						  Background="{DynamicResource MainCanvasBackgroundBrush}">
+				
+				<!-- 使用 Grid 来叠加事件视图和力度视图 -->
+				<Grid Width="5000">
+					<!-- 背景层：事件视图网格和时间线 -->
+					<canvas:EventViewCanvas ViewModel="{Binding}"
+											IsHitTestVisible="False"/>
+
+					<!-- 力度视图层：可交互的力度条显示 -->
+					<canvas:VelocityViewCanvas ViewModel="{Binding}"
+											   IsHitTestVisible="True"/>
+				</Grid>
+>>>>>>> 3e4bb8e91d0e58cf2349304d29317c7768f77c68
 			</ScrollViewer>
 
-			<Border Grid.Row="1" Grid.Column="2" Background="#F5F5F5"/>
+			<Border Grid.Row="1" Grid.Column="2" Background="{DynamicResource MeasureHeaderBackgroundBrush}"/>
 
-			<Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Background="#000000"/>
+			<Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Background="{DynamicResource BorderLineBlackBrush}"/>
 		</Grid>
 
 		<!-- 底部控制栏：水平滚动条和缩放滑块 -->
@@ -452,7 +604,7 @@
 				<ColumnDefinition Width="8"/>
 			</Grid.ColumnDefinitions>
 
-			<Border Grid.Column="0" Background="#FFFFFF"/>
+			<Border Grid.Column="0" Background="{DynamicResource MainCanvasBackgroundBrush}"/>
 
 			<ScrollBar Grid.Column="1"
                        x:Name="HorizontalScrollBar"
@@ -463,7 +615,7 @@
                        ViewportSize="{Binding #MainScrollViewer.Viewport.Width}"
                        Margin="0,0,5,0"/>
 
-			<Border Grid.Column="2" Width="1" Background="#D0D0D0" Margin="2,2"/>
+			<Border Grid.Column="2" Width="1" Background="{DynamicResource ButtonBorderBrush}" Margin="2,2"/>
 
 			<Grid Grid.Column="3" Margin="5,0,0,0">
 				<Grid.ColumnDefinitions>
@@ -488,7 +640,7 @@
                         Margin="0,-4,0,0"/>
 			</Grid>
 
-			<Border Grid.Column="4" Background="#FFFFFF"/>
+			<Border Grid.Column="4" Background="{DynamicResource MainCanvasBackgroundBrush}"/>
 		</Grid>
 	</Grid>
 </UserControl>

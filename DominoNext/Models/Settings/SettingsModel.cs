@@ -57,6 +57,7 @@ namespace DominoNext.Models.Settings
         [ObservableProperty]
         private string _customShortcutsJson = "{}";
 
+<<<<<<< HEAD
         [ObservableProperty]
         private double _defaultBPM = 120.0;
 
@@ -68,6 +69,128 @@ namespace DominoNext.Models.Settings
         
         [ObservableProperty]
         private string _playbackDevicesJson = "[]";  // æ·»åŠ æ’­æ”¾è®¾å¤‡è®¾ç½®JSONå±æ€§
+=======
+        // Ö÷ÌâÏà¹ØÑÕÉ«£ºÊ¹ÓÃË½ÓĞ×Ö¶Î²¢Ìá¹©¹«¿ªÊôĞÔÒÔ±ãĞòÁĞ»¯ºÍ·ÃÎÊ
+        private string _backgroundColor = "#FFFAFAFA"; // ½çÃæ±³¾°
+        public string BackgroundColor
+        {
+            get => _backgroundColor;
+            set => SetProperty(ref _backgroundColor, value);
+        }
+
+        private string _noteColor = "#FF4CAF50"; // Òô·ûÌî³äÑÕÉ«
+        public string NoteColor
+        {
+            get => _noteColor;
+            set => SetProperty(ref _noteColor, value);
+        }
+
+        private string _gridLineColor = "#1F000000"; // Íø¸ñÏßÑÕÉ«£¨´øÍ¸Ã÷¶È£©
+        public string GridLineColor
+        {
+            get => _gridLineColor;
+            set => SetProperty(ref _gridLineColor, value);
+        }
+
+        private string _keyWhiteColor = "#FFFFFFFF"; // °×¼üÑÕÉ«
+        public string KeyWhiteColor
+        {
+            get => _keyWhiteColor;
+            set => SetProperty(ref _keyWhiteColor, value);
+        }
+
+        private string _keyBlackColor = "#FF1F1F1F"; // ºÚ¼üÑÕÉ«
+        public string KeyBlackColor
+        {
+            get => _keyBlackColor;
+            set => SetProperty(ref _keyBlackColor, value);
+        }
+
+        private string _selectionColor = "#800099FF"; // Ñ¡Ôñ¸ßÁÁÑÕÉ«
+        public string SelectionColor
+        {
+            get => _selectionColor;
+            set => SetProperty(ref _selectionColor, value);
+        }
+
+        // ĞÂÔö£º¸ü¶à½çÃæÔªËØÑÕÉ«
+        private string _noteSelectedColor = "#FFFF9800"; // Ñ¡ÖĞÒô·ûÑÕÉ«
+        public string NoteSelectedColor
+        {
+            get => _noteSelectedColor;
+            set => SetProperty(ref _noteSelectedColor, value);
+        }
+
+        private string _noteDraggingColor = "#FF2196F3"; // ÍÏ×§Òô·ûÑÕÉ«
+        public string NoteDraggingColor
+        {
+            get => _noteDraggingColor;
+            set => SetProperty(ref _noteDraggingColor, value);
+        }
+
+        private string _notePreviewColor = "#804CAF50"; // Ô¤ÀÀÒô·ûÑÕÉ«
+        public string NotePreviewColor
+        {
+            get => _notePreviewColor;
+            set => SetProperty(ref _notePreviewColor, value);
+        }
+
+        private string _velocityIndicatorColor = "#FFFFC107"; // Á¦¶ÈÖ¸Ê¾Æ÷ÑÕÉ«
+        public string VelocityIndicatorColor
+        {
+            get => _velocityIndicatorColor;
+            set => SetProperty(ref _velocityIndicatorColor, value);
+        }
+
+        private string _measureHeaderBackgroundColor = "#FFF5F5F5"; // Ğ¡½ÚÍ·±³¾°É«
+        public string MeasureHeaderBackgroundColor
+        {
+            get => _measureHeaderBackgroundColor;
+            set => SetProperty(ref _measureHeaderBackgroundColor, value);
+        }
+
+        private string _measureLineColor = "#FF000080"; // Ğ¡½ÚÏßÑÕÉ«
+        public string MeasureLineColor
+        {
+            get => _measureLineColor;
+            set => SetProperty(ref _measureLineColor, value);
+        }
+
+        private string _measureTextColor = "#FF000000"; // Ğ¡½ÚÊı×ÖÑÕÉ«
+        public string MeasureTextColor
+        {
+            get => _measureTextColor;
+            set => SetProperty(ref _measureTextColor, value);
+        }
+
+        private string _separatorLineColor = "#FFCCCCCC"; // ·Ö¸ôÏßÑÕÉ«
+        public string SeparatorLineColor
+        {
+            get => _separatorLineColor;
+            set => SetProperty(ref _separatorLineColor, value);
+        }
+
+        private string _keyBorderColor = "#FF1F1F1F"; // ¸ÖÇÙ¼ü±ß¿òÑÕÉ«
+        public string KeyBorderColor
+        {
+            get => _keyBorderColor;
+            set => SetProperty(ref _keyBorderColor, value);
+        }
+
+        private string _keyTextWhiteColor = "#FF000000"; // °×¼üÎÄ×ÖÑÕÉ«
+        public string KeyTextWhiteColor
+        {
+            get => _keyTextWhiteColor;
+            set => SetProperty(ref _keyTextWhiteColor, value);
+        }
+
+        private string _keyTextBlackColor = "#FFFFFFFF"; // ºÚ¼üÎÄ×ÖÑÕÉ«
+        public string KeyTextBlackColor
+        {
+            get => _keyTextBlackColor;
+            set => SetProperty(ref _keyTextBlackColor, value);
+        }
+>>>>>>> 3e4bb8e91d0e58cf2349304d29317c7768f77c68
 
         /// <summary>
         /// è·å–å½“å‰è¯­è¨€çš„æ˜¾ç¤ºåç§°
@@ -119,6 +242,7 @@ namespace DominoNext.Models.Settings
                     var loadedSettings = JsonSerializer.Deserialize<SettingsModel>(json, options);
                     if (loadedSettings != null)
                     {
+<<<<<<< HEAD
                         // å±æ€§å€¼èµ‹å€¼å¹¶é€šçŸ¥å±æ€§æ›´æ”¹
                         Language = loadedSettings.Language;
                         Theme = loadedSettings.Theme;
@@ -134,6 +258,44 @@ namespace DominoNext.Models.Settings
                         PianoKeyWidth = loadedSettings.PianoKeyWidth;
                         EnableKeyboardShortcuts = loadedSettings.EnableKeyboardShortcuts;
                         CustomShortcutsJson = loadedSettings.CustomShortcutsJson;
+=======
+                        // ÊÖ¶¯¸³Öµ±ÜÃâ´¥·¢ÊôĞÔ±ä¸üÍ¨Öª
+                        _language = loadedSettings.Language;
+                        _theme = loadedSettings.Theme;
+                        _autoSave = loadedSettings.AutoSave;
+                        _autoSaveInterval = loadedSettings.AutoSaveInterval;
+                        _showGridLines = loadedSettings.ShowGridLines;
+                        _snapToGrid = loadedSettings.SnapToGrid;
+                        _defaultZoom = loadedSettings.DefaultZoom;
+                        _useNativeMenuBar = loadedSettings.UseNativeMenuBar;
+                        _maxUndoSteps = loadedSettings.MaxUndoSteps;
+                        _confirmBeforeDelete = loadedSettings.ConfirmBeforeDelete;
+                        _showVelocityBars = loadedSettings.ShowVelocityBars;
+                        _pianoKeyWidth = loadedSettings.PianoKeyWidth;
+                        _enableKeyboardShortcuts = loadedSettings.EnableKeyboardShortcuts;
+                        _customShortcutsJson = loadedSettings.CustomShortcutsJson;
+
+                        // »ù´¡Ö÷ÌâÑÕÉ«
+                        _backgroundColor = !string.IsNullOrEmpty(loadedSettings.BackgroundColor) ? loadedSettings.BackgroundColor : _backgroundColor;
+                        _noteColor = !string.IsNullOrEmpty(loadedSettings.NoteColor) ? loadedSettings.NoteColor : _noteColor;
+                        _gridLineColor = !string.IsNullOrEmpty(loadedSettings.GridLineColor) ? loadedSettings.GridLineColor : _gridLineColor;
+                        _keyWhiteColor = !string.IsNullOrEmpty(loadedSettings.KeyWhiteColor) ? loadedSettings.KeyWhiteColor : _keyWhiteColor;
+                        _keyBlackColor = !string.IsNullOrEmpty(loadedSettings.KeyBlackColor) ? loadedSettings.KeyBlackColor : _keyBlackColor;
+                        _selectionColor = !string.IsNullOrEmpty(loadedSettings.SelectionColor) ? loadedSettings.SelectionColor : _selectionColor;
+
+                        // À©Õ¹µÄ½çÃæÔªËØÑÕÉ«
+                        _noteSelectedColor = !string.IsNullOrEmpty(loadedSettings.NoteSelectedColor) ? loadedSettings.NoteSelectedColor : _noteSelectedColor;
+                        _noteDraggingColor = !string.IsNullOrEmpty(loadedSettings.NoteDraggingColor) ? loadedSettings.NoteDraggingColor : _noteDraggingColor;
+                        _notePreviewColor = !string.IsNullOrEmpty(loadedSettings.NotePreviewColor) ? loadedSettings.NotePreviewColor : _notePreviewColor;
+                        _velocityIndicatorColor = !string.IsNullOrEmpty(loadedSettings.VelocityIndicatorColor) ? loadedSettings.VelocityIndicatorColor : _velocityIndicatorColor;
+                        _measureHeaderBackgroundColor = !string.IsNullOrEmpty(loadedSettings.MeasureHeaderBackgroundColor) ? loadedSettings.MeasureHeaderBackgroundColor : _measureHeaderBackgroundColor;
+                        _measureLineColor = !string.IsNullOrEmpty(loadedSettings.MeasureLineColor) ? loadedSettings.MeasureLineColor : _measureLineColor;
+                        _measureTextColor = !string.IsNullOrEmpty(loadedSettings.MeasureTextColor) ? loadedSettings.MeasureTextColor : _measureTextColor;
+                        _separatorLineColor = !string.IsNullOrEmpty(loadedSettings.SeparatorLineColor) ? loadedSettings.SeparatorLineColor : _separatorLineColor;
+                        _keyBorderColor = !string.IsNullOrEmpty(loadedSettings.KeyBorderColor) ? loadedSettings.KeyBorderColor : _keyBorderColor;
+                        _keyTextWhiteColor = !string.IsNullOrEmpty(loadedSettings.KeyTextWhiteColor) ? loadedSettings.KeyTextWhiteColor : _keyTextWhiteColor;
+                        _keyTextBlackColor = !string.IsNullOrEmpty(loadedSettings.KeyTextBlackColor) ? loadedSettings.KeyTextBlackColor : _keyTextBlackColor;
+>>>>>>> 3e4bb8e91d0e58cf2349304d29317c7768f77c68
                     }
                 }
             }
@@ -162,6 +324,7 @@ namespace DominoNext.Models.Settings
                     var loadedSettings = JsonSerializer.Deserialize<SettingsModel>(json, options);
                     if (loadedSettings != null)
                     {
+<<<<<<< HEAD
                         // å±æ€§å€¼èµ‹å€¼å¹¶é€šçŸ¥å±æ€§æ›´æ”¹
                         Language = loadedSettings.Language;
                         Theme = loadedSettings.Theme;
@@ -177,6 +340,44 @@ namespace DominoNext.Models.Settings
                         PianoKeyWidth = loadedSettings.PianoKeyWidth;
                         EnableKeyboardShortcuts = loadedSettings.EnableKeyboardShortcuts;
                         CustomShortcutsJson = loadedSettings.CustomShortcutsJson;
+=======
+                        // ÊÖ¶¯¸³Öµ±ÜÃâ´¥·¢ÊôĞÔ±ä¸üÍ¨Öª
+                        _language = loadedSettings.Language;
+                        _theme = loadedSettings.Theme;
+                        _autoSave = loadedSettings.AutoSave;
+                        _autoSaveInterval = loadedSettings.AutoSaveInterval;
+                        _showGridLines = loadedSettings.ShowGridLines;
+                        _snapToGrid = loadedSettings.SnapToGrid;
+                        _defaultZoom = loadedSettings.DefaultZoom;
+                        _useNativeMenuBar = loadedSettings.UseNativeMenuBar;
+                        _maxUndoSteps = loadedSettings.MaxUndoSteps;
+                        _confirmBeforeDelete = loadedSettings.ConfirmBeforeDelete;
+                        _showVelocityBars = loadedSettings.ShowVelocityBars;
+                        _pianoKeyWidth = loadedSettings.PianoKeyWidth;
+                        _enableKeyboardShortcuts = loadedSettings.EnableKeyboardShortcuts;
+                        _customShortcutsJson = loadedSettings.CustomShortcutsJson;
+
+                        // »ù´¡Ö÷ÌâÑÕÉ«
+                        _backgroundColor = !string.IsNullOrEmpty(loadedSettings.BackgroundColor) ? loadedSettings.BackgroundColor : _backgroundColor;
+                        _noteColor = !string.IsNullOrEmpty(loadedSettings.NoteColor) ? loadedSettings.NoteColor : _noteColor;
+                        _gridLineColor = !string.IsNullOrEmpty(loadedSettings.GridLineColor) ? loadedSettings.GridLineColor : _gridLineColor;
+                        _keyWhiteColor = !string.IsNullOrEmpty(loadedSettings.KeyWhiteColor) ? loadedSettings.KeyWhiteColor : _keyWhiteColor;
+                        _keyBlackColor = !string.IsNullOrEmpty(loadedSettings.KeyBlackColor) ? loadedSettings.KeyBlackColor : _keyBlackColor;
+                        _selectionColor = !string.IsNullOrEmpty(loadedSettings.SelectionColor) ? loadedSettings.SelectionColor : _selectionColor;
+
+                        // À©Õ¹µÄ½çÃæÔªËØÑÕÉ«
+                        _noteSelectedColor = !string.IsNullOrEmpty(loadedSettings.NoteSelectedColor) ? loadedSettings.NoteSelectedColor : _noteSelectedColor;
+                        _noteDraggingColor = !string.IsNullOrEmpty(loadedSettings.NoteDraggingColor) ? loadedSettings.NoteDraggingColor : _noteDraggingColor;
+                        _notePreviewColor = !string.IsNullOrEmpty(loadedSettings.NotePreviewColor) ? loadedSettings.NotePreviewColor : _notePreviewColor;
+                        _velocityIndicatorColor = !string.IsNullOrEmpty(loadedSettings.VelocityIndicatorColor) ? loadedSettings.VelocityIndicatorColor : _velocityIndicatorColor;
+                        _measureHeaderBackgroundColor = !string.IsNullOrEmpty(loadedSettings.MeasureHeaderBackgroundColor) ? loadedSettings.MeasureHeaderBackgroundColor : _measureHeaderBackgroundColor;
+                        _measureLineColor = !string.IsNullOrEmpty(loadedSettings.MeasureLineColor) ? loadedSettings.MeasureLineColor : _measureLineColor;
+                        _measureTextColor = !string.IsNullOrEmpty(loadedSettings.MeasureTextColor) ? loadedSettings.MeasureTextColor : _measureTextColor;
+                        _separatorLineColor = !string.IsNullOrEmpty(loadedSettings.SeparatorLineColor) ? loadedSettings.SeparatorLineColor : _separatorLineColor;
+                        _keyBorderColor = !string.IsNullOrEmpty(loadedSettings.KeyBorderColor) ? loadedSettings.KeyBorderColor : _keyBorderColor;
+                        _keyTextWhiteColor = !string.IsNullOrEmpty(loadedSettings.KeyTextWhiteColor) ? loadedSettings.KeyTextWhiteColor : _keyTextWhiteColor;
+                        _keyTextBlackColor = !string.IsNullOrEmpty(loadedSettings.KeyTextBlackColor) ? loadedSettings.KeyTextBlackColor : _keyTextBlackColor;
+>>>>>>> 3e4bb8e91d0e58cf2349304d29317c7768f77c68
                     }
                 }
             }
@@ -267,6 +468,84 @@ namespace DominoNext.Models.Settings
             PianoKeyWidth = 60.0;
             EnableKeyboardShortcuts = true;
             CustomShortcutsJson = "{}";
+
+            // Ö÷ÌâÉ«»Ö¸´Ä¬ÈÏ£¨Ç³É«Ö÷ÌâÎª»ù×¼£©
+            BackgroundColor = "#FFFAFAFA";
+            NoteColor = "#FF4CAF50";
+            GridLineColor = "#1F000000";
+            KeyWhiteColor = "#FFFFFFFF";
+            KeyBlackColor = "#FF1F1F1F";
+            SelectionColor = "#800099FF";
+
+            // À©Õ¹ÔªËØÑÕÉ«Ä¬ÈÏÖµ
+            NoteSelectedColor = "#FFFF9800";
+            NoteDraggingColor = "#FF2196F3";
+            NotePreviewColor = "#804CAF50";
+            VelocityIndicatorColor = "#FFFFC107";
+            MeasureHeaderBackgroundColor = "#FFF5F5F5";
+            MeasureLineColor = "#FF000080";
+            MeasureTextColor = "#FF000000";
+            SeparatorLineColor = "#FFCCCCCC";
+            KeyBorderColor = "#FF1F1F1F";
+            KeyTextWhiteColor = "#FF000000";
+            KeyTextBlackColor = "#FFFFFFFF";
+        }
+
+        /// <summary>
+        /// Ó¦ÓÃÉîÉ«Ö÷ÌâÄ¬ÈÏÑÕÉ« - ÓÅ»¯°æ
+        /// </summary>
+        public void ApplyDarkThemeDefaults()
+        {
+            // ÉîÉ«Ö÷½çÃæ
+            BackgroundColor = "#FF1E1E1E";
+            NoteColor = "#FF66BB6A";
+            GridLineColor = "#40FFFFFF";
+            
+            // ¸ÖÇÙ¼üÓÅ»¯£ºÌá¸ß¶Ô±È¶È
+            KeyWhiteColor = "#FF2D2D30";  // Éî»ÒÉ«°×¼ü
+            KeyBlackColor = "#FF0F0F0F";  // ¸üÉîµÄºÚ¼ü
+            KeyBorderColor = "#FF404040"; // ±ß¿òÑÕÉ«
+            KeyTextWhiteColor = "#FFCCCCCC"; // °×¼üÎÄ×Ö
+            KeyTextBlackColor = "#FF999999"; // ºÚ¼üÎÄ×Ö
+            
+            SelectionColor = "#8064B5F6";
+
+            // Òô·ûÑÕÉ«ÓÅ»¯
+            NoteSelectedColor = "#FFFFB74D";
+            NoteDraggingColor = "#FF64B5F6";
+            NotePreviewColor = "#8066BB6A";
+            VelocityIndicatorColor = "#FFFFCA28";
+            
+            // ½çÃæÔªËØÓÅ»¯
+            MeasureHeaderBackgroundColor = "#FF252526";
+            MeasureLineColor = "#FF6495ED";
+            MeasureTextColor = "#FFE0E0E0";
+            SeparatorLineColor = "#FF3E3E42";
+        }
+
+        /// <summary>
+        /// Ó¦ÓÃÇ³É«Ö÷ÌâÄ¬ÈÏÑÕÉ«
+        /// </summary>
+        public void ApplyLightThemeDefaults()
+        {
+            BackgroundColor = "#FFFAFAFA";
+            NoteColor = "#FF4CAF50";
+            GridLineColor = "#1F000000";
+            KeyWhiteColor = "#FFFFFFFF";
+            KeyBlackColor = "#FF1F1F1F";
+            SelectionColor = "#800099FF";
+
+            NoteSelectedColor = "#FFFF9800";
+            NoteDraggingColor = "#FF2196F3";
+            NotePreviewColor = "#804CAF50";
+            VelocityIndicatorColor = "#FFFFC107";
+            MeasureHeaderBackgroundColor = "#FFF5F5F5";
+            MeasureLineColor = "#FF000080";
+            MeasureTextColor = "#FF000000";
+            SeparatorLineColor = "#FFCCCCCC";
+            KeyBorderColor = "#FF1F1F1F";
+            KeyTextWhiteColor = "#FF000000";
+            KeyTextBlackColor = "#FFFFFFFF";
         }
     }
 }

@@ -1,11 +1,21 @@
+<<<<<<< HEAD
 ﻿# 默认忽略的文件
+=======
+# 默认忽略的文件
+>>>>>>> 3e4bb8e91d0e58cf2349304d29317c7768f77c68
 /shelf/
 /workspace.xml
 # Rider 忽略的文件
 /modules.xml
+<<<<<<< HEAD
 /projectSettingsUpdater.xml
 /contentModel.xml
 /.idea.DominoNext.iml
+=======
+/.idea.DominoNext.iml
+/contentModel.xml
+/projectSettingsUpdater.xml
+>>>>>>> 3e4bb8e91d0e58cf2349304d29317c7768f77c68
 # 基于编辑器的 HTTP 客户端请求
 /httpRequests/
 # Datasource local storage ignored files

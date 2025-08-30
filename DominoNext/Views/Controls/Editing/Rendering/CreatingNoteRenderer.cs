@@ -10,8 +10,31 @@ namespace DominoNext.Views.Controls.Editing.Rendering
     /// </summary>
     public class CreatingNoteRenderer
     {
-        private readonly Color _creatingNoteColor = Color.Parse("#8BC34A");
-        private readonly IPen _creatingNoteBorderPen = new Pen(new SolidColorBrush(Color.Parse("#689F38")), 2);
+        // 资源画刷获取助手方法
+        private IBrush GetResourceBrush(string key, string fallbackHex)
+        {
+            try
+            {
+                if (Application.Current?.Resources.TryGetResource(key, null, out var obj) == true && obj is IBrush brush)
+                    return brush;
+            }
+            catch { }
+
+            try
+            {
+                return new SolidColorBrush(Color.Parse(fallbackHex));
+            }
+            catch
+            {
+                return Brushes.Transparent;
+            }
+        }
+
+        private IPen GetResourcePen(string brushKey, string fallbackHex, double thickness = 1)
+        {
+            var brush = GetResourceBrush(brushKey, fallbackHex);
+            return new Pen(brush, thickness);
+        }
 
         /// <summary>
         /// 渲染正在创建的音符
@@ -23,11 +46,13 @@ namespace DominoNext.Views.Controls.Editing.Rendering
             var creatingRect = calculateNoteRect(viewModel.CreatingNote);
             if (creatingRect.Width > 0 && creatingRect.Height > 0)
             {
-                // 使用专门的创建音符样式
-                var brush = new SolidColorBrush(_creatingNoteColor, 0.85);
-                context.DrawRectangle(brush, _creatingNoteBorderPen, creatingRect);
+                // 使用预览音符颜色，但透明度稍微高一些以区分正在创建的状态
+                var brush = CreateBrushWithOpacity(GetResourceBrush("NotePreviewBrush", "#804CAF50"), 0.85);
+                var pen = GetResourcePen("NotePreviewPenBrush", "#FF689F38", 2);
+                
+                context.DrawRectangle(brush, pen, creatingRect);
 
-                // 显示当前长度信息
+                // 显示当前音符信息
                 if (creatingRect.Width > 30 && creatingRect.Height > 10)
                 {
                     var durationText = viewModel.CreatingNote.Duration.ToString();
@@ -36,31 +61,44 @@ namespace DominoNext.Views.Controls.Editing.Rendering
             }
         }
 
+        private IBrush CreateBrushWithOpacity(IBrush originalBrush, double opacity)
+        {
+            if (originalBrush is SolidColorBrush solidBrush)
+            {
+                var color = solidBrush.Color;
+                return new SolidColorBrush(color, opacity);
+            }
+            return originalBrush;
+        }
+
         /// <summary>
         /// 在音符上绘制文本信息
         /// </summary>
         private void DrawNoteText(DrawingContext context, string text, Rect noteRect, double fontSize)
         {
             var typeface = new Typeface(FontFamily.Default);
+            var textBrush = GetResourceBrush("MeasureTextBrush", "#FF000000");
             var formattedText = new FormattedText(
                 text,
                 System.Globalization.CultureInfo.CurrentCulture,
                 FlowDirection.LeftToRight,
                 typeface,
                 fontSize,
-                Brushes.Black);
+                textBrush);
 
             var textPosition = new Point(
                 noteRect.X + (noteRect.Width - formattedText.Width) / 2,
                 noteRect.Y + (noteRect.Height - formattedText.Height) / 2);
 
-            // 绘制文本背景以提高可读性
+            // 给文本添加背景提高可读性
             var textBounds = new Rect(
                 textPosition.X - 2,
                 textPosition.Y - 1,
                 formattedText.Width + 4,
                 formattedText.Height + 2);
-            context.DrawRectangle(new SolidColorBrush(Colors.White, 0.8), null, textBounds);
+            
+            var textBackgroundBrush = CreateBrushWithOpacity(GetResourceBrush("AppBackgroundBrush", "#FFFFFFFF"), 0.8);
+            context.DrawRectangle(textBackgroundBrush, null, textBounds);
 
             context.DrawText(formattedText, textPosition);
         }

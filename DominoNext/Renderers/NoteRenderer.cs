@@ -8,42 +8,30 @@ namespace DominoNext.Renderers
 {
     public class NoteRenderer
     {
-        // 预创建样式缓存
-        private readonly Dictionary<NoteRenderType, (IBrush brush, IPen pen)> _styleCache = new();
-
-        public NoteRenderer()
+        // 资源画刷获取助手方法
+        private IBrush GetResourceBrush(string key, string fallbackHex)
         {
-            InitializeStyles();
+            try
+            {
+                if (Application.Current?.Resources.TryGetResource(key, null, out var obj) == true && obj is IBrush brush)
+                    return brush;
+            }
+            catch { }
+
+            try
+            {
+                return new SolidColorBrush(Color.Parse(fallbackHex));
+            }
+            catch
+            {
+                return Brushes.Transparent;
+            }
         }
 
-        private void InitializeStyles()
+        private IPen GetResourcePen(string brushKey, string fallbackHex, double thickness = 1)
         {
-            // 普通音符
-            _styleCache[NoteRenderType.Normal] = (
-                new SolidColorBrush(Color.Parse("#4CAF50")),
-                new Pen(new SolidColorBrush(Color.Parse("#2E7D32")), 1)
-            );
-
-            // 选中音符
-            _styleCache[NoteRenderType.Selected] = (
-                new SolidColorBrush(Color.Parse("#FF9800")),
-                new Pen(new SolidColorBrush(Color.Parse("#F57C00")), 2)
-            );
-
-            // 拖拽中音符
-            _styleCache[NoteRenderType.Dragging] = (
-                new SolidColorBrush(Color.Parse("#2196F3")),
-                new Pen(new SolidColorBrush(Color.Parse("#1976D2")), 2)
-            );
-
-            // 预览音符
-            _styleCache[NoteRenderType.Preview] = (
-                new SolidColorBrush(Color.Parse("#4CAF50"), 0.5),
-                new Pen(new SolidColorBrush(Color.Parse("#2E7D32")), 1)
-                {
-                    DashStyle = new DashStyle(new double[] { 3, 3 }, 0)
-                }
-            );
+            var brush = GetResourceBrush(brushKey, fallbackHex);
+            return new Pen(brush, thickness);
         }
 
         public void DrawNote(DrawingContext context, NoteViewModel note, double zoom, double pixelsPerTick, double keyHeight, int ticksPerBeat, NoteRenderType renderType = NoteRenderType.Normal)
@@ -55,19 +43,41 @@ namespace DominoNext.Renderers
 
             var rect = new Rect(x, y, width, height);
 
-            if (_styleCache.TryGetValue(renderType, out var style))
+            // 根据渲染类型获取对应的画刷和画笔
+            var (brush, pen) = GetStyleForRenderType(renderType, note.Velocity);
+
+            context.DrawRectangle(brush, pen, rect);
+
+            // 选中音符显示力度指示器
+            if (renderType == NoteRenderType.Selected && width > 20)
             {
-                var opacity = CalculateOpacity(note.Velocity, renderType);
-                var brush = CreateBrushWithOpacity(style.brush, opacity);
-
-                context.DrawRectangle(brush, style.pen, rect);
-
-                // 选中音符显示力度指示器
-                if (renderType == NoteRenderType.Selected && width > 20)
-                {
-                    DrawVelocityIndicator(context, rect, note.Velocity);
-                }
+                DrawVelocityIndicator(context, rect, note.Velocity);
             }
+        }
+
+        private (IBrush brush, IPen pen) GetStyleForRenderType(NoteRenderType renderType, int velocity)
+        {
+            var opacity = CalculateOpacity(velocity, renderType);
+
+            return renderType switch
+            {
+                NoteRenderType.Selected => (
+                    CreateBrushWithOpacity(GetResourceBrush("NoteSelectedBrush", "#FFFF9800"), opacity),
+                    GetResourcePen("NoteSelectedPenBrush", "#FFF57C00", 2)
+                ),
+                NoteRenderType.Dragging => (
+                    CreateBrushWithOpacity(GetResourceBrush("NoteDraggingBrush", "#FF2196F3"), opacity),
+                    GetResourcePen("NoteDraggingPenBrush", "#FF1976D2", 2)
+                ),
+                NoteRenderType.Preview => (
+                    CreateBrushWithOpacity(GetResourceBrush("NotePreviewBrush", "#804CAF50"), opacity * 0.6),
+                    CreateDashedPen(GetResourceBrush("NotePreviewPenBrush", "#FF2E7D32"), 1)
+                ),
+                _ => ( // Normal
+                    CreateBrushWithOpacity(GetResourceBrush("NoteBrush", "#FF4CAF50"), opacity),
+                    GetResourcePen("NotePenBrush", "#FF2E7D32", 1)
+                )
+            };
         }
 
         private double CalculateOpacity(int velocity, NoteRenderType renderType)
@@ -92,6 +102,14 @@ namespace DominoNext.Renderers
             return originalBrush;
         }
 
+        private IPen CreateDashedPen(IBrush brush, double thickness)
+        {
+            return new Pen(brush, thickness)
+            {
+                DashStyle = new DashStyle(new double[] { 3, 3 }, 0)
+            };
+        }
+
         private void DrawVelocityIndicator(DrawingContext context, Rect noteRect, int velocity)
         {
             var indicatorHeight = 3;
@@ -103,7 +121,7 @@ namespace DominoNext.Renderers
                 indicatorHeight
             );
 
-            var velocityBrush = new SolidColorBrush(Color.Parse("#FFC107"));
+            var velocityBrush = GetResourceBrush("VelocityIndicatorBrush", "#FFFFC107");
             context.DrawRectangle(velocityBrush, null, indicatorRect);
         }
     }
