@@ -9,7 +9,7 @@
              xmlns:editing="using:DominoNext.Views.Controls.Editing"
              xmlns:canvas="using:DominoNext.Views.Controls.Canvas"
              xmlns:behaviors="using:DominoNext.Behaviors"
-             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:converters="using:DominoNext.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="DominoNext.Views.PianoRollView"
              x:DataType="vm:PianoRollViewModel">
@@ -30,145 +30,21 @@
 			<Setter Property="BorderBrush" Value="#D0D0D0"/>
 			<Setter Property="CornerRadius" Value="4"/>
 		</Style>
-
-		<Style Selector="Button.ToolButton:pointerover">
-			<Setter Property="Background" Value="#E8F4FD"/>
-			<Setter Property="BorderBrush" Value="#3d80df"/>
-		</Style>
-
-		<Style Selector="Button.ToolButton:pressed">
-			<Setter Property="Background" Value="#D0E8FF"/>
-		</Style>
-
-		<Style Selector="Button.ToolButton.active">
-			<Setter Property="Background" Value="#3d80df"/>
-			<Setter Property="BorderBrush" Value="#2d6bbf"/>
-		</Style>
-
-		<!-- 音符时值按钮样式 -->
-		<Style Selector="Button.NoteDurationButton">
-			<Setter Property="MinWidth" Value="50"/>
-			<Setter Property="Height" Value="32"/>
-			<Setter Property="Margin" Value="2"/>
-			<Setter Property="Padding" Value="4,0"/>
-			<Setter Property="Background" Value="Transparent"/>
-			<Setter Property="BorderThickness" Value="1"/>
-			<Setter Property="BorderBrush" Value="#D0D0D0"/>
-			<Setter Property="CornerRadius" Value="4"/>
-			<Setter Property="HorizontalContentAlignment" Value="Center"/>
-			<Setter Property="VerticalContentAlignment" Value="Center"/>
-		</Style>
-
-		<Style Selector="Button.NoteDurationButton:pointerover">
-			<Setter Property="Background" Value="#E8F4FD"/>
-			<Setter Property="BorderBrush" Value="#3d80df"/>
-		</Style>
-
-		<Style Selector="Button.NoteDurationButton:pressed">
-			<Setter Property="Background" Value="#D0E8FF"/>
-		</Style>
-
-		<!-- 确保 TextBlock 在按钮中居中 -->
-		<Style Selector="Button TextBlock">
-			<Setter Property="HorizontalAlignment" Value="Center"/>
-			<Setter Property="VerticalAlignment" Value="Center"/>
-			<Setter Property="TextAlignment" Value="Center"/>
-		</Style>
-
-		<!-- 保持原有滑块样式 -->
-		<Style Selector="Slider.CustomZoomSlider">
-			<Setter Property="Background" Value="Transparent"/>
-			<Setter Property="BorderThickness" Value="0"/>
-		</Style>
-
-		<Style Selector="Slider.CustomZoomSlider /template/ Track#PART_Track">
-			<Setter Property="Minimum" Value="{Binding $parent[Slider].Minimum}"/>
-			<Setter Property="Maximum" Value="{Binding $parent[Slider].Maximum}"/>
-			<Setter Property="Value" Value="{Binding $parent[Slider].Value, Mode=TwoWay}"/>
-		</Style>
-
-		<Style Selector="Slider.CustomZoomSlider /template/ Border#PART_DecreaseButton">
-			<Setter Property="Background" Value="#E0E0E0"/>
-			<Setter Property="Height" Value="4"/>
-			<Setter Property="CornerRadius" Value="2"/>
-		</Style>
-
-		<Style Selector="Slider.CustomZoomSlider /template/ Border#PART_IncreaseButton">
-			<Setter Property="Background" Value="#3d80df"/>
-			<Setter Property="Height" Value="4"/>
-			<Setter Property="CornerRadius" Value="2"/>
-		</Style>
-
-		<Style Selector="Slider.CustomZoomSlider /template/ Thumb">
-			<Setter Property="Background" Value="#3d80df"/>
-			<Setter Property="BorderBrush" Value="#FFFFFF"/>
-			<Setter Property="BorderThickness" Value="1"/>
-			<Setter Property="CornerRadius" Value="6"/>
-			<Setter Property="Width" Value="12"/>
-			<Setter Property="Height" Value="12"/>
-		</Style>
-
-		<Style Selector="Slider.CustomZoomSlider /template/ Thumb:pointerover">
-			<Setter Property="Background" Value="#5a9cff"/>
-		</Style>
-
-		<Style Selector="Slider.CustomZoomSlider /template/ Thumb:pressed">
-			<Setter Property="Background" Value="#2d6bbf"/>
-		</Style>
-
-		<!-- 垂直滑块样式 -->
-		<Style Selector="Slider.CustomVerticalZoomSlider">
-			<Setter Property="Background" Value="Transparent"/>
-			<Setter Property="BorderThickness" Value="0"/>
-			<Setter Property="Orientation" Value="Vertical"/>
-		</Style>
-
-		<Style Selector="Slider.CustomVerticalZoomSlider /template/ Track#PART_Track">
-			<Setter Property="Minimum" Value="{Binding $parent[Slider].Minimum}"/>
-			<Setter Property="Maximum" Value="{Binding $parent[Slider].Maximum}"/>
-			<Setter Property="Value" Value="{Binding $parent[Slider].Value, Mode=TwoWay}"/>
-		</Style>
-
-		<Style Selector="Slider.CustomVerticalZoomSlider /template/ Border#PART_DecreaseButton">
-			<Setter Property="Background" Value="#E0E0E0"/>
-			<Setter Property="Width" Value="4"/>
-			<Setter Property="CornerRadius" Value="2"/>
-		</Style>
-
-		<Style Selector="Slider.CustomVerticalZoomSlider /template/ Border#PART_IncreaseButton">
-			<Setter Property="Background" Value="#3d80df"/>
-			<Setter Property="Width" Value="4"/>
-			<Setter Property="CornerRadius" Value="2"/>
-		</Style>
-
-		<Style Selector="Slider.CustomVerticalZoomSlider /template/ Thumb">
-			<Setter Property="Background" Value="#3d80df"/>
-			<Setter Property="BorderBrush" Value="#FFFFFF"/>
-			<Setter Property="BorderThickness" Value="1"/>
-			<Setter Property="CornerRadius" Value="6"/>
-			<Setter Property="Width" Value="12"/>
-			<Setter Property="Height" Value="12"/>
-		</Style>
-
-		<Style Selector="Slider.CustomVerticalZoomSlider /template/ Thumb:pointerover">
-			<Setter Property="Background" Value="#5a9cff"/>
-		</Style>
-
-		<Style Selector="Slider.CustomVerticalZoomSlider /template/ Thumb:pressed">
-			<Setter Property="Background" Value="#2d6bbf"/>
-		</Style>
-
-		<Style Selector="GridSplitter">
-			<Setter Property="Background" Value="#E0E0E0"/>
-		</Style>
-
-		<Style Selector="GridSplitter:pointerover">
-			<Setter Property="Background" Value="#D0D0D0"/>
+		
+		<!-- 洋葱皮开关按钮样式 -->
+		<Style Selector="ToggleButton.OnionSkinToggle">
+			<Style Selector="^ /template/ ContentPresenter:checked">
+				<Setter Property="Background" Value="#4CAF50"/>
+				<Setter Property="BorderBrush" Value="#45a049"/>
+			</Style>
 		</Style>
 	</UserControl.Styles>
-
+	
 	<UserControl.Resources>
-
+		<!-- 布尔值到背景色转换器 -->
+		<converters:BoolToBackgroundConverter x:Key="BoolToBackgroundConverter"/>
+		<!-- 布尔值到前景色转换器 -->
+		<converters:BoolToForegroundConverter x:Key="BoolToForegroundConverter"/>
 	</UserControl.Resources>
 
 	<Grid>
@@ -227,6 +103,34 @@
 					<!-- 分隔线 -->
 					<Rectangle Width="1" Height="24" Fill="#D0D0D0" Margin="8,0"/>
 
+					<!-- 播放控制 -->
+					<Button ToolTip.Tip="播放"
+							Command="{Binding PlayCommand}"
+							Classes="ToolButton">
+						<PathIcon Data="M8,5.14V19.14L19,12.14L8,5.14Z"
+								  Width="16"
+								  Height="16"/>
+					</Button>
+
+					<Button ToolTip.Tip="暂停"
+							Command="{Binding PauseCommand}"
+							Classes="ToolButton">
+						<PathIcon Data="M14,19H18V5H14M6,19H10V5H6V19Z"
+								  Width="16"
+								  Height="16"/>
+					</Button>
+
+					<Button ToolTip.Tip="停止"
+							Command="{Binding StopCommand}"
+							Classes="ToolButton">
+						<PathIcon Data="M18,18H6V6H18V18Z"
+								  Width="16"
+								  Height="16"/>
+					</Button>
+
+					<!-- 分隔线 -->
+					<Rectangle Width="1" Height="24" Fill="#D0D0D0" Margin="8,0"/>
+
 					<!-- 网格量化选择器 -->
 					<Grid>
 						<Button Classes="NoteDurationButton"
@@ -274,7 +178,7 @@
 																	   Margin="0,0,8,0"
 																	   VerticalAlignment="Center"/>
 															<TextBlock Text="{Binding Name}"
-																	   VerticalAlignment="Center"/>
+															          VerticalAlignment="Center"/>
 														</StackPanel>
 													</Button>
 												</DataTemplate>
@@ -322,6 +226,45 @@
 					<Button Classes="ToolButton" Command="{Binding EditorCommands.QuantizeSelectedCommand}" ToolTip.Tip="量化 (Q)">
 						<TextBlock Text="📐" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 					</Button>
+
+					<!-- 分隔线 -->
+					<Rectangle Width="1" Height="24" Fill="#D0D0D0" Margin="8,0"/>
+
+					<!-- 洋葱皮控制 -->
+					<StackPanel Orientation="Horizontal" Spacing="5" Margin="10,0">
+						<TextBlock Text="洋葱皮:" VerticalAlignment="Center"/>
+						<ToggleButton Content="启用" 
+									  IsChecked="{Binding IsOnionSkinEnabled}"
+									  Command="{Binding ToggleOnionSkinCommand}"
+									  Background="{Binding IsOnionSkinEnabled, Converter={StaticResource BoolToBackgroundConverter}}"
+									  Foreground="{Binding IsOnionSkinEnabled, Converter={StaticResource BoolToForegroundConverter}}"/>
+						
+						<StackPanel Orientation="Horizontal" Spacing="2" IsVisible="{Binding IsOnionSkinEnabled}">
+							<TextBlock Text="前:" VerticalAlignment="Center"/>
+							<Button Content="-" Command="{Binding DecreasePreviousOnionSkinFramesCommand}"/>
+							<TextBlock Text="{Binding OnionSkinPreviousFrames}" 
+									   VerticalAlignment="Center" 
+									   Width="20" 
+									   TextAlignment="Center"/>
+							<Button Content="+" Command="{Binding IncreasePreviousOnionSkinFramesCommand}"/>
+							
+							<TextBlock Text="后:" VerticalAlignment="Center" Margin="10,0,0,0"/>
+							<Button Content="-" Command="{Binding DecreaseNextOnionSkinFramesCommand}"/>
+							<TextBlock Text="{Binding OnionSkinNextFrames}" 
+									   VerticalAlignment="Center" 
+									   Width="20" 
+									   TextAlignment="Center"/>
+							<Button Content="+" Command="{Binding IncreaseNextOnionSkinFramesCommand}"/>
+							
+							<TextBlock Text="透明度:" VerticalAlignment="Center" Margin="10,0,0,0"/>
+							<Button Content="-" Command="{Binding DecreaseOnionSkinOpacityCommand}"/>
+							<TextBlock Text="{Binding OnionSkinOpacity, StringFormat={}{0:P0}}" 
+									   VerticalAlignment="Center" 
+									   Width="40" 
+									   TextAlignment="Center"/>
+							<Button Content="+" Command="{Binding IncreaseOnionSkinOpacityCommand}"/>
+						</StackPanel>
+					</StackPanel>
 				</StackPanel>
 
 				<!-- 状态信息 -->
@@ -341,6 +284,22 @@
 							   Foreground="#666666"
 							   VerticalAlignment="Center"/>
 				</StackPanel>
+
+				<!-- 音轨选择控件 -->
+				<ComboBox Grid.Row="0" Grid.Column="1"
+						  ItemsSource="{Binding Tracks}"
+						  SelectedItem="{Binding SelectedTrack, Mode=TwoWay}"
+						  Width="180"
+						  Margin="0,6,0,0"
+						  HorizontalAlignment="Left"
+						  VerticalAlignment="Center"
+						  ToolTip.Tip="选择音轨">
+					<ComboBox.ItemTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding Name}"/>
+						</DataTemplate>
+					</ComboBox.ItemTemplate>
+				</ComboBox>
 			</Grid>
 		</Border>
 
@@ -360,8 +319,8 @@
 						  VerticalScrollBarVisibility="Disabled"
 						  Background="#F5F5F5">
 				<canvas:MeasureHeaderCanvas ViewModel="{Binding}"
-											  Width="5000"
-											  Height="30"/>
+											  Width="{Binding ContentWidth}"
+                                               Height="30"/>
 			</ScrollViewer>
 
 			<Border Grid.Column="2" Background="#F5F5F5"/>
@@ -394,7 +353,7 @@
                           Background="White">
 
 				<!-- 使用 Grid 来叠加多个层 -->
-				<Grid Width="5000" Height="{Binding TotalHeight}">
+				<Grid Width="{Binding ContentWidth}" Height="{Binding TotalHeight}">
 					<!-- 背景层：网格和时间线 -->
 					<canvas:PianoRollCanvas ViewModel="{Binding}"
                                             IsHitTestVisible="False"/>
@@ -402,7 +361,7 @@
 					<!-- 音符编辑层：用 Border 包裹，提供透明背景参与命中测试 -->
 					<Border Background="Transparent"
                             ZIndex="999"
-                            Width="5000"
+                            Width="{Binding ContentWidth}"
                             Height="{Binding TotalHeight}">
 						<editing:NoteEditingLayer ViewModel="{Binding}"
                                                   Focusable="True"
@@ -475,7 +434,7 @@
 						  VerticalScrollBarVisibility="Disabled"
 						  Background="White">
 				<canvas:EventViewCanvas ViewModel="{Binding}"
-										  Width="5000"/>
+										  Width="{Binding ContentWidth}"/>
 			</ScrollViewer>
 
 			<Border Grid.Row="1" Grid.Column="2" Background="#F5F5F5"/>

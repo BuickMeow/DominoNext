@@ -15,7 +15,7 @@ namespace DominoNext.Views.Settings
             InitializeComponent();
             Loaded += SettingsWindow_Loaded;
 
-            // ×¢²á°´Å¥ÊÂ¼þ
+            // ×¢ï¿½á°´Å¥ï¿½Â¼ï¿½
             if (CloseButton != null)
                 CloseButton.Click += CloseButton_Click;
 
@@ -28,30 +28,30 @@ namespace DominoNext.Views.Settings
 
         private void SettingsWindow_Loaded(object? sender, RoutedEventArgs e)
         {
-            // ´°¿Ú¼ÓÔØÊ±×Ô¶¯¼ÓÔØÉèÖÃ
+            // ï¿½ï¿½ï¿½Ú¼ï¿½ï¿½ï¿½Ê±ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             if (DataContext is SettingsWindowViewModel viewModel)
             {
                 try
                 {
-                    // ´ÓÅäÖÃÎÄ¼þ¼ÓÔØÉèÖÃ
+                    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                     viewModel.Settings.LoadFromFile();
 
-                    // Ó¦ÓÃ¼ÓÔØµÄÉèÖÃ
+                    // Ó¦ï¿½Ã¼ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½
                     ApplyLoadedSettings(viewModel);
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine($"¼ÓÔØÉèÖÃÊ§°Ü: {ex.Message}");
+                    System.Diagnostics.Debug.WriteLine($"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½: {ex.Message}");
                 }
             }
         }
 
         private void ApplyLoadedSettings(SettingsWindowViewModel viewModel)
         {
-            // Ó¦ÓÃÓïÑÔÉèÖÃ
+            // Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             viewModel.ApplyLanguageCommand.Execute(viewModel.Settings.Language);
 
-            // Ó¦ÓÃÖ÷ÌâÉèÖÃ
+            // Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             var themeKey = viewModel.Settings.Theme.Key switch
             {
                 "Default" => "Default",
@@ -64,14 +64,14 @@ namespace DominoNext.Views.Settings
 
         private void CloseButton_Click(object? sender, RoutedEventArgs e)
         {
-            // ¹Ø±Õ´°¿ÚÇ°¼ì²éÊÇ·ñÓÐÎ´±£´æµÄ¸ü¸Ä
+            // ï¿½Ø±Õ´ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½Î´ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½
             if (DataContext is SettingsWindowViewModel viewModel && viewModel.HasUnsavedChanges)
             {
                 var result = ShowSaveChangesDialog();
                 switch (result)
                 {
                     case SaveChangesResult.Save:
-                        // ±£´æÉèÖÃµ½ÎÄ¼þ
+                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½ï¿½Ä¼ï¿½
                         SaveSettingsToFile(viewModel);
                         Close();
                         break;
@@ -79,7 +79,7 @@ namespace DominoNext.Views.Settings
                         Close();
                         break;
                     case SaveChangesResult.Cancel:
-                        // ²»¹Ø±Õ´°¿Ú
+                        // ï¿½ï¿½ï¿½Ø±Õ´ï¿½ï¿½ï¿½
                         break;
                 }
             }
@@ -91,29 +91,29 @@ namespace DominoNext.Views.Settings
 
         private SaveChangesResult ShowSaveChangesDialog()
         {
-            // ¼òµ¥µÄ±£´æ¸ü¸Ä¶Ô»°¿òÊµÏÖ
-            // Êµ¼ÊÏîÄ¿ÖÐ¿ÉÒÔÊ¹ÓÃ¸üÍêÉÆµÄ¶Ô»°¿ò·þÎñ
-            return SaveChangesResult.Save; // Ä¬ÈÏ±£´æ
+            // ï¿½òµ¥µÄ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¶Ô»ï¿½ï¿½ï¿½Êµï¿½ï¿½
+            // Êµï¿½ï¿½ï¿½ï¿½Ä¿ï¿½Ð¿ï¿½ï¿½ï¿½Ê¹ï¿½Ã¸ï¿½ï¿½ï¿½ï¿½ÆµÄ¶Ô»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            return SaveChangesResult.Save; // Ä¬ï¿½Ï±ï¿½ï¿½ï¿½
         }
 
         private async void SaveSettingsToFile(SettingsWindowViewModel viewModel)
         {
             try
             {
-                // ±£´æÉèÖÃµ½ÅäÖÃÎÄ¼þ
-                viewModel.Settings.SaveToFile();
+                // ä¿å­˜è®¾ç½®åˆ°æ–‡ä»¶
+                await Task.Run(() => viewModel.Settings.SaveToFile());
                 viewModel.HasUnsavedChanges = false;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"±£´æÉèÖÃµ½ÎÄ¼þÊ§°Ü: {ex.Message}");
-                // ¿ÉÒÔÏÔÊ¾´íÎóÏûÏ¢¸øÓÃ»§
+                System.Diagnostics.Debug.WriteLine($"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½ï¿½Ä¼ï¿½Ê§ï¿½ï¿½: {ex.Message}");
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½Ã»ï¿½
             }
         }
 
         protected override void OnClosing(WindowClosingEventArgs e)
         {
-            // ´°¿Ú¹Ø±ÕÊ±¼ì²éÊÇ·ñÓÐÎ´±£´æµÄ¸ü¸Ä
+            // ï¿½ï¿½ï¿½Ú¹Ø±ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½Î´ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½
             if (DataContext is SettingsWindowViewModel viewModel && viewModel.HasUnsavedChanges)
             {
                 var result = ShowSaveChangesDialog();
@@ -125,7 +125,7 @@ namespace DominoNext.Views.Settings
                     case SaveChangesResult.DontSave:
                         break;
                     case SaveChangesResult.Cancel:
-                        e.Cancel = true; // È¡Ïû¹Ø±Õ
+                        e.Cancel = true; // È¡ï¿½ï¿½ï¿½Ø±ï¿½
                         return;
                 }
             }
@@ -133,17 +133,17 @@ namespace DominoNext.Views.Settings
             base.OnClosing(e);
         }
 
-        // Ìí¼Ó´ÓÎÄ¼þ¼ÓÔØÉèÖÃµÄ°´Å¥µã»÷ÊÂ¼þ
+        // ï¿½ï¿½ï¿½Ó´ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÃµÄ°ï¿½Å¥ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
         private async void LoadSettingsFromFile_Click(object? sender, RoutedEventArgs e)
         {
             if (DataContext is SettingsWindowViewModel viewModel)
             {
                 try
                 {
-                    // µ¯³öÎÄ¼þÑ¡Ôñ¶Ô»°¿ò
+                    // ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½Ñ¡ï¿½ï¿½ï¿½Ô»ï¿½ï¿½ï¿½
                     var files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
                     {
-                        Title = "Ñ¡ÔñÅäÖÃÎÄ¼þ",
+                        Title = "Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½",
                         FileTypeFilter = new[] { new FilePickerFileType("JSON Files") { Patterns = new[] { "*.json" } } },
                         AllowMultiple = false
                     });
@@ -155,36 +155,36 @@ namespace DominoNext.Views.Settings
 
                         if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
                         {
-                            // Ê¹ÓÃSettingsModelµÄ×Ô¶¨ÒåÂ·¾¶¼ÓÔØ·½·¨
+                            // Ê¹ï¿½ï¿½SettingsModelï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½Ø·ï¿½ï¿½ï¿½
                             viewModel.Settings.LoadFromFile(filePath);
 
-                            // Ó¦ÓÃ¼ÓÔØµÄÉèÖÃ
+                            // Ó¦ï¿½Ã¼ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½
                             ApplyLoadedSettings(viewModel);
 
-                            // ±ê¼ÇÓÐ¸ü¸Ä
+                            // ï¿½ï¿½ï¿½ï¿½ï¿½Ð¸ï¿½ï¿½ï¿½
                             viewModel.HasUnsavedChanges = true;
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine($"´ÓÎÄ¼þ¼ÓÔØÉèÖÃÊ§°Ü: {ex.Message}");
-                    // ¿ÉÒÔÏÔÊ¾´íÎóÏûÏ¢¸øÓÃ»§
+                    System.Diagnostics.Debug.WriteLine($"ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½: {ex.Message}");
+                    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½Ã»ï¿½
                 }
             }
         }
 
-        // Ìí¼Ó±£´æÉèÖÃµ½ÎÄ¼þµÄ°´Å¥µã»÷ÊÂ¼þ
+        // ï¿½ï¿½ï¿½Ó±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½ï¿½Ä¼ï¿½ï¿½Ä°ï¿½Å¥ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
         private async void SaveSettingsToFile_Click(object? sender, RoutedEventArgs e)
         {
             if (DataContext is SettingsWindowViewModel viewModel)
             {
                 try
                 {
-                    // µ¯³öÎÄ¼þ±£´æ¶Ô»°¿ò
+                    // ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô»ï¿½ï¿½ï¿½
                     var file = await StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
                     {
-                        Title = "±£´æÅäÖÃÎÄ¼þ",
+                        Title = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½",
                         FileTypeChoices = new[] { new FilePickerFileType("JSON Files") { Patterns = new[] { "*.json" } } },
                         DefaultExtension = "json",
                         SuggestedFileName = "settings.json"
@@ -196,22 +196,22 @@ namespace DominoNext.Views.Settings
 
                         if (!string.IsNullOrEmpty(filePath))
                         {
-                            // Ê¹ÓÃSettingsModelµÄ×Ô¶¨ÒåÂ·¾¶±£´æ·½·¨
+                            // Ê¹ï¿½ï¿½SettingsModelï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½æ·½ï¿½ï¿½
                             viewModel.Settings.SaveToFile(filePath);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine($"±£´æÉèÖÃµ½ÎÄ¼þÊ§°Ü: {ex.Message}");
-                    // ¿ÉÒÔÏÔÊ¾´íÎóÏûÏ¢¸øÓÃ»§
+                    System.Diagnostics.Debug.WriteLine($"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½ï¿½Ä¼ï¿½Ê§ï¿½ï¿½: {ex.Message}");
+                    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½Ã»ï¿½
                 }
             }
         }
     }
 
     /// <summary>
-    /// ±£´æ¸ü¸Ä¶Ô»°¿ò½á¹ûÃ¶¾Ù
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¶Ô»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¶ï¿½ï¿½
     /// </summary>
     public enum SaveChangesResult
     {

@@ -3,20 +3,22 @@ using CommunityToolkit.Mvvm.ComponentModel;
 namespace DominoNext.Models.Settings
 {
     /// <summary>
-    /// ÉèÖÃÒ³ÃæÀàĞÍ
+    /// è®¾ç½®é¡µé¢ç±»å‹
     /// </summary>
     public enum SettingsPageType
     {
-        General,      // ³£¹æÉèÖÃ
-        Language,     // ÓïÑÔÉèÖÃ
-        Theme,        // Ö÷ÌâÉèÖÃ
-        Editor,       // ±à¼­Æ÷ÉèÖÃ
-        Shortcuts,    // ¿ì½İ¼üÉèÖÃ
-        Advanced      // ¸ß¼¶ÉèÖÃ
+        General,      // é€šç”¨è®¾ç½®
+        Language,     // è¯­è¨€è®¾ç½®
+        Theme,        // ä¸»é¢˜è®¾ç½®
+        Editor,       // ç¼–è¾‘å™¨è®¾ç½®
+        Shortcuts,    // å¿«æ·é”®è®¾ç½®
+        Playlist,     // æ’­æ”¾åˆ—è¡¨è®¾ç½®
+        Audio,        // éŸ³é¢‘è®¾ç½®
+        Advanced      // é«˜çº§è®¾ç½®
     }
 
     /// <summary>
-    /// ÉèÖÃÒ³ÃæĞÅÏ¢
+    /// è®¾ç½®é¡µé¢ä¿¡æ¯
     /// </summary>
     public class SettingsPageInfo
     {
@@ -27,7 +29,7 @@ namespace DominoNext.Models.Settings
     }
 
     /// <summary>
-    /// ÓïÑÔÑ¡Ïî
+    /// è¯­è¨€é€‰é¡¹
     /// </summary>
     public class LanguageOption
     {
@@ -37,7 +39,7 @@ namespace DominoNext.Models.Settings
     }
 
     /// <summary>
-    /// Ö÷ÌâÑ¡Ïî
+    /// ä¸»é¢˜é€‰é¡¹
     /// </summary>
     public class ThemeOption
     {
@@ -47,7 +49,7 @@ namespace DominoNext.Models.Settings
     }
 
     /// <summary>
-    /// ¿ì½İ¼üÉèÖÃÏî
+    /// å¿«æ·é”®è®¾ç½®
     /// </summary>
     public partial class ShortcutSetting : ObservableObject
     {

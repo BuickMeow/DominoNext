@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using Avalonia;
@@ -31,7 +31,15 @@ namespace DominoNext.Services.Implementation
 
             if (IsValidNotePosition(pitch, startTime))
             {
-                _viewModel.AddNote(pitch, startTime);
+                // 创建一个新的音符并添加到视图模型
+                var note = new NoteViewModel
+                {
+                    Pitch = pitch,
+                    StartPosition = MusicalFraction.FromTicks((long)startTime, _viewModel.TicksPerBeat),
+                    Duration = _viewModel.UserDefinedNoteDuration
+                };
+                
+                _viewModel.AddNote(note);
             }
         }
 

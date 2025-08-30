@@ -37,16 +37,16 @@ namespace DominoNext.Services.Implementation
         public Point GetPositionFromNote(NoteViewModel note, double zoom, double pixelsPerTick, double keyHeight)
         {
             return new Point(
-                note.GetX(zoom, pixelsPerTick),
+                note.GetX(pixelsPerTick, (int)zoom),
                 note.GetY(keyHeight)
             );
         }
 
         public Rect GetNoteRect(NoteViewModel note, double zoom, double pixelsPerTick, double keyHeight)
         {
-            var x = note.GetX(zoom, pixelsPerTick);
+            var x = note.GetX(pixelsPerTick, (int)zoom);
             var y = note.GetY(keyHeight);
-            var width = note.GetWidth(zoom, pixelsPerTick);
+            var width = note.GetWidth(pixelsPerTick, (int)zoom);
             var height = note.GetHeight(keyHeight);
 
             return new Rect(x, y, width, height);

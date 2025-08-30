@@ -8,7 +8,7 @@ using DominoNext.Views.Controls.Editing;
 namespace DominoNext.Views.Controls.Editing.Input
 {
     /// <summary>
-    /// 输入事件路由器 - 简化版本
+    /// 杈撳叆浜嬩欢璺敱 - 閫氱敤鐗堟湰
     /// </summary>
     public class InputEventRouter
     {
@@ -18,14 +18,14 @@ namespace DominoNext.Views.Controls.Editing.Input
 
             if (viewModel?.EditorCommands == null)
             {
-                Debug.WriteLine("错误: ViewModel或EditorCommands为空");
+                Debug.WriteLine("閿欒: ViewModel鎴朎ditorCommands涓虹┖");
                 return;
             }
 
             var position = e.GetPosition(control);
             var properties = e.GetCurrentPoint(control).Properties;
 
-            Debug.WriteLine($"指针位置: {position}, 工具: {viewModel.CurrentTool}");
+            Debug.WriteLine($"鎸囬拡浣嶇疆: {position}, 宸ュ叿: {viewModel.CurrentTool}");
 
             if (properties.IsLeftButtonPressed)
             {

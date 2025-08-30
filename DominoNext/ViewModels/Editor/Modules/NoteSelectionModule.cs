@@ -8,7 +8,7 @@ using DominoNext.Services.Interfaces;
 namespace DominoNext.ViewModels.Editor.Modules
 {
     /// <summary>
-    /// Òô·ûÑ¡Ôñ¹¦ÄÜÄ£¿é
+    /// ç¬”è®°é€‰æ‹©æ¨¡å—
     /// </summary>
     public class NoteSelectionModule
     {
@@ -28,7 +28,7 @@ namespace DominoNext.ViewModels.Editor.Modules
         }
 
         /// <summary>
-        /// »ñÈ¡Ö¸¶¨Î»ÖÃµÄÒô·û
+        /// è·å–æŒ‡å®šä½ç½®çš„éŸ³ç¬¦
         /// </summary>
         public NoteViewModel? GetNoteAtPosition(Point position, IEnumerable<NoteViewModel> notes, double zoom, double pixelsPerTick, double keyHeight)
         {
@@ -44,16 +44,17 @@ namespace DominoNext.ViewModels.Editor.Modules
         }
 
         /// <summary>
-        /// ¿ªÊ¼Ñ¡Ôñ¿ò
+        /// å¼€å§‹é€‰æ‹©
         /// </summary>
         public void StartSelection(Point startPoint)
         {
             _selectionState.StartSelection(startPoint);
+            OnSelectionStarted?.Invoke();
             OnSelectionUpdated?.Invoke();
         }
 
         /// <summary>
-        /// ¸üĞÂÑ¡Ôñ¿ò
+        /// æ›´æ–°é€‰æ‹©
         /// </summary>
         public void UpdateSelection(Point currentPoint)
         {
@@ -62,7 +63,7 @@ namespace DominoNext.ViewModels.Editor.Modules
         }
 
         /// <summary>
-        /// ½áÊøÑ¡Ôñ¿ò
+        /// ç»“æŸé€‰æ‹©
         /// </summary>
         public void EndSelection(IEnumerable<NoteViewModel> notes)
         {
@@ -81,11 +82,12 @@ namespace DominoNext.ViewModels.Editor.Modules
             }
 
             _selectionState.EndSelection();
+            OnSelectionEnded?.Invoke();
             OnSelectionUpdated?.Invoke();
         }
 
         /// <summary>
-        /// Ñ¡Ôñ¾ØĞÎÇøÓòµÄÒô·û
+        /// é€‰æ‹©åŒºåŸŸå†…çš„éŸ³ç¬¦
         /// </summary>
         public void SelectNotesInArea(Rect area, IEnumerable<NoteViewModel> notes)
         {
@@ -106,7 +108,7 @@ namespace DominoNext.ViewModels.Editor.Modules
         }
 
         /// <summary>
-        /// Çå³ıÑ¡Ôñ
+        /// æ¸…é™¤é€‰æ‹©
         /// </summary>
         public void ClearSelection(IEnumerable<NoteViewModel> notes)
         {
@@ -117,7 +119,7 @@ namespace DominoNext.ViewModels.Editor.Modules
         }
 
         /// <summary>
-        /// Ñ¡ÔñËùÓĞÒô·û
+        /// é€‰æ‹©æ‰€æœ‰éŸ³ç¬¦
         /// </summary>
         public void SelectAll(IEnumerable<NoteViewModel> notes)
         {
@@ -127,10 +129,12 @@ namespace DominoNext.ViewModels.Editor.Modules
             }
         }
 
-        // ÊÂ¼ş
+        // äº‹ä»¶
+        public event Action? OnSelectionStarted;
         public event Action? OnSelectionUpdated;
+        public event Action? OnSelectionEnded;
 
-        // Ö»¶ÁÊôĞÔ
+        // åªè¯»å±æ€§
         public bool IsSelecting => _selectionState.IsSelecting;
         public Point? SelectionStart => _selectionState.SelectionStart;
         public Point? SelectionEnd => _selectionState.SelectionEnd;

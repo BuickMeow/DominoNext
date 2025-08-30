@@ -19,73 +19,74 @@ namespace DominoNext
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
-            System.Diagnostics.Debug.WriteLine("App.Initialize() ÕÍ≥…");
+            System.Diagnostics.Debug.WriteLine("App.Initialize() ");
         }
 
         public override async void OnFrameworkInitializationCompleted()
         {
-            System.Diagnostics.Debug.WriteLine("OnFrameworkInitializationCompleted ø™ º");
+            System.Diagnostics.Debug.WriteLine("OnFrameworkInitializationCompleted  º");
             
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                System.Diagnostics.Debug.WriteLine("ºÏ≤‚µΩ◊¿√Ê”¶”√≥Ã–Ú…˙√¸÷‹∆⁄");
+                System.Diagnostics.Debug.WriteLine("‚µΩ”¶√≥");
                 
                 // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
                 // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
                 DisableAvaloniaDataAnnotationValidation();
-                System.Diagnostics.Debug.WriteLine(" ˝æ›—È÷§≤Âº˛“—Ω˚”√");
+                System.Diagnostics.Debug.WriteLine("÷§—Ω");
 
                 try
                 {
-                    // ≥ı ºªØ…Ë÷√∑˛ŒÒ
+                    //  º√∑
                     _settingsService = new SettingsService();
-                    System.Diagnostics.Debug.WriteLine("…Ë÷√∑˛ŒÒ“—¥¥Ω®");
+                    System.Diagnostics.Debug.WriteLine("√∑—¥");
                     
                     await _settingsService.LoadSettingsAsync();
-                    System.Diagnostics.Debug.WriteLine("…Ë÷√“—º”‘ÿ");
+                    System.Diagnostics.Debug.WriteLine("—º");
 
-                    var viewModel = new MainWindowViewModel(_settingsService);
-                    System.Diagnostics.Debug.WriteLine("MainWindowViewModel “—¥¥Ω®");
+                    var viewModel = new MainWindowViewModel(_settingsService, new ProjectStorageService(), new PlaybackService());
+                    System.Diagnostics.Debug.WriteLine("MainWindowViewModel —¥");
 
                     var mainWindow = new MainWindow
                     {
                         DataContext = viewModel,
                     };
-                    System.Diagnostics.Debug.WriteLine("MainWindow “—¥¥Ω®");
+                    System.Diagnostics.Debug.WriteLine("MainWindow —¥");
 
                     desktop.MainWindow = mainWindow;
-                    System.Diagnostics.Debug.WriteLine("MainWindow “—…Ë÷√Œ™”¶”√≥Ã–Ú÷˜¥∞ø⁄");
+                    System.Diagnostics.Debug.WriteLine("MainWindow Œ™”¶√≥");
 
-                    // œ‘ Ωœ‘ æ¥∞ø⁄
+                    //  Ω æ
                     mainWindow.Show();
-                    System.Diagnostics.Debug.WriteLine("MainWindow.Show() “—µ˜”√");
+                    System.Diagnostics.Debug.WriteLine("MainWindow.Show() —µ");
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine($"¥¥Ω®÷˜¥∞ø⁄ ±∑¢…˙¥ÌŒÛ: {ex.Message}");
-                    System.Diagnostics.Debug.WriteLine($"∂—’ª∏˙◊Ÿ: {ex.StackTrace}");
+                    System.Diagnostics.Debug.WriteLine($" ±: {ex.Message}");
+                    System.Diagnostics.Debug.WriteLine($"’ª: {ex.StackTrace}");
                 }
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine("Œ¥ºÏ≤‚µΩ◊¿√Ê”¶”√≥Ã–Ú…˙√¸÷‹∆⁄");
+                System.Diagnostics.Debug.WriteLine("Œ¥‚µΩ”¶√≥");
             }
 
             base.OnFrameworkInitializationCompleted();
-            System.Diagnostics.Debug.WriteLine("OnFrameworkInitializationCompleted ÕÍ≥…");
+            System.Diagnostics.Debug.WriteLine("OnFrameworkInitializationCompleted ");
         }
-
+        
         private void DisableAvaloniaDataAnnotationValidation()
         {
-            // Get an array of plugins to remove
-            var dataValidationPluginsToRemove =
-                BindingPlugins.DataValidators.OfType<DataAnnotationsValidationPlugin>().ToArray();
-
-            // remove each entry found
-            foreach (var plugin in dataValidationPluginsToRemove)
+            // ÈÅøÂÖç Avalonia Âíå CommunityToolkit ÁöÑÈáçÂ§çÈ™åËØÅ
+            // Êõ¥Â§ö‰ø°ÊÅØÔºöhttps://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
+            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                BindingPlugins.DataValidators.Remove(plugin);
+                foreach (var plugin in BindingPlugins.DataValidators.OfType<DataAnnotationsValidationPlugin>().ToList())
+                {
+                    BindingPlugins.DataValidators.Remove(plugin);
+                }
             }
         }
+
     }
 }

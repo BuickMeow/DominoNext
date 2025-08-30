@@ -7,10 +7,7 @@ namespace DominoNext.Services.Interfaces
 {
     public interface IProjectStorageService
     {
-        Task<bool> SaveProjectAsync(string filePath, IEnumerable<Note> notes, ProjectMetadata metadata);
-        Task<(IEnumerable<Note> notes, ProjectMetadata metadata)> LoadProjectAsync(string filePath);
-        Task<bool> ExportMidiAsync(string filePath, IEnumerable<Note> notes);
-        Task<IEnumerable<Note>> ImportMidiAsync(string filePath);
+        // TODO: 定义项目存储服务接口
     }
 
     public class ProjectMetadata

@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using DominoNext.Models.Music;
 using System;
 
@@ -15,7 +15,15 @@ namespace DominoNext.ViewModels.Editor
         [ObservableProperty]
         private bool _isPreview;
 
+        // 秒级时间（加载MIDI时赋值）
+        [ObservableProperty]
+        private double _startSeconds;
+        [ObservableProperty]
+        private double _durationSeconds;
+
         // 缓存计算结果以提升性能
+        // 这些字段在GetX和GetWidth等方法中被使用，用于缓存计算结果避免重复计算
+        #pragma warning disable CS0414
         private double _cachedX = double.NaN;
         private double _cachedY = double.NaN;
         private double _cachedWidth = double.NaN;
@@ -23,6 +31,7 @@ namespace DominoNext.ViewModels.Editor
         private double _lastZoom = double.NaN;
         private double _lastVerticalZoom = double.NaN;
         private double _lastPixelsPerTick = double.NaN;
+        #pragma warning restore CS0414
 
         public NoteViewModel(Note note)
         {
@@ -155,39 +164,10 @@ namespace DominoNext.ViewModels.Editor
         public Note GetModel() => _note;
 
         // 现有的UI相关方法保持不变
-        public double GetX(double zoom, double pixelsPerTick)
+        public double GetX(double pixelsPerTick, int ticksPerBeat)
         {
-            var currentKey = zoom * pixelsPerTick;
-            if (double.IsNaN(_cachedX) || Math.Abs(_lastZoom - currentKey) > 0.001)
-            {
-                var startTime = StartTime;
-                // 添加安全检查
-                if (double.IsNaN(startTime) || double.IsInfinity(startTime))
-                {
-                    _cachedX = 0;
-                }
-                else
-                {
-                    // 修复：对于startTime为0的情况，确保x位置也是0
-                    if (Math.Abs(startTime) < 1e-10)
-                    {
-                        _cachedX = 0;
-                        System.Diagnostics.Debug.WriteLine($"NoteViewModel.GetX: StartTime={startTime} -> X=0 (特殊处理)");
-                    }
-                    else
-                    {
-                        _cachedX = startTime * pixelsPerTick * zoom;
-
-                        // 添加调试信息（只记录前面几个音符，避免日志过多）
-                        if (startTime < 100)
-                        {
-                            System.Diagnostics.Debug.WriteLine($"NoteViewModel.GetX: StartTime={startTime}, pixelsPerTick={pixelsPerTick}, zoom={zoom} -> X={_cachedX}");
-                        }
-                    }
-                }
-                _lastZoom = currentKey;
-            }
-            return _cachedX;
+            var startTime = StartPosition.ToTicks(ticksPerBeat);
+            return startTime * pixelsPerTick;
         }
 
         public double GetY(double keyHeight)
@@ -200,24 +180,10 @@ namespace DominoNext.ViewModels.Editor
             return _cachedY;
         }
 
-        public double GetWidth(double zoom, double pixelsPerTick)
+        public double GetWidth(double pixelsPerTick, int ticksPerBeat)
         {
-            var currentKey = zoom * pixelsPerTick;
-            if (double.IsNaN(_cachedWidth) || Math.Abs(_lastPixelsPerTick - currentKey) > 0.001)
-            {
-                var duration = DurationInTicks;
-                // 添加安全检查
-                if (double.IsNaN(duration) || double.IsInfinity(duration) || duration <= 0)
-                {
-                    _cachedWidth = 4; // 最小宽度
-                }
-                else
-                {
-                    _cachedWidth = duration * pixelsPerTick * zoom;
-                }
-                _lastPixelsPerTick = currentKey;
-            }
-            return _cachedWidth;
+            var duration = Duration.ToTicks(ticksPerBeat);
+            return duration * pixelsPerTick;
         }
 
         public double GetHeight(double keyHeight)

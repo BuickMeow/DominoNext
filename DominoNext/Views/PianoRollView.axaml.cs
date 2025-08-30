@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using System;
+using DominoNext.ViewModels.Editor;
 
 namespace DominoNext.Views
 {
@@ -16,34 +17,48 @@ namespace DominoNext.Views
 
         private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            // ¶©ÔÄÖ÷¹ö¶¯ÊÓÍ¼µÄ¹ö¶¯ÊÂ¼ş
-            if (this.FindControl<ScrollViewer>("MainScrollViewer") is ScrollViewer mainScrollViewer)
+            ScrollViewer? mainScrollViewer = null;
+
+            // å…³è”ä¸»è§†å›¾çš„æ»šåŠ¨äº‹ä»¶
+            if (this.FindControl<ScrollViewer>("MainScrollViewer") is ScrollViewer mainScrollViewerControl)
             {
-                mainScrollViewer.ScrollChanged += OnMainScrollViewerScrollChanged;
+                mainScrollViewer = mainScrollViewerControl;
+                mainScrollViewerControl.ScrollChanged += OnMainScrollViewerScrollChanged;
             }
 
-            // ¶©ÔÄ¸ÖÇÙ¼ü¹ö¶¯ÊÓÍ¼µÄ¹ö¶¯ÊÂ¼ş
+            // å…³è”é’¢ç´é”®åŒºåŸŸçš„æ»šåŠ¨äº‹ä»¶
             if (this.FindControl<ScrollViewer>("PianoKeysScrollViewer") is ScrollViewer pianoKeysScrollViewer)
             {
                 pianoKeysScrollViewer.ScrollChanged += OnPianoKeysScrollViewerScrollChanged;
             }
 
-            // ¶©ÔÄÊÂ¼şÊÓÍ¼¹ö¶¯ÊÓÍ¼µÄ¹ö¶¯ÊÂ¼ş
+            // å…³è”äº‹ä»¶è§†å›¾çš„æ»šåŠ¨äº‹ä»¶
             if (this.FindControl<ScrollViewer>("EventViewScrollViewer") is ScrollViewer eventViewScrollViewer)
             {
                 eventViewScrollViewer.ScrollChanged += OnEventViewScrollViewerScrollChanged;
             }
 
-            // ¶©ÔÄµ×²¿Ë®Æ½¹ö¶¯ÌõµÄÖµ±ä»¯ÊÂ¼ş
+            // å…³è”åº•éƒ¨æ°´å¹³æ»šåŠ¨æ¡çš„å€¼å˜åŒ–äº‹ä»¶
             if (this.FindControl<ScrollBar>("HorizontalScrollBar") is ScrollBar horizontalScrollBar)
             {
                 horizontalScrollBar.ValueChanged += OnHorizontalScrollBarValueChanged;
             }
 
-            // ¶©ÔÄÓÒ²à´¹Ö±¹ö¶¯ÌõµÄÖµ±ä»¯ÊÂ¼ş
+            // å…³è”å³ä¾§å‚ç›´æ»šåŠ¨æ¡çš„å€¼å˜åŒ–äº‹ä»¶
             if (this.FindControl<ScrollBar>("VerticalScrollBar") is ScrollBar verticalScrollBar)
             {
                 verticalScrollBar.ValueChanged += OnVerticalScrollBarValueChanged;
+            }
+
+            // åˆå§‹åŒ–æ—¶æ ¹æ®å®é™…è§†å£å®½åº¦è°ƒæ•´å°èŠ‚æ•°
+            if (DataContext is PianoRollViewModel pianoRollViewModel && mainScrollViewer != null)
+            {
+                var viewportWidth = mainScrollViewer.Viewport.Width;
+                if (viewportWidth > 0)
+                {
+                    // ä½¿ç”¨å®é™…è§†å£å®½åº¦é‡æ–°è®¡ç®—å°èŠ‚æ•°
+                    pianoRollViewModel.TotalMeasures = pianoRollViewModel.CalculateMeasuresToFillUI(viewportWidth);
+                }
             }
         }
 
@@ -55,13 +70,24 @@ namespace DominoNext.Views
             {
                 _isUpdatingScroll = true;
 
-                // Í¬²½Ğ¡½Ú±êÌâµÄË®Æ½¹ö¶¯
+                // æ£€æŸ¥æ˜¯å¦éœ€è¦è‡ªåŠ¨æ‰©å±•é’¢ç´å·å¸˜
+                if (DataContext is PianoRollViewModel pianoRollViewModel)
+                {
+                    // ä½¿ç”¨æ»šåŠ¨ä½ç½®æ›¿ä»£TimelinePosition
+                    var scrollViewer = sender as ScrollViewer;
+                    if (scrollViewer != null)
+                    {
+                        pianoRollViewModel.AutoExtendWhenNearEnd(scrollViewer.Offset.X + scrollViewer.Viewport.Width);
+                    }
+                }
+
+                // åŒæ­¥å°èŠ‚æ ‡é¢˜çš„æ°´å¹³æ»šåŠ¨
                 SyncMeasureHeaderScroll();
 
-                // Í¬²½ÊÂ¼şÊÓÍ¼µÄË®Æ½¹ö¶¯
+                // åŒæ­¥äº‹ä»¶è§†å›¾çš„æ°´å¹³æ»šåŠ¨
                 SyncEventViewScroll();
 
-                // Í¬²½¸ÖÇÙ¼üµÄ´¹Ö±¹ö¶¯
+                // åŒæ­¥é’¢ç´é”®çš„å‚ç›´æ»šåŠ¨
                 SyncPianoKeysScroll();
             }
             finally
@@ -78,7 +104,7 @@ namespace DominoNext.Views
             {
                 _isUpdatingScroll = true;
 
-                // Í¬²½Ö÷ÊÓÍ¼µÄ´¹Ö±¹ö¶¯
+                // åŒæ­¥ä¸»æ»šåŠ¨è§†å›¾çš„å‚ç›´æ»šåŠ¨
                 if (this.FindControl<ScrollViewer>("MainScrollViewer") is ScrollViewer mainScrollViewer &&
                     sender is ScrollViewer pianoKeysScrollViewer)
                 {
@@ -100,7 +126,7 @@ namespace DominoNext.Views
             {
                 _isUpdatingScroll = true;
 
-                // Í¬²½Ö÷ÊÓÍ¼µÄË®Æ½¹ö¶¯
+                // åŒæ­¥ä¸»æ»šåŠ¨è§†å›¾çš„æ°´å¹³æ»šåŠ¨
                 if (this.FindControl<ScrollViewer>("MainScrollViewer") is ScrollViewer mainScrollViewer &&
                     sender is ScrollViewer eventViewScrollViewer)
                 {
@@ -108,7 +134,7 @@ namespace DominoNext.Views
                     mainScrollViewer.Offset = newOffset;
                 }
 
-                // Í¬²½Ğ¡½Ú±êÌâµÄË®Æ½¹ö¶¯
+                // åŒæ­¥å°èŠ‚æ ‡é¢˜çš„æ°´å¹³æ»šåŠ¨
                 SyncMeasureHeaderScroll();
             }
             finally
@@ -125,7 +151,7 @@ namespace DominoNext.Views
             {
                 _isUpdatingScroll = true;
 
-                // µ±Ë®Æ½¹ö¶¯ÌõÖµ±ä»¯Ê±£¬ÊÖ¶¯¸üĞÂ MainScrollViewer µÄË®Æ½Æ«ÒÆÁ¿
+                // å½“æ°´å¹³æ»šåŠ¨æ¡çš„å€¼æ”¹å˜æ—¶ï¼Œæ›´æ–° MainScrollViewer çš„æ°´å¹³åç§»
                 if (this.FindControl<ScrollViewer>("MainScrollViewer") is ScrollViewer mainScrollViewer &&
                     sender is ScrollBar scrollBar)
                 {
@@ -150,7 +176,7 @@ namespace DominoNext.Views
             {
                 _isUpdatingScroll = true;
 
-                // µ±´¹Ö±¹ö¶¯ÌõÖµ±ä»¯Ê±£¬ÊÖ¶¯¸üĞÂ MainScrollViewer µÄ´¹Ö±Æ«ÒÆÁ¿
+                // å½“å‚ç›´æ»šåŠ¨æ¡çš„å€¼æ”¹å˜æ—¶ï¼Œæ›´æ–° MainScrollViewer çš„å‚ç›´åç§»
                 if (this.FindControl<ScrollViewer>("MainScrollViewer") is ScrollViewer mainScrollViewer &&
                     sender is ScrollBar scrollBar)
                 {

@@ -297,9 +297,9 @@ namespace DominoNext.Views.Controls.Editing
         {
             if (ViewModel == null) return default;
 
-            var x = note.GetX(ViewModel.Zoom, ViewModel.PixelsPerTick);
+            var x = note.GetX(ViewModel.PixelsPerTick, ViewModel.TicksPerBeat);
             var y = note.GetY(ViewModel.KeyHeight);
-            var width = Math.Max(4, note.GetWidth(ViewModel.Zoom, ViewModel.PixelsPerTick));
+            var width = Math.Max(4, note.GetWidth(ViewModel.PixelsPerTick, ViewModel.TicksPerBeat));
             var height = Math.Max(2, note.GetHeight(ViewModel.KeyHeight) - 1);
 
             return new Rect(x, y, width, height);

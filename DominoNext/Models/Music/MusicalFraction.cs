@@ -18,7 +18,13 @@ namespace DominoNext.Models.Music
         {
             if (denominator <= 0)
                 throw new ArgumentException("分母必须大于0", nameof(denominator));
-
+            // 防止分母为0异常
+            if (denominator == 0)
+            {
+                Numerator = 0;
+                Denominator = 1;
+                return;
+            }
             // 特殊处理：如果分子为0，表示位置0，直接设置为0/1
             if (numerator == 0)
             {
@@ -67,7 +73,7 @@ namespace DominoNext.Models.Music
         public static MusicalFraction FromTicks(double ticks, int quarterNoteTicks = QUARTER_NOTE_TICKS)
         {
             // 添加安全检查
-            if (double.IsNaN(ticks) || double.IsInfinity(ticks) || ticks < 0)
+            if (double.IsNaN(ticks) || double.IsInfinity(ticks) || ticks < 0 || quarterNoteTicks <= 0)
             {
                 return new MusicalFraction(1, 16); // 默认十六分音符
             }

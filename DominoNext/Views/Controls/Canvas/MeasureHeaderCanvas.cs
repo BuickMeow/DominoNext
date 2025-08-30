@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using DominoNext.ViewModels.Editor;
@@ -57,10 +57,9 @@ namespace DominoNext.Views.Controls.Canvas
             context.DrawRectangle(new SolidColorBrush(Color.Parse("#F5F5F5")), null, bounds);
 
             var measureWidth = ViewModel.MeasureWidth;
-            var startMeasure = Math.Max(1, (int)(0 / measureWidth) + 1);
-            var endMeasure = (int)(bounds.Width / measureWidth) + 2;
-
-            for (int measure = startMeasure; measure <= endMeasure; measure++)
+            // 修复：支持无限扩展长度，不再依赖TotalMeasures限制
+            var endMeasure = (int)(bounds.Width / measureWidth) + 1;
+            for (int measure = 1; measure <= endMeasure; measure++)
             {
                 var x = (measure - 1) * measureWidth;
                 if (x >= 0 && x <= bounds.Width)

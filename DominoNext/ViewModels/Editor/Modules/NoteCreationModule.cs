@@ -7,23 +7,23 @@ using System.Diagnostics;
 namespace DominoNext.ViewModels.Editor.Modules
 {
     /// <summary>
-    /// Òô·û´´½¨¹¦ÄÜÄ£¿é - ¼ò»¯·ÀÊÖ¶¶°æ±¾
+    /// éŸ³ç¬¦åˆ›å»ºæ¨¡å— - é‡‡ç”¨æ‹–æ‹½æ–¹å¼
     /// </summary>
     public class NoteCreationModule
     {
         private readonly ICoordinateService _coordinateService;
         private PianoRollViewModel? _pianoRollViewModel;
 
-        // ´´½¨×´Ì¬
+        // åˆ›å»ºçŠ¶æ€
         public bool IsCreatingNote { get; private set; }
         public NoteViewModel? CreatingNote { get; private set; }
         public Point CreatingStartPosition { get; private set; }
         
-        // ¼ò»¯·ÀÊÖ¶¶»úÖÆ£ºÖ»»ùÓÚÊ±¼äÅĞ¶Ï
+        // åˆ›å»ºéŸ³ç¬¦çš„æ—¶é—´æˆ³ï¼Œä»…åˆ›å»ºæ—¶è®°å½•
         private DateTime _creationStartTime;
         
-        // ¿Éµ÷ÕûµÄ·ÀÊÖ¶¶Ê±¼äãĞÖµ£¨ºÁÃë£©
-        // Èç¹ûĞèÒªĞŞ¸Ä·ÀÊÖ¶¶Ê±¼ä£¬ÇëĞŞ¸ÄÕâ¸ö³£Á¿
+        // é˜²æŠ–åŠ¨çš„é˜ˆå€¼ï¼Œå•ä½ä¸ºæ¯«ç§’
+        // å¦‚æœéœ€è¦ä¿®æ”¹é˜ˆå€¼ï¼Œè¯·ä¿®æ”¹è¿™é‡Œçš„å¸¸é‡
         private const double ANTI_SHAKE_THRESHOLD_MS = 100.0;
 
         public NoteCreationModule(ICoordinateService coordinateService)
@@ -37,7 +37,7 @@ namespace DominoNext.ViewModels.Editor.Modules
         }
 
         /// <summary>
-        /// ¿ªÊ¼´´½¨Òô·û
+        /// å¼€å§‹åˆ›å»ºéŸ³ç¬¦
         /// </summary>
         public void StartCreating(Point position)
         {
@@ -66,13 +66,13 @@ namespace DominoNext.ViewModels.Editor.Modules
                 IsCreatingNote = true;
                 _creationStartTime = DateTime.Now;
 
-                Debug.WriteLine($"¿ªÊ¼´´½¨Òô·û: Pitch={pitch}, Duration={CreatingNote.Duration}");
+                Debug.WriteLine($"å¼€å§‹åˆ›å»ºéŸ³ç¬¦: Pitch={pitch}, Duration={CreatingNote.Duration}");
                 OnCreationStarted?.Invoke();
             }
         }
 
         /// <summary>
-        /// ¸üĞÂ´´½¨ÖĞµÄÒô·û³¤¶È
+        /// æ›´æ–°æ­£åœ¨åˆ›å»ºçš„éŸ³ç¬¦
         /// </summary>
         public void UpdateCreating(Point currentPosition)
         {
@@ -81,7 +81,7 @@ namespace DominoNext.ViewModels.Editor.Modules
             var currentTime = _pianoRollViewModel.GetTimeFromX(currentPosition.X);
             var startTime = CreatingNote.StartPosition.ToTicks(_pianoRollViewModel.TicksPerBeat);
 
-            // ¼ÆËãÒô·ûµÄ³¤¶È
+            // è®¡ç®—éŸ³ç¬¦çš„æœ€å°é•¿åº¦
             var minDuration = _pianoRollViewModel.GridQuantization.ToTicks(_pianoRollViewModel.TicksPerBeat);
             var actualDuration = Math.Max(minDuration, currentTime - startTime);
 
@@ -90,10 +90,10 @@ namespace DominoNext.ViewModels.Editor.Modules
                 var duration = MusicalFraction.CalculateQuantizedDuration(
                     startTime, startTime + actualDuration, _pianoRollViewModel.GridQuantization, _pianoRollViewModel.TicksPerBeat);
 
-                // Ö»ÔÚ³¤¶ÈÕæÕı¸Ä±äÊ±¸üĞÂ
+                // ä»…å½“éŸ³ç¬¦é•¿åº¦å‘ç”Ÿå˜åŒ–æ—¶æ›´æ–°
                 if (!CreatingNote.Duration.Equals(duration))
                 {
-                    Debug.WriteLine($"ÊµÊ±¸üĞÂÒô·û³¤¶È: {CreatingNote.Duration} -> {duration}");
+                    Debug.WriteLine($"å®æ—¶æ›´æ–°éŸ³ç¬¦é•¿åº¦: {CreatingNote.Duration} -> {duration}");
                     CreatingNote.Duration = duration;
                     CreatingNote.InvalidateCache();
 
@@ -103,7 +103,7 @@ namespace DominoNext.ViewModels.Editor.Modules
         }
 
         /// <summary>
-        /// Íê³É´´½¨Òô·û - ¼«¼ò·ÀÊÖ¶¶°æ±¾
+        /// å®Œæˆåˆ›å»ºéŸ³ç¬¦ - é‡‡ç”¨æ‹–æ‹½æ–¹å¼
         /// </summary>
         public void FinishCreating()
         {
@@ -113,21 +113,21 @@ namespace DominoNext.ViewModels.Editor.Modules
                 
                 MusicalFraction finalDuration;
 
-                // ¼«¼òÅĞ¶Ï£ºÖ»»ùÓÚ°´×¡Ê±³¤
+                // é˜²æŠ–åŠ¨åˆ¤æ–­ï¼Œä»…å½“æŠ–åŠ¨æ—¶ä½¿ç”¨
                 if (holdTimeMs < ANTI_SHAKE_THRESHOLD_MS)
                 {
-                    // ¶Ì°´£ºÊ¹ÓÃÓÃ»§Ô¤ÉèµÄÊ±Öµ
+                    // é»˜è®¤ä½¿ç”¨ç”¨æˆ·é¢„è®¾çš„é•¿åº¦
                     finalDuration = _pianoRollViewModel.UserDefinedNoteDuration;
-                    Debug.WriteLine($"¶Ì°´´´½¨Òô·û ({holdTimeMs:F0}ms < {ANTI_SHAKE_THRESHOLD_MS}ms)£¬Ê¹ÓÃÔ¤ÉèÊ±Öµ: {finalDuration}");
+                    Debug.WriteLine($"é˜²æŠ–åŠ¨è§¦å‘ ({holdTimeMs:F0}ms < {ANTI_SHAKE_THRESHOLD_MS}ms) ä½¿ç”¨é¢„è®¾é•¿åº¦: {finalDuration}");
                 }
                 else
                 {
-                    // ³¤°´£ºÊ¹ÓÃÍÏ×§³öµÄ³¤¶È
+                    // å¦åˆ™ä½¿ç”¨æ‹–æ‹½é•¿åº¦
                     finalDuration = CreatingNote.Duration;
-                    Debug.WriteLine($"³¤°´´´½¨Òô·û ({holdTimeMs:F0}ms >= {ANTI_SHAKE_THRESHOLD_MS}ms)£¬Ê¹ÓÃÍÏ×§Ê±Öµ: {finalDuration}");
+                    Debug.WriteLine($"é˜²æŠ–åŠ¨æœªè§¦å‘ ({holdTimeMs:F0}ms >= {ANTI_SHAKE_THRESHOLD_MS}ms) ä½¿ç”¨æ‹–æ‹½é•¿åº¦: {finalDuration}");
                 }
 
-                // ´´½¨×îÖÕÒô·û
+                // åˆ›å»ºæœ€ç»ˆéŸ³ç¬¦
                 var finalNote = new NoteViewModel
                 {
                     Pitch = CreatingNote.Pitch,
@@ -139,14 +139,17 @@ namespace DominoNext.ViewModels.Editor.Modules
 
                 _pianoRollViewModel.Notes.Add(finalNote);
 
-                // Ö»ÓĞ³¤°´ÍÏ×§Ê±²Å¸üĞÂÓÃ»§Ô¤Éè
+                // ç¡®ä¿é’¢ç´å·å¸˜é•¿åº¦è¶³å¤Ÿå®¹çº³æ–°æ·»åŠ çš„éŸ³ç¬¦
+                _pianoRollViewModel.EnsureCapacityForNote(finalNote);
+
+                // ä»…å½“æ‹–æ‹½æ—¶æ›´æ–°é¢„è®¾
                 if (holdTimeMs >= ANTI_SHAKE_THRESHOLD_MS)
                 {
                     _pianoRollViewModel.UserDefinedNoteDuration = CreatingNote.Duration;
-                    Debug.WriteLine($"¸üĞÂÓÃ»§×Ô¶¨Òå³¤¶ÈÎª: {_pianoRollViewModel.UserDefinedNoteDuration}");
+                    Debug.WriteLine($"æ›´æ–°ç”¨æˆ·é¢„è®¾ä¸º: {_pianoRollViewModel.UserDefinedNoteDuration}");
                 }
 
-                Debug.WriteLine($"Íê³É´´½¨Òô·û: {finalNote.Duration}");
+                Debug.WriteLine($"å®Œæˆåˆ›å»ºéŸ³ç¬¦: {finalNote.Duration}");
             }
 
             ClearCreating();
@@ -154,13 +157,13 @@ namespace DominoNext.ViewModels.Editor.Modules
         }
 
         /// <summary>
-        /// È¡Ïû´´½¨Òô·û
+        /// å–æ¶ˆåˆ›å»ºéŸ³ç¬¦
         /// </summary>
         public void CancelCreating()
         {
             if (IsCreatingNote)
             {
-                Debug.WriteLine("È¡Ïû´´½¨Òô·û");
+                Debug.WriteLine("å–æ¶ˆåˆ›å»ºéŸ³ç¬¦");
             }
 
             ClearCreating();
@@ -178,10 +181,14 @@ namespace DominoNext.ViewModels.Editor.Modules
             return pitch >= 0 && pitch <= 127 && startTime >= 0;
         }
 
-        // ÊÂ¼ş
+        // äº‹ä»¶
+        #pragma warning disable CS0067
         public event Action? OnCreationStarted;
         public event Action? OnCreationUpdated;
+        public event Action? OnCreationEnded;
         public event Action? OnCreationCompleted;
         public event Action? OnCreationCancelled;
+        #pragma warning restore CS0067
+
     }
 }

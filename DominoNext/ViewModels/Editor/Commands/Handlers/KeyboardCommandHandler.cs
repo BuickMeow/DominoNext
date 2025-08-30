@@ -1,11 +1,12 @@
 using Avalonia.Input;
 using DominoNext.Models.Music;
 using DominoNext.Views.Controls.Editing;
+using System.Linq;
 
 namespace DominoNext.ViewModels.Editor.Commands
 {
     /// <summary>
-    /// ¼üÅÌÃüÁî´¦ÀíÆ÷
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î´¦ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public class KeyboardCommandHandler
     {
@@ -38,7 +39,7 @@ namespace DominoNext.ViewModels.Editor.Commands
                     QuantizeSelectedNotes();
                     break;
 
-                // ¹¤¾ß¿ì½Ý¼ü
+                // ï¿½ï¿½ï¿½ß¿ï¿½ï¿½Ý¼ï¿½
                 case Key.D1:
                 case Key.P:
                     _pianoRollViewModel.CurrentTool = EditorTool.Pencil;
@@ -59,7 +60,7 @@ namespace DominoNext.ViewModels.Editor.Commands
                     _pianoRollViewModel.CurrentTool = EditorTool.Cut;
                     break;
 
-                // ESC¼üÈ¡Ïû²Ù×÷
+                // ESCï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 case Key.Escape:
                     if (_pianoRollViewModel.CreationModule.IsCreatingNote)
                     {

@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using DominoNext.ViewModels.Editor;
@@ -153,10 +153,10 @@ namespace DominoNext.Views.Controls.Canvas
             }
 
             // 绘制小节线（最后绘制，覆盖其他线条）
-            var startMeasure = Math.Max(0, (int)(0 / measureWidth));
-            var endMeasure = (int)(bounds.Width / measureWidth) + 1;
+            // 修复：支持无限扩展长度，不再依赖TotalMeasures限制
+            var endMeasure = (int)(ViewModel.ContentWidth / measureWidth) + 1;
 
-            for (int i = startMeasure; i <= endMeasure; i++)
+            for (int i = 0; i <= endMeasure; i++)
             {
                 var x = i * measureWidth;
                 if (x >= startX && x <= endX)

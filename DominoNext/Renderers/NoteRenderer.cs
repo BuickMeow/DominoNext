@@ -46,11 +46,11 @@ namespace DominoNext.Renderers
             );
         }
 
-        public void DrawNote(DrawingContext context, NoteViewModel note, double zoom, double pixelsPerTick, double keyHeight, NoteRenderType renderType = NoteRenderType.Normal)
+        public void DrawNote(DrawingContext context, NoteViewModel note, double zoom, double pixelsPerTick, double keyHeight, int ticksPerBeat, NoteRenderType renderType = NoteRenderType.Normal)
         {
-            var x = note.GetX(zoom, pixelsPerTick);
+            var x = note.GetX(pixelsPerTick, ticksPerBeat);
             var y = note.GetY(keyHeight);
-            var width = note.GetWidth(zoom, pixelsPerTick);
+            var width = note.GetWidth(pixelsPerTick, ticksPerBeat);
             var height = note.GetHeight(keyHeight);
 
             var rect = new Rect(x, y, width, height);

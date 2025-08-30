@@ -8,7 +8,7 @@ using System.Diagnostics;
 namespace DominoNext.ViewModels.Editor.Modules
 {
     /// <summary>
-    /// Òô·ûÔ¤ÀÀ¹¦ÄÜÄ£¿é
+    /// ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½
     /// </summary>
     public class NotePreviewModule
     {
@@ -28,20 +28,20 @@ namespace DominoNext.ViewModels.Editor.Modules
         }
 
         /// <summary>
-        /// ¸üÐÂÔ¤ÀÀÒô·û
+        /// ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         public void UpdatePreview(Point position)
         {
             if (_pianoRollViewModel == null) return;
 
-            // Èç¹ûÕýÔÚ´´½¨Òô·û£¬²»ÏÔÊ¾ÆÕÍ¨Ô¤ÀÀ
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Í¨Ô¤ï¿½ï¿½
             if (_pianoRollViewModel.CreationModule.IsCreatingNote)
             {
                 ClearPreview();
                 return;
             }
 
-            // Èç¹ûÕýÔÚµ÷ÕûÒô·û´óÐ¡£¬²»ÏÔÊ¾ÆÕÍ¨Ô¤ÀÀ
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Í¨Ô¤ï¿½ï¿½
             if (_pianoRollViewModel.ResizeState.IsResizing)
             {
                 ClearPreview();
@@ -54,22 +54,22 @@ namespace DominoNext.ViewModels.Editor.Modules
                 return;
             }
 
-            // ¼ì²éÊÇ·ñÐüÍ£ÔÚÏÖÓÐÒô·ûÉÏ
+            // ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             var hoveredNote = _pianoRollViewModel.GetNoteAtPosition(position);
             if (hoveredNote != null)
             {
-                // ÐüÍ£ÔÚÒô·ûÉÏÊ±£¬Çå³ýÔ¤ÀÀÒô·û£¨ÒòÎªÒªÏÔÊ¾ÍÏ×§¹â±ê£©
+                // ï¿½ï¿½Í£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎªÒªï¿½ï¿½Ê¾ï¿½ï¿½×§ï¿½ï¿½ï¿½ê£©
                 ClearPreview();
                 return;
             }
 
-            // ¼ì²éÊÇ·ñÐüÍ£ÔÚ¿Éµ÷Õû´óÐ¡µÄÒô·û±ßÔµÉÏ
+            // ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½Í£ï¿½Ú¿Éµï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôµï¿½ï¿½
             if (hoveredNote != null)
             {
                 var handle = _pianoRollViewModel.GetResizeHandleAtPosition(position, hoveredNote);
                 if (handle == ResizeHandle.StartEdge || handle == ResizeHandle.EndEdge)
                 {
-                    // ÐüÍ£ÔÚµ÷Õû±ßÔµÉÏ£¬²»ÏÔÊ¾Ô¤ÀÀÒô·û
+                    // ï¿½ï¿½Í£ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½Ôµï¿½Ï£ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                     ClearPreview();
                     return;
                 }
@@ -83,7 +83,7 @@ namespace DominoNext.ViewModels.Editor.Modules
                 var quantizedStartTime = _pianoRollViewModel.SnapToGridTime(startTime);
                 var quantizedPosition = MusicalFraction.FromTicks(quantizedStartTime, _pianoRollViewModel.TicksPerBeat);
 
-                // Ö»ÔÚÔ¤ÀÀÒô·ûÊµ¼Ê¸Ä±äÊ±²Å¸üÐÂ
+                // Ö»ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½Ê¸Ä±ï¿½Ê±ï¿½Å¸ï¿½ï¿½ï¿½
                 if (PreviewNote == null ||
                     PreviewNote.Pitch != pitch ||
                     !PreviewNote.StartPosition.Equals(quantizedPosition))
@@ -107,7 +107,7 @@ namespace DominoNext.ViewModels.Editor.Modules
         }
 
         /// <summary>
-        /// Çå³ýÔ¤ÀÀÒô·û
+        /// ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         public void ClearPreview()
         {
@@ -123,7 +123,11 @@ namespace DominoNext.ViewModels.Editor.Modules
             return pitch >= 0 && pitch <= 127 && startTime >= 0;
         }
 
-        // ÊÂ¼þ
+        // äº‹ä»¶
+        #pragma warning disable CS0067
         public event Action? OnPreviewUpdated;
+        public event Action? OnPreviewNoteChanged;
+        #pragma warning restore CS0067
+
     }
 }

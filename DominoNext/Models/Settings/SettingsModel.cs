@@ -9,7 +9,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 namespace DominoNext.Models.Settings
 {
     /// <summary>
-    /// Ó¦ÓÃ³ÌĞòÉèÖÃÄ£ĞÍ
+    /// åº”ç”¨ç¨‹åºè®¾ç½®æ¨¡å‹
     /// </summary>
     public partial class SettingsModel : ObservableObject
     {
@@ -25,7 +25,7 @@ namespace DominoNext.Models.Settings
         private bool _autoSave = true;
 
         [ObservableProperty]
-        private int _autoSaveInterval = 5; // ·ÖÖÓ
+        private int _autoSaveInterval = 5; // åˆ†é’Ÿ
 
         [ObservableProperty]
         private bool _showGridLines = true;
@@ -37,10 +37,10 @@ namespace DominoNext.Models.Settings
         private double _defaultZoom = 1.0;
 
         [ObservableProperty]
-        private bool _useNativeMenuBar = false;
+        private bool _useNativeMenuBar = true;
 
         [ObservableProperty]
-        private int _maxUndoSteps = 100;
+        private int _maxUndoSteps = 50;
 
         [ObservableProperty]
         private bool _confirmBeforeDelete = true;
@@ -57,8 +57,20 @@ namespace DominoNext.Models.Settings
         [ObservableProperty]
         private string _customShortcutsJson = "{}";
 
+        [ObservableProperty]
+        private double _defaultBPM = 120.0;
+
+        [ObservableProperty]
+        private PlaybackDeviceOption _playbackDevice = new PlaybackDeviceOption { Id = "-1", Name = "é»˜è®¤è®¾å¤‡", IsSelected = false };
+        
+        [ObservableProperty]
+        private string _playlistSettingsJson = "[]";  // æ·»åŠ æ’­æ”¾åˆ—è¡¨è®¾ç½®JSONå±æ€§
+        
+        [ObservableProperty]
+        private string _playbackDevicesJson = "[]";  // æ·»åŠ æ’­æ”¾è®¾å¤‡è®¾ç½®JSONå±æ€§
+
         /// <summary>
-        /// »ñÈ¡µ±Ç°ÓïÑÔµÄÏÔÊ¾Ãû³Æ
+        /// è·å–å½“å‰è¯­è¨€çš„æ˜¾ç¤ºåç§°
         /// </summary>
         public string LanguageDisplayName
         {
@@ -66,30 +78,30 @@ namespace DominoNext.Models.Settings
             {
                 return Language switch
                 {
-                    "zh-CN" => "¼òÌåÖĞÎÄ",
+                    "zh-CN" => "ä¸­æ–‡ï¼ˆç®€ä½“ï¼‰",
                     "en-US" => "English",
-                    "ja-JP" => "ÈÕ±¾ÕZ",
+                    "ja-JP" => "æ—¥æœ¬èª",
                     _ => Language
                 };
             }
         }
 
         /// <summary>
-        /// »ñÈ¡µ±Ç°Ö÷ÌâµÄÏÔÊ¾Ãû³Æ
+        /// è·å–å½“å‰ä¸»é¢˜çš„æ˜¾ç¤ºåç§°
         /// </summary>
         public string ThemeDisplayName
         {
             get
             {
-                if (Theme == ThemeVariant.Default) return "¸úËæÏµÍ³";
-                if (Theme == ThemeVariant.Light) return "Ç³É«Ö÷Ìâ";
-                if (Theme == ThemeVariant.Dark) return "ÉîÉ«Ö÷Ìâ";
+                if (Theme == ThemeVariant.Default) return "ç³»ç»Ÿé»˜è®¤";
+                if (Theme == ThemeVariant.Light) return "äº®è‰²ä¸»é¢˜";
+                if (Theme == ThemeVariant.Dark) return "æš—è‰²ä¸»é¢˜";
                 return Theme.ToString();
             }
         }
 
         /// <summary>
-        /// ´ÓÅäÖÃÎÄ¼ş¼ÓÔØÉèÖÃ
+        /// ä»é»˜è®¤æ–‡ä»¶è·¯å¾„åŠ è½½è®¾ç½®
         /// </summary>
         public void LoadFromFile()
         {
@@ -107,33 +119,33 @@ namespace DominoNext.Models.Settings
                     var loadedSettings = JsonSerializer.Deserialize<SettingsModel>(json, options);
                     if (loadedSettings != null)
                     {
-                        // ÊÖ¶¯¸³Öµ±ÜÃâ´¥·¢ÊôĞÔ±ä¸üÍ¨Öª
-                        _language = loadedSettings.Language;
-                        _theme = loadedSettings.Theme;
-                        _autoSave = loadedSettings.AutoSave;
-                        _autoSaveInterval = loadedSettings.AutoSaveInterval;
-                        _showGridLines = loadedSettings.ShowGridLines;
-                        _snapToGrid = loadedSettings.SnapToGrid;
-                        _defaultZoom = loadedSettings.DefaultZoom;
-                        _useNativeMenuBar = loadedSettings.UseNativeMenuBar;
-                        _maxUndoSteps = loadedSettings.MaxUndoSteps;
-                        _confirmBeforeDelete = loadedSettings.ConfirmBeforeDelete;
-                        _showVelocityBars = loadedSettings.ShowVelocityBars;
-                        _pianoKeyWidth = loadedSettings.PianoKeyWidth;
-                        _enableKeyboardShortcuts = loadedSettings.EnableKeyboardShortcuts;
-                        _customShortcutsJson = loadedSettings.CustomShortcutsJson;
+                        // å±æ€§å€¼èµ‹å€¼å¹¶é€šçŸ¥å±æ€§æ›´æ”¹
+                        Language = loadedSettings.Language;
+                        Theme = loadedSettings.Theme;
+                        AutoSave = loadedSettings.AutoSave;
+                        AutoSaveInterval = loadedSettings.AutoSaveInterval;
+                        ShowGridLines = loadedSettings.ShowGridLines;
+                        SnapToGrid = loadedSettings.SnapToGrid;
+                        DefaultZoom = loadedSettings.DefaultZoom;
+                        UseNativeMenuBar = loadedSettings.UseNativeMenuBar;
+                        MaxUndoSteps = loadedSettings.MaxUndoSteps;
+                        ConfirmBeforeDelete = loadedSettings.ConfirmBeforeDelete;
+                        ShowVelocityBars = loadedSettings.ShowVelocityBars;
+                        PianoKeyWidth = loadedSettings.PianoKeyWidth;
+                        EnableKeyboardShortcuts = loadedSettings.EnableKeyboardShortcuts;
+                        CustomShortcutsJson = loadedSettings.CustomShortcutsJson;
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Èç¹û¼ÓÔØÊ§°Ü£¬Ê¹ÓÃÄ¬ÈÏÉèÖÃ
-                System.Diagnostics.Debug.WriteLine($"¼ÓÔØÅäÖÃÎÄ¼şÊ§°Ü: {ex.Message}");
+                // å¦‚æœåŠ è½½å¤±è´¥ï¼Œä½¿ç”¨é»˜è®¤è®¾ç½®
+                System.Diagnostics.Debug.WriteLine($"åŠ è½½é…ç½®æ–‡ä»¶å¤±è´¥: {ex.Message}");
             }
         }
 
         /// <summary>
-        /// ´ÓÖ¸¶¨Â·¾¶¼ÓÔØÉèÖÃ
+        /// ä»æŒ‡å®šè·¯å¾„åŠ è½½è®¾ç½®
         /// </summary>
         public void LoadFromFile(string filePath)
         {
@@ -150,33 +162,33 @@ namespace DominoNext.Models.Settings
                     var loadedSettings = JsonSerializer.Deserialize<SettingsModel>(json, options);
                     if (loadedSettings != null)
                     {
-                        // ÊÖ¶¯¸³Öµ±ÜÃâ´¥·¢ÊôĞÔ±ä¸üÍ¨Öª
-                        _language = loadedSettings.Language;
-                        _theme = loadedSettings.Theme;
-                        _autoSave = loadedSettings.AutoSave;
-                        _autoSaveInterval = loadedSettings.AutoSaveInterval;
-                        _showGridLines = loadedSettings.ShowGridLines;
-                        _snapToGrid = loadedSettings.SnapToGrid;
-                        _defaultZoom = loadedSettings.DefaultZoom;
-                        _useNativeMenuBar = loadedSettings.UseNativeMenuBar;
-                        _maxUndoSteps = loadedSettings.MaxUndoSteps;
-                        _confirmBeforeDelete = loadedSettings.ConfirmBeforeDelete;
-                        _showVelocityBars = loadedSettings.ShowVelocityBars;
-                        _pianoKeyWidth = loadedSettings.PianoKeyWidth;
-                        _enableKeyboardShortcuts = loadedSettings.EnableKeyboardShortcuts;
-                        _customShortcutsJson = loadedSettings.CustomShortcutsJson;
+                        // å±æ€§å€¼èµ‹å€¼å¹¶é€šçŸ¥å±æ€§æ›´æ”¹
+                        Language = loadedSettings.Language;
+                        Theme = loadedSettings.Theme;
+                        AutoSave = loadedSettings.AutoSave;
+                        AutoSaveInterval = loadedSettings.AutoSaveInterval;
+                        ShowGridLines = loadedSettings.ShowGridLines;
+                        SnapToGrid = loadedSettings.SnapToGrid;
+                        DefaultZoom = loadedSettings.DefaultZoom;
+                        UseNativeMenuBar = loadedSettings.UseNativeMenuBar;
+                        MaxUndoSteps = loadedSettings.MaxUndoSteps;
+                        ConfirmBeforeDelete = loadedSettings.ConfirmBeforeDelete;
+                        ShowVelocityBars = loadedSettings.ShowVelocityBars;
+                        PianoKeyWidth = loadedSettings.PianoKeyWidth;
+                        EnableKeyboardShortcuts = loadedSettings.EnableKeyboardShortcuts;
+                        CustomShortcutsJson = loadedSettings.CustomShortcutsJson;
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Èç¹û¼ÓÔØÊ§°Ü£¬Ê¹ÓÃÄ¬ÈÏÉèÖÃ
-                System.Diagnostics.Debug.WriteLine($"¼ÓÔØÅäÖÃÎÄ¼şÊ§°Ü: {ex.Message}");
+                // å¦‚æœåŠ è½½å¤±è´¥ï¼Œä½¿ç”¨é»˜è®¤è®¾ç½®
+                System.Diagnostics.Debug.WriteLine($"åŠ è½½é…ç½®æ–‡ä»¶å¤±è´¥: {ex.Message}");
             }
         }
 
         /// <summary>
-        /// ±£´æÉèÖÃµ½ÅäÖÃÎÄ¼ş
+        /// ä¿å­˜è®¾ç½®åˆ°é»˜è®¤æ–‡ä»¶è·¯å¾„
         /// </summary>
         public void SaveToFile()
         {
@@ -193,12 +205,12 @@ namespace DominoNext.Models.Settings
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"±£´æÅäÖÃÎÄ¼şÊ§°Ü: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"ä¿å­˜é…ç½®æ–‡ä»¶å¤±è´¥: {ex.Message}");
             }
         }
 
         /// <summary>
-        /// ±£´æÉèÖÃµ½Ö¸¶¨Â·¾¶
+        /// ä¿å­˜è®¾ç½®åˆ°æŒ‡å®šè·¯å¾„
         /// </summary>
         public void SaveToFile(string filePath)
         {
@@ -214,20 +226,20 @@ namespace DominoNext.Models.Settings
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"±£´æÅäÖÃÎÄ¼şÊ§°Ü: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"ä¿å­˜é…ç½®æ–‡ä»¶å¤±è´¥: {ex.Message}");
             }
         }
 
         /// <summary>
-        /// »ñÈ¡ÅäÖÃÎÄ¼şÂ·¾¶
+        /// è·å–é…ç½®æ–‡ä»¶è·¯å¾„
         /// </summary>
-        /// <returns>ÅäÖÃÎÄ¼şÍêÕûÂ·¾¶</returns>
+        /// <returns>é…ç½®æ–‡ä»¶çš„ç»å¯¹è·¯å¾„</returns>
         private string GetConfigFilePath()
         {
             string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string appFolder = Path.Combine(appDataPath, "DominoNext");
 
-            // È·±£Ä¿Â¼´æÔÚ
+            // ç¡®ä¿ç›®å½•å­˜åœ¨
             if (!Directory.Exists(appFolder))
             {
                 Directory.CreateDirectory(appFolder);
@@ -237,7 +249,7 @@ namespace DominoNext.Models.Settings
         }
 
         /// <summary>
-        /// ÖØÖÃÎªÄ¬ÈÏÉèÖÃ
+        /// é‡ç½®ä¸ºé»˜è®¤è®¾ç½®
         /// </summary>
         public void ResetToDefaults()
         {
